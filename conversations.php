@@ -224,6 +224,9 @@ if ($username) {
 ?>
 
 </td></tr></table>
+<script type="text/javascript">
+window.onload=hide('ncb1');show('ncb2');habtop();
+</script>
 </body>
 </html>
 <?php
