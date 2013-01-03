@@ -1,7 +1,7 @@
 body { font-family: Verdana, Arial, Helvetica, sans-serif}
-p {font-size: 12px; color: #000000; text-decoration: none; font-weight: none}
+p {font-size: 12px; color: #000000; text-decoration: none; font-weight: normal}
 ul {margin-left: 0; padding-left: 0; list-style: none; font-size: 14px}
-li {font-size: 12px; padding-left: 10px; background-image: url(gfx/ul.gif); background-repeat: no-repeat; background-position: 0 4;}
+li {font-size: 12px; padding-left: 10px; background-image: url(gfx/ul.gif); background-repeat: no-repeat; background-position: left center;}
 
 a:link {color: #001177; text-decoration: none}
 a:visited {color: #001177; text-decoration: none}
@@ -11,7 +11,7 @@ a:active {color: #001177; text-decoration: underline}
 h1 {font-size: 20px; color: #777777; font-weight: bold}
 h2 {font-size: 12px; color: #555555; font-weight: bold}
 
-.copy {font-size: 12px; color: #000000; text-decoration: none; font-weight: none}
+.copy {font-size: 12px; color: #000000; text-decoration: none; font-weight: normal}
 .serif {font-family: "Times New Roman", Times, serif;}
 .large {font-size: 14px}
 .medium {font-size: 12px}
