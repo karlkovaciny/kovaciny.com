@@ -8,7 +8,6 @@
 		}
 		
 		//Show the search form if we don't have a search string yet
-		//debug added a line so I can back it out later
 		if (!isset($_REQUEST['q'])) {			
 			?>
 			<h1>Search</h1>
