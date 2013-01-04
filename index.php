@@ -1,6 +1,6 @@
 <?php
 require_once ('head.php');
-echo "<font size=\"-2\">The secret website for those who hate Babysissy</FONT>";
+echo "<font size=\"-2\">You are now on the development branch of the kovacinycom</FONT>";
 if ($username) {
 	if (isset($_POST['m'])) {
 		$markasread = $_POST['m'];
