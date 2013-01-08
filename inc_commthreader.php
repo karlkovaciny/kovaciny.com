@@ -1,10 +1,5 @@
 <?php
 	// handles threading of the comments
-	
-//	$cb_id[] = $commentid;
-//	$cb_irt[] = $inreplyto;
-//	$cb_ccc[] = $ccc;
-//	$cb_cd[] = 0;
 
 	// find commentlevel
 	$threaddepth = 0;
@@ -22,12 +17,6 @@
 	// sort
 	$tl = 0;
 	for ($i=0; $i<$cb; $i++) {if ($cb_cd[$i] == 0) {$commentorder[] = $cb_id[$i];$tl++;}} //find top level keys
-	echo "here's cb_id: (top levels)<BR><BR>"; //debug
-	print_r($cb_id);
-	echo "<BR>---<BR>";
-	echo "here's the commentorder array: (top levels)<BR><BR>"; //debug
-	print_r($commentorder);
-	echo "<BR>---<BR>";
 	for ($l=1; $l<=$threaddepth; $l++) {
 		$ntl = 0;
 		$p = "";
@@ -41,9 +30,6 @@
 		}
 		$tl = $ntl;
 		$commentorder = explode(":",rtrim($p,":"));
-	echo "here's the commentorder object: (post explode)<BR><BR>"; //debug
-	print_r($commentorder);
-	echo "<BR>---<BR>";
 	}
 
 	//display
@@ -51,9 +37,6 @@
 		echo "<p>This conversation is empty.<br>&nbsp;</p>";
 	} else {
 		foreach ($commentorder as $cbt) {
-			echo "here's the commentorder array:<BR><BR>"; //debug
-			print_r($cbt);
-			echo "<BR>";	
 			$cbt = explode(":", trim(str_replace("::",":",$cbt),":")); // clean up and explode threading results
 			foreach ($cbt as $node) {
 				$selfkey = array_search($node,$cb_id); //find array key
