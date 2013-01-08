@@ -50,6 +50,7 @@ if ($username) {
 				$allcomments = "";
 				$unreadcomments = "";
 				$cb = 0;
+				$cb_id = array(); //initializing so it won't choke implode() if empty
 				while($comments = mysql_fetch_array($res)) {
 					$commentid = $comments["comid"];
 					if ($hideallexcept == 0 || $commentid == $hideallexcept) {
