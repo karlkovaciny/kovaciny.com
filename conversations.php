@@ -143,7 +143,10 @@ if ($username) {
 							$htmlcomment = $stringgg;
 							}
 						}
-						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") $htmlcomment = "<img src=\"/gfx/" . strtolower($authorname) . ".jpg\" border=0 width=85 height=85 align=\"left\" style=\"padding-right: 8px; padding-bottom: 8px\">" . $htmlcomment;
+						//add in the user's graphic
+						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
+							$htmlcomment = "<img src=\"/gfx/" . strtolower($authorname) . ".jpg\" border=0 width=85 height=85 style=\"float:left; margin-right: 8px; margin-bottom: 8px\">" . $htmlcomment;
+						}
 						$ccc .= "</tr></table></td></tr><tr><td class=\"copy sidepad border$hilite\"><div id=\"c_$commentid\"$hidecomment>$changenotice&nbsp;<br>$htmlcomment<br>&nbsp;</div></td></tr>"; //"<tr><td class=\"medium\">&nbsp;</td></tr>";
 						$cb_id[] = $commentid;
 						$cb_irt[] = $inreplyto;
