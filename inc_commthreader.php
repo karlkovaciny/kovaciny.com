@@ -45,7 +45,9 @@
 				if ($indent == 0 || $hideallexcept > 0) {$indent = "";} else {$indent = "padding-left: ".$indent."px;";}
 				$commhtml = $cb_ccc[$selfkey];
 				if ($cb_cd[$selfkey] > 0) $commhtml = str_replace("<XXXYYYZZZYYYXXX>", "<td><a href=\"javascript://\" onclick=\"jtp($irt);\" title=\"Jump to parent comment\"><img src=\"gfx/up.gif\" border=1 width=6 height=6 hspace=7 vspace=3></a></td>", $commhtml);
-				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\" style=\"max-width: 850px; $indent padding-bottom: 15px\">$commhtml</table>";
+				echo "<div style=\"$indent; padding-bottom: 15px\" >";
+				echo 	"<table border=0 cellpadding=3 cellspacing=0 width=\"100%\" style=\"max-width: 850px\">$commhtml</table>";
+				echo "</div>";
 			}
 		}
 	}
