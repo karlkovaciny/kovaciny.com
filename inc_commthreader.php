@@ -1,10 +1,5 @@
 <?php
 	// handles threading of the comments
-	
-//	$cb_id[] = $commentid;
-//	$cb_irt[] = $inreplyto;
-//	$cb_ccc[] = $ccc;
-//	$cb_cd[] = 0;
 
 	// find commentlevel
 	$threaddepth = 0;

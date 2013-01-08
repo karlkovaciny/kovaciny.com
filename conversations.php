@@ -188,7 +188,7 @@ if ($username) {
 						$posttime = strtotime($commentdate) + ($tz * 3600);
 						$posttime = date('M d, Y g:i a', $posttime);
 						$posttime = " value=\"$posttime\"";
-						echo "?id=$conv_id&comid=$hideallexcept&action=update";
+						echo "?id=$conv_id&comid=$hideallexcept&irtid=$inreplyto&action=update";
 						$editcomment = $comment;
 						$replacefrom = array("\'",'\"');
 						$replaceto = array("'",'"');

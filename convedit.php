@@ -1,7 +1,11 @@
 <?php 
 if (isset($_GET['action'])) {
 	if ($_GET['action'] == "new" || $_GET['action'] == "update") {
-		if (isset($_POST['inreplyto'])) {$newinreplyto = $_POST['inreplyto'];} else {$newinreplyto = 0;}
+		if (isset($_POST['inreplyto'])) { //admin is setting date
+			$newinreplyto = $_POST['inreplyto'];
+			} else if (isset($_GET['irtid'])){ //for edits by regular users
+			$newinreplyto = $_GET['irtid'];
+			} else {$newinreplyto = 0;}
 		$newcomm = ltrim(rtrim($_POST['comment']));
 		$replacefrom = array("\\'","\\'",'\\"','\\"');
 		$replaceto = array("\'","\'",'\"','\"');
