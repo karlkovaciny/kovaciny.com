@@ -74,17 +74,19 @@ if ($username) {
 						$allcomments .= "$commentid:";
 						if ($userid == 1) {$commentinfo = "<td class=\"small\">$commentid ($inreplyto) &nbsp;</td>";}
 						if ($markedasred == "0") {
-							$isnew = "<td><div style=\"padding-top:2px\"><img src=\"gfx/new.gif\" border=0 width=31 height=12 hspace=4></div></td>$tdspacer";
+							$isnew = "<td width=35><div style=\"padding-top:2px\"><img src=\"gfx/new.gif\" border=0 width=31 height=12 hspace=4></div></td>$tdspacer";
 						} else {
 							$unreadcomments .= "$commentid:";
 							$isnew = "";
 						}
-						$ccc = "<tr bgcolor=\"#DDDDDD\"><td class=\"sidepad\" id=\"cc_$commentid\"><a name=\"comment_$commentid\"></a><table border=0 cellpadding=0 cellspacing=0 class=\"small\"><tr valign=\"middle\">";
+						//set up the action bar
+						$ccc = "<tr bgcolor=\"#DDDDDD\"><td class=\"sidepad\" id=\"cc_$commentid\"><a name=\"comment_$commentid\"></a><div style=\"width:inherit\"><table border=0 cellpadding=0 cellspacing=0 class=\"small\" style=\"table-layout:fixed; width:100%\"><tr valign=\"middle\">";
 						$ccc .= "$commentinfo<td width=60 class=\"large b\"><a href=\"?user=$authorid\">$authorname</a></td>$tdspacer";
 						$ccc .= "$isnew<td width=120>$commentintv ago</td>$tdspacer";
 						if ($hideallexcept == 0) {
-							$ccc .= "<td><div id=\"c_h_$commentid\" class=\"hide\"><a href=\"javascript:hide('c_h_$commentid');show('c_s_$commentid');show('c_$commentid');\">Show comment</a></div></td>";
-							$ccc .= "<td><div id=\"c_s_$commentid\"><a href=\"javascript:show('c_h_$commentid');hide('c_s_$commentid');hide('c_$commentid');\">Hide comment</a>";
+							//Add show comment/hide comment links, with only the relevant one being visible
+							$ccc .= "<td><div id=\"c_h_$commentid\" class=\"hide\"><a href=\"javascript:hide('c_h_$commentid');show('c_s_$commentid');show('c_$commentid');\">Show comment</a></div>";
+							$ccc .= "<div id=\"c_s_$commentid\"><a href=\"javascript:show('c_h_$commentid');hide('c_s_$commentid');hide('c_$commentid');\">Hide comment</a>";
 
 							if ($userid == 1 || $userid == $authorid) {
 								$ccc .= " &nbsp; &nbsp;<a href=\"conversations.php?id=$conv_id&comid=$commentid&action=edit\">Edit</a>";
@@ -105,6 +107,7 @@ if ($username) {
 						} elseif (isset($replytoid)) {
 							$ccc .= "<td><a href=\"javascript://\" onmousedown=\"quoteme('$authorname');\">Quote selected</a></td>"; // " &nbsp; &nbsp;<a href=\"javascript://\" onclick=\"quoteentire('$authorname');\">Quote entire post</a>"
 						}
+						$ccc .= "</tr></table></td></tr>"; //end of the action bar
 						$q1 = "<table border=0 cellpadding=4 cellspacing=0 class=\"border\"><tr valign=\"top\"><td class=\"green small\" bgcolor=\"#F6F6F6\">";
 						$q2 = "</td><td class=\"gray sidepad medium\" bgcolor=\"#FFFFFF\">";
 						$c13 = chr(13);
@@ -148,7 +151,8 @@ if ($username) {
 						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
 							$htmlcomment = "<img src=\"/gfx/" . strtolower($authorname) . ".jpg\" border=0 width=85 height=85 style=\"float:left; margin-right: 8px; margin-bottom: 8px\">" . $htmlcomment;
 						}
-						$ccc .= "</tr></table></td></tr><tr><td class=\"copy sidepad border$hilite\"><div id=\"c_$commentid\"$hidecomment>$changenotice&nbsp;<br>$htmlcomment<br>&nbsp;</div></td></tr>"; //"<tr><td class=\"medium\">&nbsp;</td></tr>";
+						//display the comment itself
+						$ccc .= "<tr><td class=\"copy sidepad border$hilite\"><div id=\"c_$commentid\"$hidecomment>$changenotice&nbsp;<br>$htmlcomment<br>&nbsp;</div></td></tr>";
 						$cb_id[] = $commentid;
 						$cb_irt[] = $inreplyto;
 						$cb_ccc[] = $ccc;
