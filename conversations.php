@@ -233,7 +233,10 @@ if ($username) {
 
 </td></tr></table>
 <script type="text/javascript">
-window.onload=hide('ncb1');show('ncb2');habtop();
+function autoHideOldComments(){
+	hide('ncb1');show('ncb2');habtop();
+}
+autoHideOldComments();
 </script>
 </body>
 </html>
