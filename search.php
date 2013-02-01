@@ -69,7 +69,8 @@
 			$maxallowed = 50;
 			$rpp = 10; //results per page
 			$searchquery = 
-				"SELECT `c`.`comid`, `c`.`conid`, `c`.`comment`, `c`.`authorid`, `c`.`visible`, `conversations`.`contitle`, `users`.`userid`, `users`.`username` " .
+				"SELECT `c`.`comid`, `c`.`conid`, `c`.`comment`, `c`.`createdate`, `c`.`authorid`, `c`.`visible`, " .
+					"`conversations`.`contitle`, `users`.`userid`, `users`.`username` " .
 				"FROM `comments` `c` " .
 				"JOIN `conversations` ON `c`.`conid` = `conversations`.`conid` " .
 				"JOIN `users` ON `c`.`authorid` = `users`.`userid` " .				
@@ -81,8 +82,9 @@
 				if ($q_title != "") {
 					$searchquery .= "AND MATCH (`conversations`.`contitle`) AGAINST ('$q_title' IN BOOLEAN MODE) ";
 				}
+				$searchquery .= "ORDER BY `c`.`createdate`";
 				if ($q_oldestfirst == FALSE) {
-					$searchquery .= "ORDER BY `conversations`.`conid` DESC "; //ie, newest threads first
+					$searchquery .= "DESC "; //ie, newest threads first
 				}
 				if ($resultcount > 0) { //limit the search except for the first time when you need the record count
 					$startpoint = $currentpage * $rpp;
