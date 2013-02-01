@@ -198,7 +198,7 @@
 						$comment = "<div id=\"c_$comid\">" . $comment . "</div>"; //so we can access it with Javascript
 					
 					//actually display the results
-					echo "<tr><td class=\"tdot\" style = \"width:20%\"><span class=\"nou\">$x_username<br />in </span><span class=\"b\"><a href=\"conversations.php?id=$conid&com=$comid\">$contitle</a></span></td>";
+					echo "<tr><td class=\"tdot\" style = \"width:20%\"><span class=\"nou\">$x_username<br />in </span><span class=\"b\"><a href=\"conversations.php?id=$conid#comment_$comid\">$contitle</a></span></td>";
 					echo "<td class=\"tdot\"></td><td class=\"tdot sidepad\">$comment</td></tr>";
 					
 					//now that the comment exists, we can use Javascript to highlight the search term
