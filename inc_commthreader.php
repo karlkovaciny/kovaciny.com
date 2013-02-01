@@ -41,6 +41,9 @@
 			foreach ($cbt as $node) {
 				$selfkey = array_search($node,$cb_id); //find array key
 				$irt = $cb_irt[$selfkey]; //find parent comment id
+				if ( ($topnew == "") && strlen($cb_isnew[$selfkey]) ) {
+					$topnew = "comment_" . $cb_id[$selfkey];
+				}
 				$indent = $cb_cd[$selfkey] * 26;
 				if ($indent == 0 || $hideallexcept > 0) {$indent = "";} else {$indent = "padding-left: ".$indent."px;";}
 				$commhtml = $cb_ccc[$selfkey];

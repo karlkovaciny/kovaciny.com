@@ -11,6 +11,10 @@ function showonly(e){document.getElementById(e).style.display='block';} //will n
 function hideonly(e){document.getElementById(e).style.display='none';} //will not hide if already shown
 
 function commenttoggle(expandcollapse) {// 0 = hide, 1 = show
+//this function is called not when you call habtop, nor when you hide/show an individual comment, but yes when you click the hide/show button.
+//in fact it's never called with 0.
+//the difference between this and habtop is just that ac.value vs ntc.value, which are hidden items in line 223 of the commentform
+//ac is "all comments" (list of comment ids), ntc is list of marked-as-read comments.
 	var ac = document.forms.commentform.ac.value + '';
 	var aca = new Array();
 	var delaytime = 0;
@@ -18,11 +22,13 @@ function commenttoggle(expandcollapse) {// 0 = hide, 1 = show
 	for (i = aca.length; i >= 0; i--) {
 		delaytime += 1;
 		if (expandcollapse == 1) {
+			//this is a dynamic function call: "showonly('c_4'); showonly('c_s_4'); hideonly('c_h_4');", delaytime
+			//what it does is with a tiny delay, runs the show/hide function on each comment in turn.
 			setTimeout("showonly('c_" + aca[i] + "'); showonly('c_s_" + aca[i] + "'); hideonly('c_h_" + aca[i] + "');", delaytime);
 		} else {
 			setTimeout("hideonly('c_" + aca[i] + "'); hideonly('c_s_" + aca[i] + "'); showonly('c_h_" + aca[i] + "');", delaytime);
 		}
-	}
+	}	
 }
 
 function habtop() {
@@ -131,3 +137,12 @@ function alertContents() {
 	}
 
 }
+
+function autoHideOldComments(){
+		hide('ncb1');show('ncb2');habtop();
+	}
+	
+function jumpToAnchor(anchor) {
+		var baseUrl = window.location.href.split('#')[0];
+		window.location.replace( baseUrl + '#' + anchor );
+	}

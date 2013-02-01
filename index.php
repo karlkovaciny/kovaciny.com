@@ -2,14 +2,14 @@
 require_once ('head.php');
 echo "<font size=\"-2\">The secret website for those who hate Babysissy</FONT>";
 if ($username) {
-	if (isset($_POST['m'])) {
+	if (isset($_POST['m'])) { //user picked conversations to mark as read in index.php
 		$markasread = $_POST['m'];
 		if (is_array($markasread)) {
 			foreach ($markasread as $markas) {
 				mysql_query("UPDATE `comments` SET `readby_$username` = 1 WHERE `conid` = '$markas' and `changedate` <= '" . date('Y-m-d H:i:s', $_POST['readdate']) . "'");
 			}
 		}
-	} elseif (isset($_POST['markasread']) and isset($_POST['readdate'])) {
+	} elseif (isset($_POST['markasread']) and isset($_POST['readdate'])) { //user clicked "Mark as read" at the end of a conversation.
 		$markasread = $_POST['markasread'];
 		mysql_query("UPDATE `comments` SET `readby_$username` = 1 WHERE `conid` = '$markasread' and `changedate` <= '" . date('Y-m-d H:i:s', $_POST['readdate']) . "'");
 	}

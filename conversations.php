@@ -51,6 +51,7 @@ if ($username) {
 				$unreadcomments = "";
 				$cb = 0;
 				$cb_id = array(); //initializing so it won't choke implode() if empty
+				$topnew = "";
 				while($comments = mysql_fetch_array($res)) {
 					$commentid = $comments["comid"];
 					if ($hideallexcept == 0 || $commentid == $hideallexcept) {
@@ -72,15 +73,16 @@ if ($username) {
 						$markedasred = $comments["readby_$username"];
 						$commentintv = format_interval(time() - strtotime($commentdate)); //$commentdate = date('M d, g:i a', $commentdate);
 						$allcomments .= "$commentid:";
+						$commentanchor = "comment_$commentid";
 						if ($userid == 1) {$commentinfo = "<td class=\"small\">$commentid ($inreplyto) &nbsp;</td>";}
 						if ($markedasred == "0") {
 							$isnew = "<td width=35><div style=\"padding-top:2px\"><img src=\"gfx/new.gif\" border=0 width=31 height=12 hspace=4></div></td>$tdspacer";
 						} else {
-							$unreadcomments .= "$commentid:";
+							$unreadcomments .= "$commentid:"; //variable name is a misnomer, this is a list of *already read* comments
 							$isnew = "";
 						}
 						//set up the action bar
-						$ccc = "<tr bgcolor=\"#DDDDDD\"><td class=\"sidepad\" id=\"cc_$commentid\"><a name=\"comment_$commentid\"></a><div style=\"width:inherit\"><table border=0 cellpadding=0 cellspacing=0 class=\"small\" style=\"table-layout:fixed; width:100%\"><tr valign=\"middle\">";
+						$ccc = "<tr bgcolor=\"#DDDDDD\"><td class=\"sidepad\" id=\"cc_$commentid\"><a name=\"$commentanchor\"></a><div style=\"width:inherit\"><table border=0 cellpadding=0 cellspacing=0 class=\"small\" style=\"table-layout:fixed; width:100%\"><tr valign=\"middle\">";
 						$ccc .= "$commentinfo<td width=60 class=\"large b\"><a href=\"?user=$authorid\">$authorname</a></td>$tdspacer";
 						$ccc .= "$isnew<td width=120>$commentintv ago</td>$tdspacer";
 						if ($hideallexcept == 0) {
@@ -106,6 +108,8 @@ if ($username) {
 							$ccc .= "</div></td>";
 						} elseif (isset($replytoid)) {
 							$ccc .= "<td><a href=\"javascript://\" onmousedown=\"quoteme('$authorname');\">Quote selected</a></td>"; // " &nbsp; &nbsp;<a href=\"javascript://\" onclick=\"quoteentire('$authorname');\">Quote entire post</a>"
+						} else { //then we're editing and don't want the action bar to stretch out
+							$ccc .= "<td>";
 						}
 						$ccc .= "</tr></table></td></tr>"; //end of the action bar
 						$q1 = "<table border=0 cellpadding=4 cellspacing=0 class=\"border\"><tr valign=\"top\"><td class=\"green small\" bgcolor=\"#F6F6F6\">";
@@ -151,10 +155,11 @@ if ($username) {
 						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
 							$htmlcomment = "<img src=\"/gfx/" . strtolower($authorname) . ".jpg\" border=0 width=85 height=85 style=\"float:left; margin-right: 8px; margin-bottom: 8px\">" . $htmlcomment;
 						}
-						//display the comment itself
+						//add the comment itself
 						$ccc .= "<tr><td class=\"copy sidepad border$hilite\"><div id=\"c_$commentid\"$hidecomment>$changenotice&nbsp;<br>$htmlcomment<br>&nbsp;</div></td></tr>";
 						$cb_id[] = $commentid;
 						$cb_irt[] = $inreplyto;
+						$cb_isnew[] = $isnew;
 						$cb_ccc[] = $ccc;
 						$cb_cd[] = 0;
 						$cb += 1;
@@ -232,11 +237,19 @@ if ($username) {
 ?>
 
 </td></tr></table>
+
 <script type="text/javascript">
-function autoHideOldComments(){
-	hide('ncb1');show('ncb2');habtop();
-}
-autoHideOldComments();
+	<?php
+	/**** see if we have a new post, check if we are searching for old ones instead ****/
+	function wantNewPosts($postname) {
+		return strlen($postname) && !stripos($_SERVER['HTTP_REFERER'], "search.php");
+	}
+	
+	if ( wantNewPosts($topnew) ) {	
+		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",125)}"; 
+			//timeout 100 was not enough time to finish hiding posts in long threads, so the jump was off
+	}
+	?>
 </script>
 </body>
 </html>
