@@ -83,7 +83,7 @@ if ($username) {
 						}
 						//set up the action bar
 						$ccc = "<tr bgcolor=\"#DDDDDD\"><td class=\"sidepad\" id=\"cc_$commentid\"><a name=\"$commentanchor\"></a><div style=\"width:inherit\"><table border=0 cellpadding=0 cellspacing=0 class=\"small\" style=\"table-layout:fixed; width:100%\"><tr valign=\"middle\">";
-						$ccc .= "$commentinfo<td width=60 class=\"large b\"><a href=\"?user=$authorid\">$authorname</a></td>$tdspacer";
+						$ccc .= "$commentinfo<td width=" . 15*strlen($authorname) . " class=\"large b\"><a href=\"?user=$authorid\">$authorname</a></td>$tdspacer";
 						$ccc .= "$isnew<td width=120>$commentintv ago</td>$tdspacer";
 						if ($hideallexcept == 0) {
 							//Add show comment/hide comment links, with only the relevant one being visible
