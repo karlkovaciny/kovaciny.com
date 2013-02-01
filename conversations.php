@@ -89,7 +89,6 @@ if ($username) {
 							//Add show comment/hide comment links, with only the relevant one being visible
 							$ccc .= "<td><div id=\"c_h_$commentid\" class=\"hide\"><a href=\"javascript:hide('c_h_$commentid');show('c_s_$commentid');show('c_$commentid');\">Show comment</a></div>";
 							$ccc .= "<div id=\"c_s_$commentid\"><a href=\"javascript:show('c_h_$commentid');hide('c_s_$commentid');hide('c_$commentid');\">Hide comment</a>";
-
 							if ($userid == 1 || $userid == $authorid) {
 								$ccc .= " &nbsp; &nbsp;<a href=\"conversations.php?id=$conv_id&comid=$commentid&action=edit\">Edit</a>";
 								$ccc .= " &nbsp; &nbsp;<a href=\"javascript:if(confirm('Permanently Delete this Comment?')){document.location.href='conversations.php?id=$conv_id&comid=$commentid&action=delete';}//\">Delete</a>";
@@ -122,35 +121,6 @@ if ($username) {
 						$replacefrom = array("[quote=Anna]", "[quote=Jon]", "[quote=Karl]", "[quote=Larry]", "[quote=Monica]", "[quote=Nate]", "[quote=Rachel]", "[quote=Rae]", "[quote=Roger]", "[quote=Ruth]", "[quote=John]", "[quote=john]");
 						$replaceto = array("$q1 Anna$q2", "$q1 Jon$q2", "$q1 Karl$q2", "$q1 Larry$q2", "$q1 Monica$q2", "$q1 Nate$q2", "$q1 Rachel$q2", "$q1 Rae$q2", "$q1 Roger$q2", "$q1 Ruth$q2", "$q1 John$q2", "$q1 John$q2");
 						$htmlcomment = str_replace($replacefrom, $replaceto, $htmlcomment);
-						if ($authorname == "Roger") {
-							//note: must be lower case
-							$anger = array ("liberal", "liberals", "democrat", "democrats", "evolutionists", "limbaugh", "obama", "pelosi", "feingold", "leftist", "leftists", "communist", "communists", "feminist", "feminists", "cuts");
-							$present = FALSE;
-							foreach ($anger as $value) {
-								if (stripos($htmlcomment, $value) !== FALSE ) {
-									$present = TRUE;
-									break;
-								}
-							}
-							if ($present == TRUE) {	
-							// Remove punctuation (web characters preceded or followed by a space)
-							$urlbrackets    = '\[\]\(\)';
-							$urlspacebefore = ':;\'_\*%@&?!' . $urlbrackets;
-							$urlspaceafter  = '\.,:;\'\-_\*@&\/\\\\\?!#' . $urlbrackets;
-							$urlall         = '\.,:;\'\-_\*%@&\/\\\\\?!#' . $urlbrackets;
-							$htmlcomment = preg_replace( '/((?<= )|^)[' . $urlspacebefore . ']+/u', ' ', $htmlcomment );
-							$htmlcomment = preg_replace( '/[' . $urlspaceafter . ']+((?= )|$)/u', ' ', $htmlcomment );							
-							$babysissy = explode (" ", $htmlcomment);
-							foreach ($babysissy as &$value)	{
-								if (in_array(strtolower($value), $anger) == FALSE) {
-										$value = "blah";
-								}
-								else $value = "<B>" . strtoupper ($value) . "</B>";
-							}						
-							$stringgg = implode (" ", $babysissy) . " (" . count($babysissy) . " words)";
-							$htmlcomment = $stringgg;
-							}
-						}
 						//add in the user's graphic
 						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
 							$htmlcomment = "<img src=\"/gfx/" . strtolower($authorname) . ".jpg\" border=0 width=85 height=85 style=\"float:left; margin-right: 8px; margin-bottom: 8px\">" . $htmlcomment;
@@ -176,7 +146,7 @@ if ($username) {
 					$postbutt = "add comment";
 					echo "?id=$conv_id&action=new";
 					if ($userid == 1) {$hiddenitems ="In reply to: <input type=\"text\" name=\"inreplyto\" class=\"small\" size=3 value=0 onfocus=\"this.select();\"> &nbsp;";}
-					} else {
+				} else {
 					if (isset($replytoid)) {
 						if ($authorid == $userid) {
 							$postcomm = "Post a follow-up comment:";
@@ -235,7 +205,6 @@ if ($username) {
 		}
 	}
 ?>
-
 </td></tr></table>
 
 <script type="text/javascript">
