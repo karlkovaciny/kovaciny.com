@@ -20,7 +20,7 @@ if ($username) {
 			$unread = 1;
 			$norepeats = "";
 			$trspacer = "<tr height=6><td colspan=3><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
-			$res = mysql_query("SELECT DISTINCT con.* FROM conversations AS con, comments AS com WHERE con.visible = 'Y' AND con.conid = com.conid AND com.readby_$username = 0 ORDER BY changedate DESC",$db);
+			$res = mysql_query("SELECT DISTINCT con.* FROM conversations AS con, comments AS com WHERE con.visible = 'Y' AND com.visible = 'Y' AND con.conid = com.conid AND com.readby_$username = 0 ORDER BY changedate DESC",$db);
 			$num_rows = mysql_num_rows($res);
 			if ($num_rows == 0) {
 				echo "<h1 style=\"padding-top: 7px\">New</h1><p class=\"indent\"><i>No new conversations</i></p>";			
