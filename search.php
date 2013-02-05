@@ -62,15 +62,25 @@
 				$currentpage = 0;
 			}
 			
-			// Force Boolean mode to search for all the words (default is OR).
+			// Force Boolean mode to find all the words (default is OR) and to treat hyphenated words as one word.
 			$operators = "+-~<>";
 			$qPhrases = ExplodePhrases(stripslashes($q), $operators);
 			for ($i=0; $i<sizeof($qPhrases); $i++) {
-				if ( !strpbrk(substr($qPhrases[$i],0,1), $operators) ) {
-					$qPhrases[$i] = "+" . $qPhrases[$i];
+				//check for operators, add a + if none
+				$first = substr($qPhrases[$i],0,1);
+				if ( strpbrk($first, $operators) ) {
+					$op = $first;
+					$qPhrases[$i] = substr($qPhrases[$i],1);
+				} else $op = "+";
+				//surround hyphenated words in quotes
+				if ( stripos($qPhrases[$i],"-") && ($qPhrases[$i][0] !== "\"") ) {
+					$qPhrases[$i] = "\"" . $qPhrases[$i] . "\"";
 				}
+				$qPhrases[$i] = $op . $qPhrases[$i];
 			}
 			$qPhraseString = implode(" ", $qPhrases);
+			
+			$qPhraseString = mysql_real_escape_string($qPhraseString); //sanitize single quotes
 			
 			$maxallowed = 50;
 			$rpp = 10; //results per page
@@ -209,21 +219,16 @@
 					echo "<tr><td class=\"tdot\" style = \"width:20%\"><span class=\"nou\">$x_username<br />in </span><span class=\"b\"><a href=\"conversations.php?id=$conid#comment_$comid\">$contitle</a></span></td>";
 					echo "<td class=\"tdot\"></td><td class=\"tdot sidepad\">$comment</td></tr>";
 					
-					//now that the comment exists, we can use Javascript to highlight the search term
-					$qnoquotes = str_replace('\"','',$q);
-					$qnoquotes = str_replace('+','',$qnoquotes);
-					$qwordlist = explode(" ",$qnoquotes);
-					reset($qwordlist); //debug
-					echo "<script language=\"JavaScript\" type=\"text/JavaScript\">";
-					echo "function highlight_inner_HTML(element_id){";
-						echo "inner = element_id.innerHTML;";
-							foreach ($qwordlist as $value){
-								echo "var regexp = /$value/gi;";
-								echo "inner = inner.replace(regexp, \"<span class=\'hilite\'>$&</span>\");";
-								echo "document.getElementById(\"c_$comid\").innerHTML = inner;";								
-							}
-					echo "}";
-					echo "highlight_inner_HTML(c_$comid);";
+					//highlight the search term (but not the operators and quotation marks)
+					echo "<script>";
+					foreach($qPhrases as $value) {
+						$value = str_replace("\"","", $value);
+						if ( strpbrk(substr($value,0,1), $operators) ) {
+							$value = substr($value,1);
+						}
+						$value = addslashes($value);
+						echo "HighlightInnerHTML('c_$comid', '$value');";
+					}
 					echo "</script>";
 					$i++;
                 }
