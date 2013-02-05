@@ -29,13 +29,13 @@
 	function pluralize($count, $singular, $plural = false) {if (!$plural) {$plural = $singular . 's';} return ($count == 1 ? $singular : $plural);}
 
 /*====================
-ExplodePhrases
+explodePhrases
 
   Works like explode() with a " " delimiter, but phrases in (unescaped) quotation marks count as one word. 
   Doesn't return empty strings.
   Up to one character from the $operators string is allowed to precede each word. (must be regex-friendly)
 ======================*/
-function ExplodePhrases ( $string, $operators=NULL ) {
+function explodePhrases ( $string, $operators=NULL ) {
 	$regex = "/[\s]*([$operators]?\"[^\"]*\")[\s]*/";
 	$quotesplit = preg_split($regex, $string, NULL, PREG_SPLIT_NO_EMPTY |  PREG_SPLIT_DELIM_CAPTURE);
 	$phraselist = array();
@@ -49,6 +49,15 @@ function ExplodePhrases ( $string, $operators=NULL ) {
 	return $phraselist;
 }
 
+/*====================
+wantNewPosts
+
+  See if we have a new post, check if we are searching for old ones instead
+======================*/
+function wantNewPosts() {
+	return $_GET['new'] && !stripos($_SERVER['HTTP_REFERER'], "search.php");
+}
+	
   
 // Log in
 	if (isset($_GET['user'])) {

@@ -64,7 +64,7 @@
 			
 			// Force Boolean mode to find all the words (default is OR) and to treat hyphenated words as one word.
 			$operators = "+-~<>";
-			$qPhrases = ExplodePhrases(stripslashes($q), $operators);
+			$qPhrases = explodePhrases(stripslashes($q), $operators);
 			for ($i=0; $i<sizeof($qPhrases); $i++) {
 				//check for operators, add a + if none
 				$first = substr($qPhrases[$i],0,1);

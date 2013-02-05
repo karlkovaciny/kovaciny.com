@@ -121,6 +121,14 @@ if ($username) {
 						$replacefrom = array("[quote=Anna]", "[quote=Jon]", "[quote=Karl]", "[quote=Larry]", "[quote=Monica]", "[quote=Nate]", "[quote=Rachel]", "[quote=Rae]", "[quote=Roger]", "[quote=Ruth]", "[quote=John]", "[quote=john]");
 						$replaceto = array("$q1 Anna$q2", "$q1 Jon$q2", "$q1 Karl$q2", "$q1 Larry$q2", "$q1 Monica$q2", "$q1 Nate$q2", "$q1 Rachel$q2", "$q1 Rae$q2", "$q1 Roger$q2", "$q1 Ruth$q2", "$q1 John$q2", "$q1 John$q2");
 						$htmlcomment = str_replace($replacefrom, $replaceto, $htmlcomment);
+						
+						//Don't load images or YouTube embeds right away in old posts unless that's what we're looking for
+						if ( wantNewPosts() && $markedasred ) { 
+							$replacefrom = "src=";
+							$replaceto = "src=\"gfx/-.gif\" data-source=";
+							$htmlcomment = str_replace($replacefrom, $replaceto, $htmlcomment);
+						}
+												
 						//add in the user's graphic
 						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
 							$htmlcomment = "<img src=\"/gfx/" . strtolower($authorname) . ".jpg\" border=0 width=85 height=85 style=\"float:left; margin-right: 8px; margin-bottom: 8px\">" . $htmlcomment;
@@ -208,13 +216,8 @@ if ($username) {
 </td></tr></table>
 
 <script type="text/javascript">
-	<?php
-	/**** see if we have a new post, check if we are searching for old ones instead ****/
-	function wantNewPosts($postname) {
-		return strlen($postname) && !stripos($_SERVER['HTTP_REFERER'], "search.php");
-	}
-	
-	if ( wantNewPosts($topnew) ) {	
+	<?php	
+	if ( wantNewPosts() ) {	
 		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",125)}"; 
 			//timeout 100 was not enough time to finish hiding posts in long threads, so the jump was off
 	}
