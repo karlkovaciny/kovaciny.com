@@ -122,7 +122,6 @@ function makeRequest(url) {
 	http_request.onreadystatechange = alertContents;
 	http_request.open('GET', url, true);
 	http_request.send(null);
-
 }
 
 function alertContents() {
@@ -139,10 +138,10 @@ function alertContents() {
 }
 
 function autoHideOldComments(){
-		hide('ncb1');show('ncb2');habtop();
-	}
+	hide('ncb1');show('ncb2');habtop();
+}
 	
 function jumpToAnchor(anchor) {
-		var baseUrl = window.location.href.split('#')[0];
-		window.location.replace( baseUrl + '#' + anchor );
-	}
+	var baseUrl = window.location.href.split('#')[0];
+	window.location.replace( baseUrl + '#' + anchor );
+}

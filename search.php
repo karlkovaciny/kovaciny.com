@@ -35,10 +35,7 @@
 					<tr>
 						<td style="padding:5px" ><input type="submit" value="Search"></td>
 						<td style="padding:5px"><input type="checkbox" name="q_oldestfirst" value="oldestfirst">&nbsp;Show older posts first&nbsp;&nbsp;</td>
-						</tr>
-					<tr>
-						<td style="padding:5px"></td>
-						<td style="padding:5px"></td></tr>			
+						</tr>	
 				</table>
 			</form>
 			<script language='javascript' type='text/javascript'>
@@ -65,7 +62,16 @@
 				$currentpage = 0;
 			}
 			
-			// Time to build a query out of the search string.
+			// Force Boolean mode to search for all the words (default is OR).
+			$operators = "+-~<>";
+			$qPhrases = ExplodePhrases(stripslashes($q), $operators);
+			for ($i=0; $i<sizeof($qPhrases); $i++) {
+				if ( !strpbrk(substr($qPhrases[$i],0,1), $operators) ) {
+					$qPhrases[$i] = "+" . $qPhrases[$i];
+				}
+			}
+			$qPhraseString = implode(" ", $qPhrases);
+			
 			$maxallowed = 50;
 			$rpp = 10; //results per page
 			$searchquery = 
@@ -75,7 +81,7 @@
 				"JOIN `conversations` ON `c`.`conid` = `conversations`.`conid` " .
 				"JOIN `users` ON `c`.`authorid` = `users`.`userid` " .				
 				"WHERE `c`.`visible` = 'Y' " .
-				"AND MATCH (`c`.`comment`) AGAINST ('$q' IN BOOLEAN MODE) ";
+				"AND MATCH (`c`.`comment`) AGAINST ('$qPhraseString' IN BOOLEAN MODE) ";
 				if ($q_author != "") {
 					$searchquery .= "AND `c`.`authorid` = $q_author ";
 				}
