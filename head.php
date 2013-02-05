@@ -29,13 +29,13 @@
 	function pluralize($count, $singular, $plural = false) {if (!$plural) {$plural = $singular . 's';} return ($count == 1 ? $singular : $plural);}
 
 /*====================
-ExplodePhrases
+explodePhrases
 
   Works like explode() with a " " delimiter, but phrases in (unescaped) quotation marks count as one word. 
   Doesn't return empty strings.
   Up to one character from the $operators string is allowed to precede each word. (must be regex-friendly)
 ======================*/
-function ExplodePhrases ( $string, $operators=NULL ) {
+function explodePhrases ( $string, $operators=NULL ) {
 	$regex = "/[\s]*([$operators]?\"[^\"]*\")[\s]*/";
 	$quotesplit = preg_split($regex, $string, NULL, PREG_SPLIT_NO_EMPTY |  PREG_SPLIT_DELIM_CAPTURE);
 	$phraselist = array();
