@@ -122,15 +122,18 @@ function explodePhrases ( $string, $operators=NULL ) {
 		</head>
 		
 		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
-		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white"><tr><td width=219><a href="/"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td><td align="center">
-		<?php
-			echo "Welcome <b>$me</b>!";
-		?>
-		</td><td width=10>&nbsp;</td></tr></table>
+		<div id="header">
+			<div style="float: left; width: 219px"><a href="/"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></div>
+			<div style="float: left; padding-left:35%;" class="medium white tbpad" >
+				<?php
+					echo "Welcome <b>$me</b>!";
+				?>
+			</div>
+		</div>
 		<table width="100%" border=0 cellpadding=0 cellspacing=0><tr valign="top" height=800><td bgcolor="#DDDDDD" style="padding:5px" width=130>
 		<p class="b" style="padding-top: 10px">Conversations</p>
 		<ul style="padding-left: 10px">
-			<li style=""margin-bottom: 10px""><a href="index.php">Main page</a></li>
+			<li style="margin-bottom: 10px"><a href="index.php">Main page</a></li>
 			<li><a href="newconv.php">Add new</a></li>
 			<li><a href="search.php">Search</a></li>
 			<li><a href="/w/">Kovawiki</a></li>
@@ -154,7 +157,7 @@ function explodePhrases ( $string, $operators=NULL ) {
 			<li><a href="http://hamlette.blogspot.com/">Rachel</a><span class="small"> (<a href="http://rachelkovaciny.blogspot.com/">#2</a>)</span></li>
 		</ul>
         <p><font color="#CCCCCC"><small>***REMOVED***41</small></font></p>
-		</td><td width=10>&nbsp;</td><td class="copy" style="padding:5px">
+		</td><td width=10>&nbsp;</td><td class="copy" style="padding:5px"> 
 		<?php
 	} else {
 		header("Location: http://www.kovaciny.com/login.php");
