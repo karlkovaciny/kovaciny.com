@@ -130,8 +130,9 @@ function explodePhrases ( $string, $operators=NULL ) {
 				?>
 			</div>
 		</div>
-		<table width="100%" border=0 cellpadding=0 cellspacing=0><tr valign="top" height=800><td bgcolor="#DDDDDD" style="padding:5px" width=130>
-		<p class="b" style="padding-top: 10px">Conversations</p>
+		<div class="clear"></div>
+		<div id="leftsidebar">
+		<p class="b">Conversations</p>
 		<ul style="padding-left: 10px">
 			<li style="margin-bottom: 10px"><a href="index.php">Main page</a></li>
 			<li><a href="newconv.php">Add new</a></li>
@@ -157,7 +158,8 @@ function explodePhrases ( $string, $operators=NULL ) {
 			<li><a href="http://hamlette.blogspot.com/">Rachel</a><span class="small"> (<a href="http://rachelkovaciny.blogspot.com/">#2</a>)</span></li>
 		</ul>
         <p><font color="#CCCCCC"><small>***REMOVED***41</small></font></p>
-		</td><td width=10 style="background-color:#FFFFFF">&nbsp;</td><td class="copy" style="padding:5px; background-color:#FFFFFF">
+		</div>
+		<div class="copy" id="conversation-column">
 		<?php
 	} else {
 		header("Location: http://www.kovaciny.com/login.php");

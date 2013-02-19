@@ -205,7 +205,7 @@ if ($username) {
 		}
 	}
 ?>
-</td></tr></table>
+</div>
 
 <script type="text/javascript">
 	<?php

@@ -8,7 +8,7 @@ a:visited {color: #001177; text-decoration: none}
 a:hover {color: #001177; text-decoration: underline}
 a:active {color: #001177; text-decoration: underline}
 
-h1 {font-size: 20px; color: #777777; font-weight: bold}
+h1 {font-size: 20px; color: #777777; font-weight: bold; margin-top: 0}
 h2 {font-size: 12px; color: #555555; font-weight: bold}
 
 .copy {font-size: 12px; color: #000000; text-decoration: none; font-weight: normal}
@@ -41,4 +41,8 @@ h2 {font-size: 12px; color: #555555; font-weight: bold}
 
 .tdot {padding-bottom: 10px; padding-top: 9px; border-bottom: 1px dotted #BBBBBB;}
 
-#header {float:left; width:100%; background-color:#6699CC}
+.clear {clear:both}
+
+#header {float:left; width:100%; background-color:#6699CC; overflow:hidden}
+#leftsidebar { float: left; width: 130px; background-color:#DDDDDD; padding:5px}
+#conversation-column { background-color:green; overflow: hidden; padding:5px; padding-left: 15px; background-color:#FFFFFF}
