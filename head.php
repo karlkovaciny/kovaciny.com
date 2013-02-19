@@ -154,7 +154,7 @@ function explodePhrases ( $string, $operators=NULL ) {
 			<li><a href="http://hamlette.blogspot.com/">Rachel</a><span class="small"> (<a href="http://rachelkovaciny.blogspot.com/">#2</a>)</span></li>
 		</ul>
         <p><font color="#CCCCCC"><small>***REMOVED***41</small></font></p>
-		</td><td width=10>&nbsp;</td><td class="copy" style="padding:5px">
+		</td><td width=10 style="background-color:#FFFFFF">&nbsp;</td><td class="copy" style="padding:5px; background-color:#FFFFFF">
 		<?php
 	} else {
 		header("Location: http://www.kovaciny.com/login.php");

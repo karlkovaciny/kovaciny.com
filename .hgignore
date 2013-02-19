@@ -1,3 +1,4 @@
 syntax: glob
 *.jpg
 *.gif
+*.docx
