@@ -1,6 +1,6 @@
 <?php
 require_once ('head.php');
-if ($username) {
+
 	if (isset($_POST['m'])) { //user picked conversations to mark as read in index.php
 		$markasread = $_POST['m'];
 		if (is_array($markasread)) {
@@ -75,11 +75,6 @@ if ($username) {
 			echo "<br><p>Show <a href=\"index.php\">only the most recent 25</a></b> unchanged conversations.</p>";
 		}
 	echo "<p style=\"padding-bottom: 100px\">&nbsp;</p>";
-?>
-</td></tr></table>
-</div>
-</body>
-</html>
-<?php
-}
+	echo "</td></tr></table>";
+	include("footer.php");
 ?>
