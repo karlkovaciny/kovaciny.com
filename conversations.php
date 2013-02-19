@@ -206,7 +206,7 @@ if ($username) {
 	}
 ?>
 </td></tr></table>
-
+</div>
 <script type="text/javascript">
 	<?php
 	/**** see if we have a new post, check if we are searching for old ones instead ****/
