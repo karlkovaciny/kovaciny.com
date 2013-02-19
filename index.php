@@ -77,6 +77,7 @@ if ($username) {
 	echo "<p style=\"padding-bottom: 100px\">&nbsp;</p>";
 ?>
 </td></tr></table>
+</div>
 </body>
 </html>
 <?php
