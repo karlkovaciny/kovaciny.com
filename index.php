@@ -28,7 +28,7 @@ if ($username) {
 				echo "<h1 style=\"padding-top: 7px\">New</h1>";
 				echo "<form name=\"markasread\" action=\"index.php\" method=\"POST\"><input type=\"hidden\" name=\"markasread\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";
 				echo "<tr class=\"small\"><td>&nbsp;</td><td>Title (# of comments)</td><td>Most recent post</td><td class=\"small\">Mark read</td></tr>";
-				echo "<tr bgcolor=\"#6699CC\"><td colspan=4><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
+				echo "<tr bgcolor=\"#6699CC\" style=\"height: 1px\"><td colspan=4 style=\"height: 1px\"></td></tr>";
 			}
 		} else {
 			$unread = 2;
@@ -38,7 +38,7 @@ if ($username) {
 			echo "<h1 style=\"padding-top: 7px\">Unchanged</h1>";
 			echo "<table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";
 			echo "<tr class=\"small\"><td>Title (# of comments)</td><td>Most recent post</td></tr>";
-			echo "<tr bgcolor=\"#6699CC\"><td colspan=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
+			echo "<tr bgcolor=\"#6699CC\" style=\"height: 1px\"><td colspan=2 style=\"height: 1px\"></td></tr>";
 		}
 		$rc = true;
 		while($convs = mysql_fetch_array($res)) {

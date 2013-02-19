@@ -112,9 +112,10 @@ function explodePhrases ( $string, $operators=NULL ) {
 		elseif ($username == "john") {$userid = 11;}
 		$me = ucfirst($username);
 		?>
-		<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-		<html>
+		<!doctype html> <!-- html5 -->
+		<html> <!-- NO lang, NO xmlns="http://www.w3.org/1999/xhtml" and so on -->
 		<head>
+		<meta http-equiv="x-ua-compatible" content="IE=Edge"/> <!-- as the very first line after head-->
 		<title>Kovaciny.com</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link href="kovaciny.css" rel="stylesheet" type="text/css">
