@@ -121,15 +121,14 @@ function explodePhrases ( $string, $operators=NULL ) {
 		<script language="JavaScript" src="kovaciny.js" name="jsinc"></script>
 		</head>
 		
-		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0 onLoad="document.headerSearchForm.q.focus();">
+		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0">
 		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white"><tr><td width=219><a href="/"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td><td align="center">
 		<?php
 			echo "Welcome <b>$me</b>!";
 		?>
 		</td><td width=10>&nbsp;</td><td>
 		<form id="headerSearchForm" name="headerSearchForm" method="GET" action="conversationsearch.php">
-			<input id="headerSearchBox" name="q" class="copy headerSearchBox" type="text" title="Search" placeholder="Search">
-			<input id="headerSearchButton" type="submit" class="copy" value="Search">
+			<input id="headerSearchBox" name="q" class="copy headerSearchBox" type="text" title="Search" placeholder="Search"><input id="headerSearchButton" type="submit" class="copy searchbutton" title="Click to search" value="">
 		</form></td>
 		<td width=10>&nbsp;</td>
 		</tr></table>
