@@ -3,18 +3,21 @@ $db = mysql_connect('***REMOVED***', '***REMOVED***', '***REMOVED***');
 mysql_select_db ("db286662785");
 $tz = -12;
 
-$q = mysql_real_escape_string(stripslashes($_GET['q']));
+require_once('functions.php');
+
+$q = stripslashes($_GET['q']);
+$q_searchstring = preprocessForSqlBoolean($q);
 $sql = "SELECT `conid`, `contitle`, `changedate`, `createdate`, `numcomm`, `visible` FROM `conversations` 
-		WHERE `visible`='Y' AND MATCH `contitle` AGAINST ('$q') ORDER BY `changedate` DESC";
+		WHERE `visible`='Y' AND MATCH `contitle` AGAINST ('$q_searchstring' IN BOOLEAN MODE) ORDER BY `changedate` DESC";
 $res = mysql_query($sql) or die (mysql_error());
 if( mysql_num_rows ($res) == 0 ) {
-	$q = stripslashes($_GET['q']);
 	$redirect = "Location:http://www.kovaciny.com/k/search.php?q=$q";
 	header($redirect);
 }
 require_once("head.php");
+$q_safe = htmlentities($q);
 echo "<h1 style=\"padding-top: 7px\">Search Results</h1>";
-echo "<p class=\"copy\">These conversation titles contained one or more of your search terms. Click <a class=\"content\" href=\"http://www.kovaciny.com/k/search.php?q=$q\">here</a> to search comments instead.</p>";
+echo "<p class=\"copy\">These conversation titles matched your search terms. Click <a class=\"content\" href=\"http://www.kovaciny.com/k/search.php?q=$q_safe\">here</a> to search comments instead.</p>";
 echo "<table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";
 echo "<tr class=\"small\"><td>Title</td><td>Most recent post</td></tr>";
 echo "<tr bgcolor=\"#6699CC\"><td colspan=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";

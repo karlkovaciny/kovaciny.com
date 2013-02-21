@@ -45,4 +45,4 @@ h2 {font-size: 12px; color: #555555; font-weight: bold}
 input.searchbutton { height:26px; width:26px; background-color: #999999; background:url("./gfx/magnifyingglass.jpg") no-repeat}
 #headerSearchForm { text-align: right; margin-bottom: 0px;}
 #headerSearchBox { color: #999999; font-style:italic; height: 26px; border-style: outset; vertical-align: bottom  }
-#headerSearchButton { vertical-align: bottom }
+#headerSearchButton { vertical-align: bottom; padding:0 }

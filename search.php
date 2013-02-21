@@ -46,13 +46,13 @@
 				SetFocus();
 			</script>	
 			<?php
-			
-		
+					
 		// In this case we do have a search string, so let's pull it into variables.
 		} else {
-			$q = $_REQUEST['q']; 
+			$q = stripslashes($_REQUEST['q']); 
+			$q_searchstring = preprocessForSqlBoolean($q);
 			$q_author = $_REQUEST['q_author'];
-			$q_title = $_REQUEST['q_title'];
+			$q_title = stripslashes($_REQUEST['q_title']);
 			$q_oldestfirst = $_REQUEST['q_oldestfirst'];
 			if (isset($_POST['resultcount'])) { //means we have navigated off the first page of results
 				$resultcount = $_POST['resultcount'];
@@ -61,27 +61,7 @@
 				$resultcount = 0; 
 				$currentpage = 0;
 			}
-			
-			// Force Boolean mode to find all the words (default is OR) and to treat hyphenated words as one word.
-			$operators = "+-~<>";
-			$qPhrases = explodePhrases(stripslashes($q), $operators);
-			for ($i=0; $i<sizeof($qPhrases); $i++) {
-				//check for operators, add a + if none
-				$first = substr($qPhrases[$i],0,1);
-				if ( strpbrk($first, $operators) ) {
-					$op = $first;
-					$qPhrases[$i] = substr($qPhrases[$i],1);
-				} else $op = "+";
-				//surround hyphenated words in quotes
-				if ( stripos($qPhrases[$i],"-") && ($qPhrases[$i][0] !== "\"") ) {
-					$qPhrases[$i] = "\"" . $qPhrases[$i] . "\"";
-				}
-				$qPhrases[$i] = $op . $qPhrases[$i];
-			}
-			$qPhraseString = implode(" ", $qPhrases);
-			
-			$qPhraseString = mysql_real_escape_string($qPhraseString); //sanitize single quotes
-			
+								
 			$maxallowed = 50;
 			$rpp = 10; //results per page
 			$searchquery = 
@@ -91,7 +71,7 @@
 				"JOIN `conversations` ON `c`.`conid` = `conversations`.`conid` " .
 				"JOIN `users` ON `c`.`authorid` = `users`.`userid` " .				
 				"WHERE `c`.`visible` = 'Y' " .
-				"AND MATCH (`c`.`comment`) AGAINST ('$qPhraseString' IN BOOLEAN MODE) ";
+				"AND MATCH (`c`.`comment`) AGAINST ('$q_searchstring' IN BOOLEAN MODE) ";
 				if ($q_author != "") {
 					$searchquery .= "AND `c`.`authorid` = $q_author ";
 				}
@@ -142,8 +122,8 @@
 				<?php
 				//passing double quotes through the argument of onclick=pnav(0,$numhits,'$q') didn't work, so we are 
 				//going to set $q here in a hidden span and access it by an element ID.
-				echo "<span id='qqq' style='display:none'>" . stripslashes($q) . "</span>";
-				echo "<span id='qqq_title' style='display:none'>" . stripslashes($q_title) . "</span>";
+				echo "<span id='qqq' style='display:none'>" . $q . "</span>";
+				echo "<span id='qqq_title' style='display:none'>" . $q_title . "</span>";
 				
 				$pagenav = "<table border=0 cellpadding=3 cellspacing=0 class=\"medium\" align=\"center\"><tr>";
 				if ($pageid > 0) {
@@ -161,13 +141,13 @@
 			}
 			
 			//show the user what was searched for and how many results
-			$searchparams = "<b>" . stripslashes($q) . "</b>";
+			$searchparams = "<b>" . $q . "</b>";
 			if ($q_author != "") {
 				$thisuser = $userlist[$q_author];
 				$searchparams .= " by <b>". $thisuser . "</b>";
 			}
 			if ($q_title != "") {
-				$searchparams .= " in threads containing <b>" . stripslashes($q_title) . "</b>";
+				$searchparams .= " in threads containing <b>" . $q_title . "</b>";
 			}
 			
 			if ($numhits == 0) {
@@ -221,7 +201,9 @@
 					
 					//highlight the search term (but not the operators and quotation marks)
 					echo "<script>";
-					foreach($qPhrases as $value) {
+					$operators = "+-~<>";
+					$q_phrases = explodePhrases($q, $operators);
+					foreach($q_phrases as $value) {
 						$value = str_replace("\"","", $value);
 						if ( strpbrk(substr($value,0,1), $operators) ) {
 							$value = substr($value,1);

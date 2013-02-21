@@ -6,50 +6,8 @@
 	mysql_select_db ("db286662785");
 	$tz = -12;
 
-// Functions
-	function format_interval($timestamp, $granularity = 2) {
-		$units = array('1 year|years' => 31536000, '1 week|weeks' => 604800, '1 day|days' => 86400, '1 hr|hrs' => 3600, '1 min|min' => 60, '1 sec|sec' => 1);
-		$output = '';
-		foreach ($units as $key => $value) {
-			$key = explode('|', $key);
-			if ($timestamp >= $value) {
-				$output .= ($output ? ' ' : '') . format_plural(floor($timestamp / $value), $key[0], $key[1]);
-				$timestamp %= $value;
-				$granularity--;
-			}
-			if ($granularity == 0) {break;}
-		}
-		return $output ? $output : "0 sec";
-	}
-	
-	function format_plural($count, $singular, $plural) {
-		if ($count == 1) {return $singular;} else {return $count . " " . $plural;}
-	}
+require_once('functions.php');
 
-	function pluralize($count, $singular, $plural = false) {if (!$plural) {$plural = $singular . 's';} return ($count == 1 ? $singular : $plural);}
-
-/*====================
-explodePhrases
-
-  Works like explode() with a " " delimiter, but phrases in (unescaped) quotation marks count as one word. 
-  Doesn't return empty strings.
-  Up to one character from the $operators string is allowed to precede each word. (must be regex-friendly)
-======================*/
-function explodePhrases ( $string, $operators=NULL ) {
-	$regex = "/[\s]*([$operators]?\"[^\"]*\")[\s]*/";
-	$quotesplit = preg_split($regex, $string, NULL, PREG_SPLIT_NO_EMPTY |  PREG_SPLIT_DELIM_CAPTURE);
-	$phraselist = array();
-	foreach ($quotesplit as $value) {
-		if ( preg_match($regex, $value) ) {
-			$phraselist[] = $value;
-		} else {
-			$phraselist = array_merge($phraselist, preg_split("/\s+/",$value, NULL, PREG_SPLIT_NO_EMPTY));
-		}
-	}
-	return $phraselist;
-}
-
-  
 // Log in
 	if (isset($_GET['user'])) {
 		$login = strtolower($_GET['user']);
