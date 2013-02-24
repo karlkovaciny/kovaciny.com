@@ -49,14 +49,25 @@ preprocessForSqlBoolean
 function preprocessForSqlBoolean( $searchstring ) { //$searchstring should be unescaped
 	$operators = "+-~<>";
 	$searchPhrases = explodePhrases($searchstring, $operators);
+	$OR_locations = array_keys($searchPhrases, "OR");
+	echo "OR_Locations is" . var_dump($OR_locations) . "<br>";
 	
 	for ($i=0; $i<sizeof($searchPhrases); $i++) {
-		//check for operators, add a + if none
+		//force a match on all words by adding a + operator, unless the user added their own operator or OR keyword
 		$first = substr($searchPhrases[$i],0,1);
 		if ( strpbrk($first, $operators) ) {
 			$op = $first;
 			$searchPhrases[$i] = substr($searchPhrases[$i],1);
-		} else $op = "+";
+		} else {
+			//scheck if OR was used. If not, add a +.
+			$sfsfs = array($i-1,$i,$i+1);
+			foreach ($OR_locations as $value) {
+				if ( in_array($value, $sfsfs) ) {
+					$or_present=TRUE;					
+				}
+			}
+			if ($or_present) $op = ""; else $op = "+";
+		}
 		//surround hyphenated words in quotes
 		if ( stripos($searchPhrases[$i],"-") && ($searchPhrases[$i][0] !== "\"") ) {
 			$searchPhrases[$i] = "\"" . $searchPhrases[$i] . "\"";
