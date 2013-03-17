@@ -34,7 +34,8 @@
 						<td style="padding:5px"><input class="copy" type="text" size=20 name="q_title"></td></tr>
 					<tr>
 						<td style="padding:5px" ><input type="submit" value="Search"></td>
-						<td style="padding:5px"><input type="checkbox" name="q_oldestfirst" value="oldestfirst">&nbsp;Show older posts first&nbsp;&nbsp;</td>
+						<td style="padding:5px"><input type="checkbox" name="q_oldestfirst" value="oldestfirst">&nbsp;Show older posts first&nbsp;&nbsp;<br>
+						<input type="checkbox" name="q_matchAllComments" value="matchall">&nbsp;Show all comments in matching conversations&nbsp;&nbsp;</td>
 						</tr>	
 				</table>
 			</form>
@@ -54,6 +55,7 @@
 			$q_author = $_REQUEST['q_author'];
 			$q_title = stripslashes($_REQUEST['q_title']);
 			$q_oldestfirst = $_REQUEST['q_oldestfirst'];
+			$q_matchAllComments = $_REQUEST['q_matchAllComments'];
 			if (isset($_POST['resultcount'])) { //means we have navigated off the first page of results
 				$resultcount = $_POST['resultcount'];
 				$currentpage = $_POST['p'];
@@ -62,16 +64,23 @@
 				$currentpage = 0;
 			}
 								
-			$maxallowed = 50;
-			$rpp = 10; //results per page
+			if ($q_matchAllComments == TRUE) {
+				$rpp = 100; //more results per page when seeking big batches
+				$maxallowed = 500;
+			} else {
+				$rpp = 10; 
+				$maxallowed = 50;
+			}
 			$searchquery = 
 				"SELECT `c`.`comid`, `c`.`conid`, `c`.`comment`, `c`.`createdate`, `c`.`authorid`, `c`.`visible`, " .
 					"`conversations`.`contitle`, `users`.`userid`, `users`.`username` " .
 				"FROM `comments` `c` " .
 				"JOIN `conversations` ON `c`.`conid` = `conversations`.`conid` " .
 				"JOIN `users` ON `c`.`authorid` = `users`.`userid` " .				
-				"WHERE `c`.`visible` = 'Y' " .
-				"AND MATCH (`c`.`comment`) AGAINST ('$q_searchstring' IN BOOLEAN MODE) ";
+				"WHERE `c`.`visible` = 'Y' ";
+				if ($q_matchAllComments == FALSE) {
+					"AND MATCH (`c`.`comment`) AGAINST ('$q_searchstring' IN BOOLEAN MODE) ";
+				}
 				if ($q_author != "") {
 					$searchquery .= "AND `c`.`authorid` = $q_author ";
 				}
@@ -101,11 +110,12 @@
 				?>
 									
 					<script language="JavaScript" type="text/JavaScript">
-					function pnav(p,resultcount,q_author,q_oldestfirst) { //pass the search results to the next page
+					function pnav(p,resultcount,q_author,q_oldestfirst,q_matchAllComments) { //pass the search results to the next page
 						document.forms.AdvancedSearch.p.value=p; 
 						document.forms.AdvancedSearch.resultcount.value=resultcount;
 						document.forms.AdvancedSearch.q_author.value=q_author;
 						document.forms.AdvancedSearch.q_oldestfirst.value=q_oldestfirst;
+						document.forms.AdvancedSearch.q_matchAllComments.value=q_matchAllComments;
 						//because we can't pass q or q_title as an argument when it has double quotes:
 						document.forms.AdvancedSearch.q.value=document.getElementById("qqq").innerHTML; 
 						document.forms.AdvancedSearch.q_title.value=document.getElementById("qqq_title").innerHTML; 
@@ -118,6 +128,7 @@
 						<input type="hidden" name="q_author">
 						<input type="hidden" name="q_title">
 						<input type="hidden" name="q_oldestfirst">
+						<input type="hidden" name="q_matchAllComments">
 					</form>
 				<?php
 				//passing double quotes through the argument of onclick=pnav(0,$numhits,'$q') didn't work, so we are 
@@ -127,13 +138,13 @@
 				
 				$pagenav = "<table border=0 cellpadding=3 cellspacing=0 class=\"medium\" align=\"center\"><tr>";
 				if ($pageid > 0) {
-					$pagenav .= "<td>[<a href=\"javascript://\" onclick=\"pnav(0,$numhits,'$q_author','$q_oldestfirst');\">First</a>]</td><td>[<a href=\"javascript://\" onclick=\"pnav($downid,$numhits,'$q_author','$q_oldestfirst');\">Prev</a>]</td>";
+					$pagenav .= "<td>[<a href=\"javascript://\" onclick=\"pnav(0,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');\">First</a>]</td><td>[<a href=\"javascript://\" onclick=\"pnav($downid,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');\">Prev</a>]</td>";
 				} else {
 					$pagenav .= "<td>[<span class=\"gray\">First</span>]</td><td>[<span class=\"gray\">Prev</span>]</td>";
 				}
-				$pagenav .= "<td><a href=\"javascript://\" title=\"Go to page ...\" onclick=\"var p = prompt('Go to page: (1 - $maxup allowed)'); TestRegExp = /[0-9]+/g; if(TestRegExp.test(p)) {if(p>=1 && p<=$maxup) {p--; pnav(p,$numhits,'$q_author','$q_oldestfirst');} else {confirm(p + ' is outside the valid page range. Please try again.');}} else {p = $pageid; pnav(p,$numhits,'$q_author','$q_oldestfirst');}\"><b>$upid</b> of <b>$maxup</b></a></td>";
+				$pagenav .= "<td><a href=\"javascript://\" title=\"Go to page ...\" onclick=\"var p = prompt('Go to page: (1 - $maxup allowed)'); TestRegExp = /[0-9]+/g; if(TestRegExp.test(p)) {if(p>=1 && p<=$maxup) {p--; pnav(p,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');} else {confirm(p + ' is outside the valid page range. Please try again.');}} else {p = $pageid; pnav(p,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');}\"><b>$upid</b> of <b>$maxup</b></a></td>";
 				if ($pageid < $maxPage) {
-					$pagenav .= "<td>[<a href=\"javascript://\" onclick=\"pnav($upid,$numhits,'$q_author','$q_oldestfirst');\">Next</a>]</td><td>[<a href=\"javascript://\" onclick=\"pnav($maxPage,$numhits,'$q_author','$q_oldestfirst');\">Last</a>]</td>";
+					$pagenav .= "<td>[<a href=\"javascript://\" onclick=\"pnav($upid,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');\">Next</a>]</td><td>[<a href=\"javascript://\" onclick=\"pnav($maxPage,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');\">Last</a>]</td>";
 				} else {
 					$pagenav .= "<td>[<span class=\"gray\">Next</span>]</td><td>[<span class=\"gray\">Last</span>]</td>";
 				}
