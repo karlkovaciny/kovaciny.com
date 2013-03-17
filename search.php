@@ -78,9 +78,10 @@
 				"JOIN `conversations` ON `c`.`conid` = `conversations`.`conid` " .
 				"JOIN `users` ON `c`.`authorid` = `users`.`userid` " .				
 				"WHERE `c`.`visible` = 'Y' ";
-				if ($q_matchAllComments == FALSE) {
-					"AND MATCH (`c`.`comment`) AGAINST ('$q_searchstring' IN BOOLEAN MODE) ";
-				}
+				if ($q_matchAllComments == TRUE) {					
+				} else {
+					$searchquery .= "AND MATCH (`c`.`comment`) AGAINST ('$q_searchstring' IN BOOLEAN MODE) ";
+				}				
 				if ($q_author != "") {
 					$searchquery .= "AND `c`.`authorid` = $q_author ";
 				}
