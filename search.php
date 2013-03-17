@@ -202,7 +202,7 @@
 					//highlight the search term (but not the operators and quotation marks)
 					echo "<script>";
 					$operators = "+-~<>";
-					$q_phrases = explodePhrases($q, $operators);
+					$q_phrases = explodePhrases($q);
 					foreach($q_phrases as $value) {
 						$value = str_replace("\"","", $value);
 						if ( strpbrk(substr($value,0,1), $operators) ) {

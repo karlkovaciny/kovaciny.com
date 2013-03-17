@@ -24,18 +24,19 @@ function pluralize($count, $singular, $plural = false) {if (!$plural) {$plural =
 explodePhrases
 
   Works like explode() with a " " delimiter, but phrases in (unescaped) quotation marks count as one word. 
-  Doesn't return empty strings.
-  Up to one character from the $operators string is allowed to precede each word. (must be regex-friendly)
+  Returns an array of nonempty strings, or an empty array.
 ======================*/
-function explodePhrases( $string, $operators=NULL ) {
-	$regex = "/[\s]*([$operators]?\"[^\"]*\")[\s]*/";
+function explodePhrases( $string ) {
+	//Split the phrase by matching quoted strings and using them as delimiters. 
+	$regex = "/[\s]*([\S]*\"[^\"]*\"[\S]*)[\s]*/"; //keep stuff outside the quotes to retain operators like + or ()
 	$quotesplit = preg_split($regex, $string, NULL, PREG_SPLIT_NO_EMPTY |  PREG_SPLIT_DELIM_CAPTURE);
+	
 	$phraselist = array();
 	foreach ($quotesplit as $value) {
-		if ( preg_match($regex, $value) ) {
-			$phraselist[] = $value;
-		} else {
-			$phraselist = array_merge($phraselist, preg_split("/\s+/",$value, NULL, PREG_SPLIT_NO_EMPTY));
+		if ( preg_match($regex, $value) ) { 	//keep quoted strings intact
+			$phraselist[] = $value; 
+		} else {	//explode unquoted strings into words
+			$phraselist = array_merge($phraselist, preg_split("/\s+/", $value, NULL, PREG_SPLIT_NO_EMPTY));
 		}
 	}
 	return $phraselist;
@@ -47,27 +48,17 @@ preprocessForSqlBoolean
   Force SQL Boolean mode to find all the words (default is OR) and to treat hyphenated words as one word.
 ======================*/
 function preprocessForSqlBoolean( $searchstring ) { //$searchstring should be unescaped
-	$operators = "+-~<>";
-	$searchPhrases = explodePhrases($searchstring, $operators);
-	$OR_locations = array_keys($searchPhrases, "OR");
-	echo "OR_Locations is" . var_dump($OR_locations) . "<br>";
+	$searchPhrases = explodePhrases($searchstring);
 	
+	$operators = "+-~<>";
 	for ($i=0; $i<sizeof($searchPhrases); $i++) {
-		//force a match on all words by adding a + operator, unless the user added their own operator or OR keyword
-		$first = substr($searchPhrases[$i],0,1);
+		//force a match on all words by adding a + operator, unless the user added their own
+		$first = substr($searchPhrases[$i],0,1);		
 		if ( strpbrk($first, $operators) ) {
 			$op = $first;
 			$searchPhrases[$i] = substr($searchPhrases[$i],1);
-		} else {
-			//scheck if OR was used. If not, add a +.
-			$sfsfs = array($i-1,$i,$i+1);
-			foreach ($OR_locations as $value) {
-				if ( in_array($value, $sfsfs) ) {
-					$or_present=TRUE;					
-				}
-			}
-			if ($or_present) $op = ""; else $op = "+";
-		}
+		} else $op = "+";
+		
 		//surround hyphenated words in quotes
 		if ( stripos($searchPhrases[$i],"-") && ($searchPhrases[$i][0] !== "\"") ) {
 			$searchPhrases[$i] = "\"" . $searchPhrases[$i] . "\"";
