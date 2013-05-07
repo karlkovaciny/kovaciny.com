@@ -178,7 +178,9 @@
 								
 				echo "<table border=0 cellpadding=0 cellspacing=0 class=\"medium\" width=\"100%\">";
 				$i = 0;
+				$tabindex = 10;
 				while ($searchresults = mysql_fetch_array($res) AND ($i < $rpp)) {					
+					$tabindex += 10;
 					$conid = $searchresults["conid"];
 					$contitle = $searchresults["contitle"];
 					$comid = $searchresults["comid"];
@@ -208,7 +210,7 @@
 						$comment = "<div id=\"c_$comid\">" . $comment . "</div>"; //so we can access it with Javascript
 					
 					//actually display the results
-					echo "<tr><td class=\"tdot\" style = \"width:20%\"><span class=\"nou\">$x_username<br />in </span><span class=\"b\"><a href=\"conversations.php?id=$conid#comment_$comid\">$contitle</a></span></td>";
+					echo "<tr><td class=\"tdot\" style = \"width:20%\"><span class=\"nou\">$x_username<br />in </span><span class=\"b\"><a href=\"conversations.php?id=$conid#comment_$comid\" tabindex=\"$tabindex\">$contitle</a></span></td>";
 					echo "<td class=\"tdot\"></td><td class=\"tdot sidepad\">$comment</td></tr>";
 					
 					//highlight the search term (but not the operators and quotation marks)

@@ -86,7 +86,7 @@ require_once('functions.php');
 		?>
 		</td><td width=10>&nbsp;</td><td>
 		<form id="headerSearchForm" name="headerSearchForm" method="GET" action="conversationsearch.php">
-			<input id="headerSearchBox" name="q" class="copy headerSearchBox" type="text" title="Search" placeholder="Search"><input id="headerSearchButton" type="submit" class="copy searchbutton" title="Click to search" value="">
+			<input id="headerSearchBox" name="q" class="copy headerSearchBox" type="text" title="Search" placeholder="Search" tabindex="10"><input id="headerSearchButton" type="submit" class="copy searchbutton" title="Click to search" value="">
 		</form></td>
 		<td width=10>&nbsp;</td>
 		</tr></table>

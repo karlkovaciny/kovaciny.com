@@ -17,11 +17,13 @@ if( mysql_num_rows ($res) == 0 ) {
 require_once("head.php");
 $q_safe = htmlentities($q);
 echo "<h1 style=\"padding-top: 7px\">Search Results</h1>";
-echo "<p class=\"copy\">These conversation titles matched your search terms. Click <a class=\"content\" href=\"http://www.kovaciny.com/k/search.php?q=$q_safe\">here</a> to search comments instead.</p>";
+echo "<p class=\"copy\">These conversation titles matched your search terms. Click <a class=\"content\" href=\"http://www.kovaciny.com/k/search.php?q=$q_safe\" tabindex=\"15\">here</a> to search comments instead.</p>";
 echo "<table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";
 echo "<tr class=\"small\"><td>Title</td><td>Most recent post</td></tr>";
 echo "<tr bgcolor=\"#6699CC\"><td colspan=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
+$tabindex = 10;
 while($convs = mysql_fetch_array($res)) {
+	$tabindex += 10;
 	$convdate = $convs["changedate"];
 	$convid = $convs["conid"];
 	$contitle = $convs["contitle"];
@@ -35,7 +37,7 @@ while($convs = mysql_fetch_array($res)) {
 //				echo "<td align=\"center\"><input type=\"checkbox\" onclick=\"document.forms.markasread.markasread.value='$convid';document.forms.markasread.submit();\" title=\"Check this box to mark conversation as read\"></td></tr>";
 //		echo "<td align=\"center\"><input type=\"checkbox\" name=\"m[]\" value=\"$convid\"></td></tr>";
 //	} else {
-		echo "<tr$rowcolor><td class=\"rowpad sidepad\" ><a href=\"conversations.php?id=$convid\">$contitle</a> ($numcomm)</td><td nowrap class=\"small rowpad sidepad\">$convdate ago</td></tr>";
+		echo "<tr$rowcolor><td class=\"rowpad sidepad\" ><a href=\"conversations.php?id=$convid\" tabindex=\"$tabindex\" >$contitle</a> ($numcomm)</td><td nowrap class=\"small rowpad sidepad\">$convdate ago</td></tr>";
 }
 echo "</td></tr></table>
 </body>
