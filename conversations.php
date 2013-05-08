@@ -198,7 +198,7 @@ if ($username) {
 				}
 				$allcomments = rtrim($allcomments, ":");
 				$unreadcomments = rtrim($unreadcomments, ":");
-				echo "<tr><td colspan=2><input type=\"hidden\" name=\"ac\" value=\"$allcomments\"><input type=\"hidden\" name=\"ntc\" value=\"$unreadcomments\"><textarea name=\"comment\" cols=65 rows=9 class=\"medium\">$editcomment</textarea></td></tr>";
+				echo "<tr><td colspan=2><input type=\"hidden\" name=\"ac\" value=\"$allcomments\"><input type=\"hidden\" name=\"ntc\" value=\"$unreadcomments\"><textarea name=\"comment\" cols=65 rows=9 class=\"medium\" tabindex=\"15\">$editcomment</textarea></td></tr>";
 				echo "<tr><td class=\"small blue\">$hiddenitems<input type=\"submit\" value=\"$postbutt\"></td><td align=\"right\">$canceledit</td></tr>";
 				echo "</table></form>";
 			}
