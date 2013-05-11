@@ -198,7 +198,7 @@
 				}
 				
 				//start building the table of results
-				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\"><tr><td><h1>Search Results</h1><p>Your search for $searchparams returned $searchmod.</p></td><td width=10>&nbsp;</td><td align=\"right\">$searchbox</td></tr></table><br />";
+				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\"><tr><td><h1>Search Results</h1><p class=\"copy\">Your search for $searchparams returned $searchmod.</p><p class=\"copy\"><a class=\"content\" tabindex=\"15\" href=\"search.php\">Refine search</a></p></td><td width=10>&nbsp;</td><td align=\"right\">$searchbox</td></tr></table><br />";
 				echo "$pagenav";
 								
 				echo "<table border=0 cellpadding=0 cellspacing=0 class=\"medium\" width=\"100%\">";
