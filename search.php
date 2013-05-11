@@ -33,6 +33,15 @@
 						<td style="padding:5px">and thread title contains:&nbsp;</td>
 						<td style="padding:5px"><input class="copy" type="text" size=20 name="q_title"></td></tr>
 					<tr>
+						<td style="padding:5px">within the last:&nbsp;</td>
+						<td style="padding:5px">
+							<select class="copy" name="q_timeframe" style="width:85%">
+								<option value = "" selected></option>
+								<option value = "week">week</option>
+								<option value = "month">month</option>
+								<option value = "year">year</option>
+							</select></td></tr>
+					<tr>
 						<td style="padding:5px" ><input type="submit" value="Search"></td>
 						<td style="padding:5px"><input type="checkbox" name="q_oldestfirst" value="oldestfirst">&nbsp;Show older posts first&nbsp;&nbsp;<br>
 						<input type="checkbox" name="q_matchAllComments" value="matchall">&nbsp;Show all comments in matching conversations&nbsp;&nbsp;</td>
@@ -56,6 +65,7 @@
 			$q_title = stripslashes($_REQUEST['q_title']);
 			$q_oldestfirst = $_REQUEST['q_oldestfirst'];
 			$q_matchAllComments = $_REQUEST['q_matchAllComments'];
+			$q_timeframe = $_REQUEST['q_timeframe'];
 			if (isset($_POST['resultcount'])) { //means we have navigated off the first page of results
 				$resultcount = $_POST['resultcount'];
 				$currentpage = $_POST['p'];
@@ -88,13 +98,26 @@
 				if ($q_title != "") {
 					$searchquery .= "AND MATCH (`conversations`.`contitle`) AGAINST ('$q_title' IN BOOLEAN MODE) ";
 				}
+				if ($q_timeframe != "") {
+					switch($q_timeframe){
+					case "week":
+						$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= 7 ";
+						break;
+					case "month":
+						$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= 31 ";
+						break;
+					case "year":
+						$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= 365 ";
+						break;
+					}					
+				}
 				$searchquery .= "ORDER BY `c`.`createdate`";
 				if ($q_oldestfirst == FALSE) {
 					$searchquery .= "DESC "; //ie, newest threads first
 				}
 				if ($resultcount > 0) { //limit the search except for the first time when you need the record count
 					$startpoint = $currentpage * $rpp;
-					$searchquery .= "LIMIT $startpoint, $rpp ";
+					$searchquery .= "LIMIT $startpoint, " . min($rpp, $resultcount - $startpoint) . " ";
 				} else $searchquery .= "LIMIT 0, $maxallowed ";
 			
 			$res = mysql_query($searchquery, $db) or die(mysql_error());
@@ -111,12 +134,13 @@
 				?>
 									
 					<script language="JavaScript" type="text/JavaScript">
-					function pnav(p,resultcount,q_author,q_oldestfirst,q_matchAllComments) { //pass the search results to the next page
+					function pnav(p,resultcount,q_author,q_oldestfirst,q_matchAllComments,q_timeframe) { //pass the search results to the next page
 						document.forms.AdvancedSearch.p.value=p; 
 						document.forms.AdvancedSearch.resultcount.value=resultcount;
 						document.forms.AdvancedSearch.q_author.value=q_author;
 						document.forms.AdvancedSearch.q_oldestfirst.value=q_oldestfirst;
 						document.forms.AdvancedSearch.q_matchAllComments.value=q_matchAllComments;
+						document.forms.AdvancedSearch.q_timeframe=q_timeframe;
 						//because we can't pass q or q_title as an argument when it has double quotes:
 						document.forms.AdvancedSearch.q.value=document.getElementById("qqq").innerHTML; 
 						document.forms.AdvancedSearch.q_title.value=document.getElementById("qqq_title").innerHTML; 
@@ -130,6 +154,7 @@
 						<input type="hidden" name="q_title">
 						<input type="hidden" name="q_oldestfirst">
 						<input type="hidden" name="q_matchAllComments">
+						<input type="hidden" name="q_timeframe">
 					</form>
 				<?php
 				//passing double quotes through the argument of onclick=pnav(0,$numhits,'$q') didn't work, so we are 
@@ -139,13 +164,13 @@
 				
 				$pagenav = "<table border=0 cellpadding=3 cellspacing=0 class=\"medium\" align=\"center\"><tr>";
 				if ($pageid > 0) {
-					$pagenav .= "<td>[<a href=\"javascript://\" onclick=\"pnav(0,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');\">First</a>]</td><td>[<a href=\"javascript://\" onclick=\"pnav($downid,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');\">Prev</a>]</td>";
+					$pagenav .= "<td>[<a href=\"javascript://\" onclick=\"pnav(0,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments', '$q_timeframe');\">First</a>]</td><td>[<a href=\"javascript://\" onclick=\"pnav($downid,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments', '$q_timeframe');\">Prev</a>]</td>";
 				} else {
 					$pagenav .= "<td>[<span class=\"gray\">First</span>]</td><td>[<span class=\"gray\">Prev</span>]</td>";
 				}
-				$pagenav .= "<td><a href=\"javascript://\" title=\"Go to page ...\" onclick=\"var p = prompt('Go to page: (1 - $maxup allowed)'); TestRegExp = /[0-9]+/g; if(TestRegExp.test(p)) {if(p>=1 && p<=$maxup) {p--; pnav(p,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');} else {confirm(p + ' is outside the valid page range. Please try again.');}} else {p = $pageid; pnav(p,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');}\"><b>$upid</b> of <b>$maxup</b></a></td>";
+				$pagenav .= "<td><a href=\"javascript://\" title=\"Go to page ...\" onclick=\"var p = prompt('Go to page: (1 - $maxup allowed)'); TestRegExp = /[0-9]+/g; if(TestRegExp.test(p)) {if(p>=1 && p<=$maxup) {p--; pnav(p,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments', '$q_timeframe');} else {confirm(p + ' is outside the valid page range. Please try again.');}} else {p = $pageid; pnav(p,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments', '$q_timeframe');}\"><b>$upid</b> of <b>$maxup</b></a></td>";
 				if ($pageid < $maxPage) {
-					$pagenav .= "<td>[<a href=\"javascript://\" onclick=\"pnav($upid,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');\">Next</a>]</td><td>[<a href=\"javascript://\" onclick=\"pnav($maxPage,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments');\">Last</a>]</td>";
+					$pagenav .= "<td>[<a href=\"javascript://\" onclick=\"pnav($upid,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments', '$q_timeframe');\">Next</a>]</td><td>[<a href=\"javascript://\" onclick=\"pnav($maxPage,$numhits,'$q_author','$q_oldestfirst', '$q_matchAllComments', '$q_timeframe');\">Last</a>]</td>";
 				} else {
 					$pagenav .= "<td>[<span class=\"gray\">Next</span>]</td><td>[<span class=\"gray\">Last</span>]</td>";
 				}
