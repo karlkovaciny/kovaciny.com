@@ -22,7 +22,7 @@
 					<tr>
 						<td style="padding:5px">by this author:&nbsp;</td>
 						<td style="padding:5px">
-							<select class="copy" name="q_author" style="width:85%">
+							<select class="copy" name="q_author" style="width:44%">
 								<option value = "" selected></option>
 								<?php 
 								foreach ($userlist as $key=>$value) {
@@ -30,21 +30,22 @@
 								} ?>
 							</select></td></tr>
 					<tr>
-						<td style="padding:5px">and thread title contains:&nbsp;</td>
-						<td style="padding:5px"><input class="copy" type="text" size=20 name="q_title"></td></tr>
-					<tr>
 						<td style="padding:5px">within the last:&nbsp;</td>
 						<td style="padding:5px">
-							<select class="copy" name="q_timeframe" style="width:85%">
+							<select class="copy" name="q_timeframe" style="width:44%">
 								<option value = "" selected></option>
 								<option value = "week">week</option>
 								<option value = "month">month</option>
 								<option value = "year">year</option>
 							</select></td></tr>
 					<tr>
+						<td style="padding:5px; vertical-align:top">where thread title contains:&nbsp;</td>
+						<td style="padding:5px"><input class="copy" type="text" size=20 name="q_title"><BR>
+						<input type="checkbox" name="q_matchAllComments" value="matchall" onclick="document.forms.search.q.disabled=document.forms.search.q_matchAllComments.checked;">&nbsp;Retrieve every comment in these threads&nbsp;&nbsp;</td>
+						</td></tr>
+					<tr>
 						<td style="padding:5px" ><input type="submit" value="Search"></td>
 						<td style="padding:5px"><input type="checkbox" name="q_oldestfirst" value="oldestfirst">&nbsp;Show older posts first&nbsp;&nbsp;<br>
-						<input type="checkbox" name="q_matchAllComments" value="matchall">&nbsp;Show all comments in matching conversations&nbsp;&nbsp;</td>
 						</tr>	
 				</table>
 			</form>
@@ -185,6 +186,9 @@
 			}
 			if ($q_title != "") {
 				$searchparams .= " in threads containing <b>" . $q_title . "</b>";
+			}
+			if ($q_timeframe != "") {
+				$searchparams .= " within the last <b>" . $q_timeframe . "</b>";
 			}
 			
 			if ($numhits == 0) {
