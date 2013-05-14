@@ -38,7 +38,7 @@ require_once('functions.php');
 				$_SESSION['user'] = "";
 				session_destroy();
 			}
-			header("Location: http://www.kovaciny.com/login.php");
+			header("Location: http://kcom.kovaciny.com/login.php");
 		} else {
 			$usertoken = $_COOKIE['user'];
 			if (strlen($usertoken) == 0) {
@@ -124,7 +124,7 @@ require_once('functions.php');
 		</td><td width=10>&nbsp;</td><td class="copy" style="padding:5px">
 		<?php
 	} else {
-		header("Location: http://www.kovaciny.com/login.php");
+		header("Location: http://kcom.kovaciny.com/login.php");
 	}
 ?>
 

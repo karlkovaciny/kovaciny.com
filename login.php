@@ -25,7 +25,7 @@
 			$username= strtolower($user_obj->username);
 			$logcode= md5(func_generate_string());
 			setcookie("user", md5("hello this is $username"), time()+14400, "/", "kovaciny.com", 0);
-			header("Location: http://www.kovaciny.com/index.php");
+			header("Location: http://kcom.kovaciny.com/index.php");
 			exit;
 		}
 	}

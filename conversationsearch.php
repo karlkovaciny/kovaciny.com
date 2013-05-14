@@ -11,7 +11,7 @@ $sql = "SELECT `conid`, `contitle`, `changedate`, `createdate`, `numcomm`, `visi
 		WHERE `visible`='Y' AND MATCH `contitle` AGAINST ('$q_searchstring' IN BOOLEAN MODE) ORDER BY `changedate` DESC";
 $res = mysql_query($sql) or die (mysql_error());
 if( mysql_num_rows ($res) == 0 ) {
-	$redirect = "Location:http://www.kovaciny.com/k/search.php?q=$q";
+	$redirect = "Location:http://kcom.kovaciny.com/k/search.php?q=$q";
 	header($redirect);
 }
 require_once("head.php");
