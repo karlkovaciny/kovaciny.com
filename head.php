@@ -20,9 +20,9 @@ require_once('functions.php');
 		elseif ($login == "larry" && $pass == "dFy83tQ7r") {$username = $login;}
 		elseif ($login == "rachel" && $pass == "NJpbqskGw") {$username = $login;}
 		elseif ($login == "anna" && $pass == "VX9UkcCjy") {$username = $login;}
-		elseif ($login == "nate" && $pass == "G87uJy73g") {$username = $login;}
 		elseif ($login == "monica" && $pass == "6RF35H5hw") {$username = $login;}
 		elseif ($login == "john" && $pass == "6RF35H5hw") {$username = $login;}
+		//elseif ($login == "nate" && $pass == "G87uJy73g") {$username = $login;}
 		if (strlen($username)) {
 			setcookie("user", md5("hello this is $username"), time()+14400, "/", "kovaciny.com", 0);
 			if (isset($_COOKIE['user']) === false) {
@@ -53,10 +53,10 @@ require_once('functions.php');
 			elseif ($usertoken == md5("hello this is larry")) {$username = "larry";}
 			elseif ($usertoken == md5("hello this is rachel")) {$username = "rachel";}
 			elseif ($usertoken == md5("hello this is anna")) {$username = "anna";}
-			elseif ($usertoken == md5("hello this is nate")) {$username = "nate";}
 			elseif ($usertoken == md5("hello this is monica")) {$username = "monica";}
 			elseif ($usertoken == md5("hello this is john")) {$username = "john";}
 			else {$usernotfound = "usernotfound";}
+			// elseif ($usertoken == md5("hello this is nate")) {$username = "nate";}
 		}
 	}
 
@@ -100,7 +100,7 @@ require_once('functions.php');
 			<li style=""margin-bottom: 10px""><a href="index.php">Main page</a></li>
 			<li><a href="newconv.php">Add new</a></li>
 			<li><a href="search.php">Search</a></li>
-			<li><a href="/w/">Kovawiki</a></li>
+			<li><a href="/addressbook/" onClick="confirm('Address Book\nUsername: veronica\nPassword: veronica');">Address Book</a></li>
 			<li><a href="index.php?logout=true">Log out</a></li>
 		</ul>
 		<p class="b" style="padding-top: 10px">Photo Gallery</p>
@@ -114,9 +114,9 @@ require_once('functions.php');
 		</ul>
 		<p class="b" style="padding-top: 10px">Blogs</p>
 		<ul style="padding-left: 10px">
-			<li><a href="http://www.livejournal.com/users/noumignon/">Karl</a><span class="small"> (<a href="http://www.livejournal.com/users/noumcomments/">comm</a>)</small></li>
+			<li><a href="http://www.livejournal.com/users/noumignon/">Karl</a><span class="small"> (<a href="http://www.livejournal.com/users/noumcomments/">comm</a>)</span></li>
 			<li><a href="http://octavo-dia.blogspot.com/">Larry</a></li>
-			<li><a href="http://hamlette.blogspot.com/">Rachel</a><span class="small"> (<a href="http://rachelkovaciny.blogspot.com/">#2</a>)</span></li>
+			<li><a href="http://hamlette.blogspot.com/">Rachel</a><span class="small"> (<a href="http://rachelkovaciny.blogspot.com/">#2</a> <a href="http://rachelkovaciny.blogspot.com/">#3</a>)</span></li>
 		</ul>
         <p><font color="#CCCCCC"><small>***REMOVED***41</small></font></p>
 		</td><td width=10>&nbsp;</td><td class="copy" style="padding:5px">
