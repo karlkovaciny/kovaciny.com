@@ -112,8 +112,6 @@ require_once('functions.php');
 			<li class="small"><a href="/gallery/v/annanate/">Anna &amp; Nate</a></li>
 			<li class="small"><a href="/gallery/v/monica_john/">Monica &amp; John</a></li>
 		</ul>
-<!--<table border=0 cellpadding=0 cellspacing=0 align="center" width=120><tr><td align="center"><?php //@readfile('http://www.kovaciny.com/gallery/main.php?g2_view=imageblock.External&g2_blocks=randomImage&g2_show=none&g2_maxSize=92');
-?></td></tr></table>-->
 		<p class="b" style="padding-top: 10px">Blogs</p>
 		<ul style="padding-left: 10px">
 			<li><a href="http://www.livejournal.com/users/noumignon/">Karl</a><span class="small"> (<a href="http://www.livejournal.com/users/noumcomments/">comm</a>)</small></li>
