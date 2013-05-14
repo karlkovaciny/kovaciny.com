@@ -6,7 +6,27 @@
 	mysql_select_db ("db286662785");
 	$tz = -12;
 
-require_once('functions.php');
+// Functions
+	function format_interval($timestamp, $granularity = 2) {
+		$units = array('1 year|years' => 31536000, '1 week|weeks' => 604800, '1 day|days' => 86400, '1 hr|hrs' => 3600, '1 min|min' => 60, '1 sec|sec' => 1);
+		$output = '';
+		foreach ($units as $key => $value) {
+			$key = explode('|', $key);
+			if ($timestamp >= $value) {
+				$output .= ($output ? ' ' : '') . format_plural(floor($timestamp / $value), $key[0], $key[1]);
+				$timestamp %= $value;
+				$granularity--;
+			}
+			if ($granularity == 0) {break;}
+		}
+		return $output ? $output : "0 sec";
+	}
+	
+	function format_plural($count, $singular, $plural) {
+		if ($count == 1) {return $singular;} else {return $count . " " . $plural;}
+	}
+
+	function pluralize($count, $singular, $plural = false) {if (!$plural) {$plural = $singular . 's';} return ($count == 1 ? $singular : $plural);}
 
 // Log in
 	if (isset($_GET['user'])) {
@@ -20,9 +40,9 @@ require_once('functions.php');
 		elseif ($login == "larry" && $pass == "dFy83tQ7r") {$username = $login;}
 		elseif ($login == "rachel" && $pass == "NJpbqskGw") {$username = $login;}
 		elseif ($login == "anna" && $pass == "VX9UkcCjy") {$username = $login;}
-		elseif ($login == "nate" && $pass == "G87uJy73g") {$username = $login;}
 		elseif ($login == "monica" && $pass == "6RF35H5hw") {$username = $login;}
 		elseif ($login == "john" && $pass == "6RF35H5hw") {$username = $login;}
+		//elseif ($login == "nate" && $pass == "G87uJy73g") {$username = $login;}
 		if (strlen($username)) {
 			setcookie("user", md5("hello this is $username"), time()+14400, "/", "kovaciny.com", 0);
 			if (isset($_COOKIE['user']) === false) {
@@ -38,7 +58,7 @@ require_once('functions.php');
 				$_SESSION['user'] = "";
 				session_destroy();
 			}
-			header("Location: http://kcom.kovaciny.com/login.php");
+			header("Location: http://www.kovaciny.com/login.php");
 		} else {
 			$usertoken = $_COOKIE['user'];
 			if (strlen($usertoken) == 0) {
@@ -53,10 +73,10 @@ require_once('functions.php');
 			elseif ($usertoken == md5("hello this is larry")) {$username = "larry";}
 			elseif ($usertoken == md5("hello this is rachel")) {$username = "rachel";}
 			elseif ($usertoken == md5("hello this is anna")) {$username = "anna";}
-			elseif ($usertoken == md5("hello this is nate")) {$username = "nate";}
 			elseif ($usertoken == md5("hello this is monica")) {$username = "monica";}
 			elseif ($usertoken == md5("hello this is john")) {$username = "john";}
 			else {$usernotfound = "usernotfound";}
+			// elseif ($usertoken == md5("hello this is nate")) {$username = "nate";}
 		}
 	}
 
@@ -79,28 +99,19 @@ require_once('functions.php');
 		<script language="JavaScript" src="kovaciny.js" name="jsinc"></script>
 		</head>
 		
-		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0">
-		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white">
-			<tr>
-				<td width=219><a href="/"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td>
-				<td align="center">
-					<?php
-						echo "Welcome <b>$me</b>!";
-					?></td>
-				<td width=10>&nbsp;</td>
-				<td><form id="headerSearchForm" name="headerSearchForm" method="GET" action="conversationsearch.php">
-					<input id="headerSearchBox" name="q" class="copy headerSearchBox" type="text" title="Search" placeholder="Search" tabindex="10"><input id="headerSearchButton" type="submit" class="copy searchbutton" title="Click to search" value="">
-				</form></td>
-				<td width=10>&nbsp;</td>
-			</tr>
-		</table>
+		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
+		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white"><tr><td width=219><a href="/"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td><td align="center">
+		<?php
+			echo "Welcome <b>$me</b>!";
+		?>
+		</td><td width=10>&nbsp;</td></tr></table>
 		<table width="100%" border=0 cellpadding=0 cellspacing=0><tr valign="top" height=800><td bgcolor="#DDDDDD" style="padding:5px" width=130>
 		<p class="b" style="padding-top: 10px">Conversations</p>
 		<ul style="padding-left: 10px">
 			<li style=""margin-bottom: 10px""><a href="index.php">Main page</a></li>
 			<li><a href="newconv.php">Add new</a></li>
 			<li><a href="search.php">Search</a></li>
-			<li><a href="/w/">Kovawiki</a></li>
+			<li><a href="/addressbook/" onClick="confirm('Address Book\nUsername: veronica\nPassword: veronica');">Address Book</a></li>
 			<li><a href="index.php?logout=true">Log out</a></li>
 		</ul>
 		<p class="b" style="padding-top: 10px">Photo Gallery</p>
@@ -116,15 +127,15 @@ require_once('functions.php');
 ?></td></tr></table>-->
 		<p class="b" style="padding-top: 10px">Blogs</p>
 		<ul style="padding-left: 10px">
-			<li><a href="http://www.livejournal.com/users/noumignon/">Karl</a><span class="small"> (<a href="http://www.livejournal.com/users/noumcomments/">comm</a>)</small></li>
+			<li><a href="http://www.livejournal.com/users/noumignon/">Karl</a><span class="small"> (<a href="http://www.livejournal.com/users/noumcomments/">comm</a>)</span></li>
 			<li><a href="http://octavo-dia.blogspot.com/">Larry</a></li>
-			<li><a href="http://hamlette.blogspot.com/">Rachel</a><span class="small"> (<a href="http://rachelkovaciny.blogspot.com/">#2</a>)</span></li>
+			<li><a href="http://hamlette.blogspot.com/">Rachel</a><span class="small"> (<a href="http://rachelkovaciny.blogspot.com/">#2</a> <a href="http://rachelkovaciny.blogspot.com/">#3</a>)</span></li>
 		</ul>
         <p><font color="#CCCCCC"><small>***REMOVED***41</small></font></p>
 		</td><td width=10>&nbsp;</td><td class="copy" style="padding:5px">
 		<?php
 	} else {
-		header("Location: http://kcom.kovaciny.com/login.php");
+		header("Location: http://www.kovaciny.com/login.php");
 	}
 ?>
 
