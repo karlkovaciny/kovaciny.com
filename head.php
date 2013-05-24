@@ -2,8 +2,15 @@
 // db Connection
 //	$db = mysql_connect('internal-db.s7387.gridserver.com', 'db7387', '***REMOVED***');
 //	mysql_select_db ("db7387_kovaciny");
-	$db = mysql_connect('***REMOVED***', '***REMOVED***', '***REMOVED***');
-	mysql_select_db ("db286662785");
+	$db = mysql_connect('localhost', '***REMOVED***', '***REMOVED***'); //no error, yes connected
+	if (!$db) {
+		die('Not connected : ' . mysql_error());
+	}
+
+	$db_selected = mysql_select_db ("***REMOVED***", $db);
+	if (!$db_selected) {
+		die ('Can\'t select db : ' . mysql_error());
+	}
 	$tz = -12;
 
 require_once('functions.php');
