@@ -16,8 +16,10 @@
 		$mdpass= md5($password);
 	//	$db = mysql_connect('internal-db.s7387.gridserver.com', 'db7387', '***REMOVED***');
 	//	mysql_select_db ("db7387_kovaciny");
-		$db = mysql_connect('***REMOVED***', '***REMOVED***', '***REMOVED***');
-		mysql_select_db ("db286662785");
+	//	$db = mysql_connect('***REMOVED***', '***REMOVED***', '***REMOVED***');
+	//	mysql_select_db ("db286662785");
+		$db = mysql_connect('localhost', '***REMOVED***', '***REMOVED***');
+		mysql_select_db ("***REMOVED***");
 		$res= mysql_query("SELECT * FROM users WHERE username='$username' AND pass='$mdpass'") or die("Could not select user ID.");
 		if (mysql_num_rows($res)==1) {
 			$user_obj= mysql_fetch_object($res);

@@ -1,6 +1,6 @@
 <?php
-$db = mysql_connect('***REMOVED***', '***REMOVED***', '***REMOVED***');
-mysql_select_db ("db286662785");
+$db = mysql_connect('localhost', '***REMOVED***', '***REMOVED***');
+mysql_select_db ("***REMOVED***");
 $tz = -12;
 
 require_once('functions.php');
