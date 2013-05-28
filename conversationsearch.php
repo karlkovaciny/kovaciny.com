@@ -11,13 +11,13 @@ $sql = "SELECT `conid`, `contitle`, `changedate`, `createdate`, `numcomm`, `visi
 		WHERE `visible`='Y' AND MATCH `contitle` AGAINST ('$q_searchstring' IN BOOLEAN MODE) ORDER BY `changedate` DESC";
 $res = mysql_query($sql) or die (mysql_error());
 if( mysql_num_rows ($res) == 0 ) {
-	$redirect = "Location:http://kcom.kovaciny.com/k/search.php?q=$q";
+	$redirect = "Location:http://kcom.kovaciny.com/search.php?q=$q";
 	header($redirect);
 }
 require_once("head.php");
 $q_safe = htmlentities($q);
 echo "<h1 style=\"padding-top: 7px\">Search Results</h1>";
-echo "<p class=\"copy\">These conversation titles matched your search terms.</P><p class=\"copy\"><a class=\"content\" href=\"http://www.kovaciny.com/k/search.php?q=$q_safe\" tabindex=\"15\">Search for comments instead</a></p>";
+echo "<p class=\"copy\">These conversation titles matched your search terms.</P><p class=\"copy\"><a class=\"content\" href=\"http://kcom.kovaciny.com/search.php?q=$q_safe\" tabindex=\"15\">Search for comments instead</a></p>";
 echo "<table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";
 echo "<tr class=\"small\"><td>Title</td><td>Most recent post</td></tr>";
 echo "<tr bgcolor=\"#6699CC\"><td colspan=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
