@@ -9,7 +9,7 @@ if ($username) {
 		echo "<br><p>The conversation has been deleted.</p><form name=\"conadded\" action=\"index.php\" method=\"POST\"><input class=\"sidepad\" type=\"submit\" value=\"Return to the main page\"></form>";
 	} else {
 		if (isset($_GET["action"])) {
-			$newconv = trim($_POST['convtitle']);
+			$newconv = trim(addslashes($_POST['convtitle']));
 			$newcomm = trim($_POST['comment']);
 			if ($newconv == "") echo "<p>You need to enter a title.</p>";
 			if ($newcomm == "") echo "<p>You need to enter the first comment.</p>";
