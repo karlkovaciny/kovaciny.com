@@ -19,6 +19,7 @@ if ($username) {
 				$replacefrom = array("\\'","\\'",'\\"','\\"');
 				$replaceto = array("\'","\'",'\"','\"');
 				$newcomm = str_replace($replacefrom, $replaceto, $newcomm);
+				$newcomm = addslashes($newcomm);
 				if ($userid == 1) {
 					$newcomm_author= explode (":", $_POST['postingas']);
 					$newcomm_authorid = $newcomm_author[0];
@@ -48,7 +49,7 @@ if ($username) {
 				if (mysql_num_rows($res)==1) {
 					$conv_obj= mysql_fetch_object($res);
 					$conv_id= $conv_obj->conid;
-					$res= mysql_query("INSERT INTO `comments` (`comid`, `conid`, `authorid`, `comment`, `createdate`, `changedate`) VALUES ('', '$conv_id', '$newcomm_authorid', '$newcomm', $newcomm_posttime , $newcomm_posttime);") or die("Could not add first comment.");
+					$res= mysql_query("INSERT INTO `comments` (`comid`, `conid`, `authorid`, `comment`, `createdate`, `changedate`) VALUES ('', '$conv_id', '$newcomm_authorid', '$newcomm', $newcomm_posttime , $newcomm_posttime);") or die("Could not add first comment: " . mysql_error());
 					$postsuccessful = true;
 				} else {
 					echo "<p>Could not add new conversation</p>";
