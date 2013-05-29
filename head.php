@@ -92,7 +92,7 @@ require_once('functions.php');
 				<td width=219><a href="/"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td>
 				<td align="center">
 					<?php
-						echo "Welcome to the new kovaciny.com, <b>$me</b>!";
+						echo "Welcome <b>$me</b>!";
 					?></td>
 				<td width=10>&nbsp;</td>
 				<td><form id="headerSearchForm" name="headerSearchForm" method="GET" action="conversationsearch.php">
