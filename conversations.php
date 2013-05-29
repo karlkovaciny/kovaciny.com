@@ -215,7 +215,7 @@ if ($username) {
 	}
 	
 	if ( wantNewPosts($topnew) ) {	
-		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",150)}"; 
+		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",170)}"; 
 			//timeout 125 was not enough time to finish hiding posts in long threads, so the jump was off
 	}
 
