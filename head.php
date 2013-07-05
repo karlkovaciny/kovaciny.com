@@ -2,11 +2,8 @@
 // db Connection
 //	$db = mysql_connect('internal-db.s7387.gridserver.com', 'db7387', '***REMOVED***');
 //	mysql_select_db ("db7387_kovaciny");
-	$db = mysql_connect('localhost', '***REMOVED***', '***REMOVED***'); //no error, yes connected
-	if (!$db) {
-		die('Not connected : ' . mysql_error());
-	}
-
+	$db = mysql_connect('localhost', '***REMOVED***', '***REMOVED***') or die('Can\'t connect - ' . mysql_error());
+	
 	$db_selected = mysql_select_db ("***REMOVED***", $db);
 	if (!$db_selected) {
 		die ('Can\'t select db : ' . mysql_error());
@@ -107,7 +104,7 @@ require_once('functions.php');
 			<li style="margin-bottom: 10px" class="leftnavmenu"><a href="index.php">Main page</a></li>
 			<li class="leftnavmenu"><a href="newconv.php">Add new</a></li>
 			<li class="leftnavmenu"><a href="search.php">Search</a></li>
-			<li class="leftnavmenu"><a href="/addressbook/" onClick="confirm('Address Book\nUsername: veronica\nPassword: veronica');">Address Book</a></li>
+			<li class="leftnavmenu"><a href="http://www.kovaciny.com/addressbook/" onClick="confirm('Address Book\nUsername: veronica\nPassword: veronica');">Address Book</a></li>
 			<li class="leftnavmenu"><a href="index.php?logout=true">Log out</a></li>
 		</ul>
 		<p class="b" style="padding-top: 10px">Photo Gallery</p>
