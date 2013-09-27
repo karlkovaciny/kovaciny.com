@@ -68,17 +68,18 @@ function quoteme(authorname) {
 		confirm('Please select the text you wish to quote and click this link again.');
 	} else {
 		var existingtext = document.forms.commentform.comment.value + '';
-		var txtsnip = '';
-		if (txt.length > 45) {txtsnip = txt.substr(0,45) + '...';} else {txtsnip = txt}
 		if (existingtext.length == 0) {
-			if (confirm('Add the following quote to the comment box?\n\n' + authorname.toUpperCase() + ': ' + txtsnip)) {modtxt = '[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';}
+			modtxt = '[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';
 		} else {
-			if (confirm('Append the following quote to the comment box?\n\n' + authorname.toUpperCase() + ': ' + txtsnip)) {modtxt = existingtext + '\n[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';}
+			modtxt = existingtext + '\n[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';
 		}
 		if (modtxt.length == 0) modtxt = existingtext;
 		document.forms.commentform.comment.value = modtxt;
 		//tinyMCE.updateContent("comment");
-		document.forms.commentform.comment.focus();
+		var commentForm = document.forms.commentform.comment;
+		setTimeout(function() {
+		  commentForm.focus();
+		}, 0);
 	}
 }
 
