@@ -163,7 +163,6 @@ if ($username) {
 							$postcomm = "Reply to $authorname's comment:";
 							$postbutt = "post reply";
 						}
-						$canceledit = "<input type=\"button\" value=\"Cancel\" onclick=\"if (confirm('Cancel this reply and lose all changes?')) document.location.href='conversations.php?id=$conv_id';\" class=\"small gray\">&nbsp; ";
 						$comment = "[quote=$authorname]" . addslashes($comment) . "[/quote]";
 						if ($userid == 1) {
 							$hiddenitems = "<input type=\"text\" name=\"inreplyto\" value=\"$replytoid\" class=\"small\" size=3 onfocus=\"this.select();\"> &nbsp;<input type=\"hidden\" name=\"qe\" value=\"$comment\">";
@@ -174,7 +173,6 @@ if ($username) {
 					} else {
 						$postcomm = "Edit this comment:";
 						$postbutt = "save changes";
-						$canceledit = "<input type=\"button\" value=\"Cancel\" onclick=\"if (confirm('Cancel editing and lose all changes?')) document.location.href='conversations.php?id=$conv_id';\" class=\"small gray\">&nbsp; ";
 						$posttime = strtotime($commentdate) + ($tz * 3600);
 						$posttime = date('M d, Y g:i a', $posttime);
 						$posttime = " value=\"$posttime\"";
@@ -207,7 +205,7 @@ if ($username) {
 				$allcomments = rtrim($allcomments, ":");
 				$unreadcomments = rtrim($unreadcomments, ":");
 				echo "<tr><td colspan=2><input type=\"hidden\" name=\"ac\" value=\"$allcomments\"><input type=\"hidden\" name=\"ntc\" value=\"$unreadcomments\"><textarea name=\"comment\" cols=65 rows=9 class=\"medium\" tabindex=\"14\">$editcomment</textarea></td></tr>";
-				echo "<tr><td class=\"small blue\">$hiddenitems<input type=\"submit\" value=\"$postbutt\" tabindex=\"17\"></td><td align=\"right\">$canceledit</td></tr>";
+				echo "<tr><td class=\"small blue\">$hiddenitems<input type=\"submit\" value=\"$postbutt\" tabindex=\"17\"></td><td align=\"right\"></td></tr>";
 				echo "</table></form>";
 			}
 		}
