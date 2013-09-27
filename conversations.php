@@ -121,6 +121,10 @@ if ($username) {
 						$replacefrom = array("[quote=Anna]", "[quote=Jon]", "[quote=Karl]", "[quote=Larry]", "[quote=Monica]", "[quote=Nate]", "[quote=Rachel]", "[quote=Rae]", "[quote=Roger]", "[quote=Ruth]", "[quote=John]", "[quote=john]");
 						$replaceto = array("$q1 Anna$q2", "$q1 Jon$q2", "$q1 Karl$q2", "$q1 Larry$q2", "$q1 Monica$q2", "$q1 Nate$q2", "$q1 Rachel$q2", "$q1 Rae$q2", "$q1 Roger$q2", "$q1 Ruth$q2", "$q1 John$q2", "$q1 John$q2");
 						$htmlcomment = str_replace($replacefrom, $replaceto, $htmlcomment);
+						
+						//Keep URLs that don't start with "http" from turning into relative links (does not alter the original comment)
+						$htmlcomment = turnRelativeLinksAbsolute($htmlcomment);
+						
 						//add in the user's graphic
 						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
 							$htmlcomment = "<img src=\"/gfx/" . strtolower($authorname) . ".jpg\" border=0 width=85 height=85 style=\"float:left; margin-right: 8px; margin-bottom: 8px\">" . $htmlcomment;

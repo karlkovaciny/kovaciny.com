@@ -20,6 +20,24 @@ function format_plural($count, $singular, $plural) {
 
 function pluralize($count, $singular, $plural = false) {if (!$plural) {$plural = $singular . 's';} return ($count == 1 ? $singular : $plural);}
 
+/*
+Handles URLs after href= and src=.
+*/
+function turnRelativeLinksAbsolute($htmlcomment) {
+	$matches = array();
+	$pattern = '/(href|src)="([^"]*)"/i';
+	if ($num_matches = preg_match_all($pattern, $htmlcomment, $matches)) {
+		for ($i = 0; $i < $num_matches; $i++) {
+			if (stripos($matches[2][$i], "http") === FALSE) { //won't mess with https
+				$replacefrom = $matches[2][$i];
+				$replaceto = "http://" . $matches[2][$i];
+				$htmlcomment = str_replace($replacefrom, $replaceto, $htmlcomment);
+			}	
+		}
+	}
+	return $htmlcomment;
+}
+
 /*====================
 explodePhrases
 
