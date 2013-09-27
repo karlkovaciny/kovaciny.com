@@ -126,8 +126,8 @@ if ($username) {
 						//Keep URLs that don't start with "http" from turning into relative links (does not alter the original comment)
 						$htmlcomment = turnRelativeLinksAbsolute($htmlcomment);
 						
-						//add a div to allow us to access the comment text
-						$htmlcomment = "\n<div id=\"$comment_text_id\">" . $htmlcomment . "</div>\n";
+						//add a span to allow us to access the comment text
+						$htmlcomment = "\n\n<span id=\"$comment_text_id\">" . $htmlcomment . "</span>\n";
 						
 						//add in the user's graphic
 						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
