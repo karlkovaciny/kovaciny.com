@@ -53,34 +53,34 @@ function jtp(jumpto) {//jump to parent in threaded conversations
 }
 function flashcomm(e,bgc){document.getElementById(e).style.background=bgc;}
 
-function quoteme(authorname) {
+function quoteme(authorname, commentTextId) {
 	var txt = '';
 	var modtxt = '';
 	if (window.getSelection) {
-		txt = window.getSelection();
+		txt = window.getSelection().toString();
 	} else if (document.getSelection) {
-		txt = document.getSelection();
+		txt = document.getSelection().toString();
 	} else if (document.selection) {
 		txt = document.selection.createRange().text;
 	}
-	txt = txt + '';
 	if (txt.length == 0) {
-		confirm('Please select the text you wish to quote and click this link again.');
+		txt = document.getElementById(commentTextId).innerHTML;
+		txt = txt.replace(/<br>\n<br>/gi, "\n");
+	} 
+	
+	var existingtext = document.forms.commentform.comment.value + '';
+	if (existingtext.length == 0) {
+		modtxt = '[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';
 	} else {
-		var existingtext = document.forms.commentform.comment.value + '';
-		if (existingtext.length == 0) {
-			modtxt = '[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';
-		} else {
-			modtxt = existingtext + '\n[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';
-		}
-		if (modtxt.length == 0) modtxt = existingtext;
-		document.forms.commentform.comment.value = modtxt;
-		//tinyMCE.updateContent("comment");
-		var commentForm = document.forms.commentform.comment;
-		setTimeout(function() {
-		  commentForm.focus();
-		}, 0);
+		modtxt = existingtext + '\n[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';
 	}
+	if (modtxt.length == 0) modtxt = existingtext;
+	document.forms.commentform.comment.value = modtxt;
+	//tinyMCE.updateContent("comment");
+	var commentForm = document.forms.commentform.comment;
+	setTimeout(function() {
+	  commentForm.focus();
+	}, 0);
 }
 
 function quoteentire(authorname) {

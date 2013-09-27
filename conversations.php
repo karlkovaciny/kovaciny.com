@@ -54,6 +54,7 @@ if ($username) {
 				$topnew = "";
 				while($comments = mysql_fetch_array($res)) {
 					$commentid = $comments["comid"];
+					$comment_text_id = "c_" . $commentid . "_text"; //for adding a div later
 					if ($hideallexcept == 0 || $commentid == $hideallexcept) {
 						$comment = $comments["comment"];
 						$commentdate = $comments["createdate"];
@@ -102,11 +103,11 @@ if ($username) {
 							} else {
 								$hilite = "";
 								if ($privatewith == 0) $ccc .= " &nbsp; &nbsp;<a href=\"conversations.php?id=$conv_id&comid=$commentid&action=reply\">Reply to this</a>";
-								$ccc .= " &nbsp; &nbsp;<a href=\"javascript://\" onmousedown=\"quoteme('$authorname');\">Quote selected</a>";
+								$ccc .= " &nbsp; &nbsp;<a href=\"javascript://\" onmousedown=\"quoteme('$authorname', '$comment_text_id');\">Quote selected</a>";
 							}	
 							$ccc .= "</div></td>";
 						} elseif (isset($replytoid)) {
-							$ccc .= "<td><a href=\"javascript://\" onmousedown=\"quoteme('$authorname');\">Quote selected</a></td>"; // " &nbsp; &nbsp;<a href=\"javascript://\" onclick=\"quoteentire('$authorname');\">Quote entire post</a>"
+							$ccc .= "<td><a href=\"javascript://\" onmousedown=\"quoteme('$authorname', '$comment_text_id');\">Quote selected</a></td>"; // " &nbsp; &nbsp;<a href=\"javascript://\" onclick=\"quoteentire('$authorname');\">Quote entire post</a>"
 						} else { //then we're editing and don't want the action bar to stretch out
 							$ccc .= "<td>";
 						}
@@ -124,6 +125,9 @@ if ($username) {
 						
 						//Keep URLs that don't start with "http" from turning into relative links (does not alter the original comment)
 						$htmlcomment = turnRelativeLinksAbsolute($htmlcomment);
+						
+						//add a div to allow us to access the comment text
+						$htmlcomment = "\n<div id=\"$comment_text_id\">" . $htmlcomment . "</div>\n";
 						
 						//add in the user's graphic
 						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
