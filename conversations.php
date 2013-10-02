@@ -113,7 +113,7 @@ if ($username) {
 						}
 						$ccc .= "</tr></table></td></tr>"; //end of the action bar
 						$q1 = "<table border=0 cellpadding=4 cellspacing=0 class=\"border\"><tr valign=\"top\"><td class=\"green small\" bgcolor=\"#F6F6F6\">";
-						$q2 = "</td><td class=\"gray sidepad medium\" bgcolor=\"#FFFFFF\">";
+						$q2 = "</td><td class=\"quote\" bgcolor=\"#FFFFFF\">";
 						$c13 = chr(13);
 						$c10 = chr(10);
 						$replacefrom = array(chr(10),"[quote]","[/quote]","</table>$c13<br>", "<a href=", "</a>");
