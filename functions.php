@@ -30,7 +30,12 @@ function turnRelativeLinksAbsolute($htmlcomment) {
 		for ($i = 0; $i < $num_matches; $i++) {
 			if (stripos($matches[2][$i], "http") === FALSE) { //won't mess with https
 				$replacefrom = $matches[2][$i];
-				$replaceto = "http://" . $matches[2][$i];
+				if (stripos($replacefrom, "//") !== FALSE) { 
+					//I don't know why people make links like "//www.youtube.com" but they do
+					$replaceto = "http:" . $matches[2][$i];
+				} else {
+					$replaceto = "http://" . $matches[2][$i];
+				}
 				$htmlcomment = str_replace($replacefrom, $replaceto, $htmlcomment);
 			}	
 		}
