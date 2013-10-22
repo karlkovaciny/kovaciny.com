@@ -107,7 +107,7 @@ require_once('functions.php');
 			<li style="margin-bottom: 10px" class="leftnavmenu"><a href="index.php">Main page</a></li>
 			<li class="leftnavmenu"><a href="newconv.php">Add new</a></li>
 			<li class="leftnavmenu"><a href="search.php">Search</a></li>
-			<li class="leftnavmenu"><a href="/addressbook/" onClick="confirm('Address Book\nUsername: veronica\nPassword: veronica');">Address Book</a></li>
+			<li class="leftnavmenu"><a href="http://www.kovaciny.com/addressbook/index.php" onClick="confirm('Address Book\nUsername: veronica\nPassword: veronica');">Address Book</a></li>
 			<li class="leftnavmenu"><a href="index.php?logout=true">Log out</a></li>
 		</ul>
 		<p class="b" style="padding-top: 10px">Photo Gallery</p>
