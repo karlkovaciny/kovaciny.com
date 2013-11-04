@@ -8,7 +8,7 @@
 		}
 		
 		//Show the search form if we don't have a search string yet
-		if (!isset($_REQUEST['q']) && !isset($_REQUEST['q_matchAllComments'])) {			
+		if ( ($_REQUEST['q'] == "") || (!isset($_REQUEST['q']) && !isset($_REQUEST['q_matchAllComments'])) ) {
 			?>
 			<h1>Search</h1>
 			<form name="search" method="GET" action="search.php">

@@ -101,32 +101,21 @@ require_once('functions.php');
 				<td width=10>&nbsp;</td>
 			</tr>
 		</table>
-		<table width="100%" border=0 cellpadding=0 cellspacing=0><tr valign="top" height=800><td bgcolor="#DDDDDD" style="padding:5px" width=130>
-		<p class="b" style="padding-top: 10px">Conversations</p>
-		<ul style="padding-left: 10px">
-			<li style="margin-bottom: 10px" class="leftnavmenu"><a href="index.php">Main page</a></li>
-			<li class="leftnavmenu"><a href="newconv.php">Add new</a></li>
-			<li class="leftnavmenu"><a href="search.php">Search</a></li>
-			<li class="leftnavmenu"><a href="http://www.kovaciny.com/addressbook/index.php" onClick="confirm('Address Book\nUsername: veronica\nPassword: veronica');">Address Book</a></li>
-			<li class="leftnavmenu"><a href="index.php?logout=true">Log out</a></li>
-		</ul>
-		<p class="b" style="padding-top: 10px">Photo Gallery</p>
-		<ul style="padding-left: 10px">
-			<li class="leftnavmenu"><a href="/gallery">Main Page</a></li>
-			<li class="small leftnavmenu"><a href="/gallery/v/karl/">Karl</a></li>
-			<li class="small leftnavmenu"><a href="/gallery/v/jonrae/">Jon &amp; Rae</a></li>
-			<li class="small leftnavmenu"><a href="/gallery/v/larryrachel/">Larry &amp; Rachel</a></li>
-			<li class="small leftnavmenu"><a href="/gallery/v/annanate/">Anna &amp; Nate</a></li>
-			<li class="small leftnavmenu"><a href="/gallery/v/monica_john/">Monica &amp; John</a></li>
-		</ul>
-		<p class="b" style="padding-top: 10px">Blogs</p>
-		<ul style="padding-left: 10px">
-			<li class="leftnavmenu"><a href="http://www.livejournal.com/users/noumignon/">Karl</a><span class="small"> (<a href="http://www.livejournal.com/users/noumcomments/">comm</a>)</span></li>
-			<li class="leftnavmenu"><a href="http://octavo-dia.blogspot.com/">Larry</a></li>
-			<li class="leftnavmenu"><a href="http://hamlette.blogspot.com/">Rachel</a><span class="small"> (<a href="http://rachelkovaciny.blogspot.com/">#2</a> <a href="http://rachelkovaciny.blogspot.com/">#3</a>)</span></li>
-		</ul>
-        <p><font color="#CCCCCC"><small>***REMOVED***41</small></font></p>
-		</td><td width=10>&nbsp;</td><td class="copy" style="padding:5px">
+		<table width="100%" border=0 cellpadding=0 cellspacing=0>
+			<tr valign="top" height=800>
+				<td bgcolor="#DDDDDD" style="padding:5px" width=130>
+					<p class="leftnavmenu" style="padding-left: 10px; padding-top: 7px"><a href="index.php?logout=true">Log out</a></li>
+					<p class="b" style="padding-top: 10px">Links</p>
+					<ul style="padding-left: 10px">
+						<li class="small leftnavmenu"><a href="http://www.kovaciny.com/addressbook/index.php" onClick="confirm('Address Book\nUsername: veronica\nPassword: veronica');">Address Book</a></li>
+						<li class="small leftnavmenu"><a href="https://twitter.com/Noumenon72">Karl's Twitter</a></li>
+						<li class="small leftnavmenu"><a href="http://octavo-dia.blogspot.com/">Larry's blog</a></li>
+						<li class="small leftnavmenu"><a href="http://hamlette.blogspot.com/">Rachel's blog</a></li>
+						<li class="small leftnavmenu"><a href="http://pinterest.com/hamlettethedame/">Rachel's Pinterest</a></li>			
+						<li class="small leftnavmenu"><a href="http://www.youtube.com/user/Stingrae57?feature=watch">Rae's YouTube</a></li>			
+					</ul>
+					<p><font color="#CCCCCC"><small>***REMOVED***41</small></font></p></td>
+				<td width=10>&nbsp;</td><td class="copy" style="padding:5px">
 		<?php
 	} else {
 		header("Location: http://kcom.kovaciny.com/login.php");
