@@ -49,3 +49,4 @@ input.searchbutton { height:26px; width:26px; background-color: #999999; backgro
 #headerSearchForm { text-align: right; margin-bottom: 0px;}
 #headerSearchBox { color: #999999; font-style:italic; height: 26px; border-style: outset; vertical-align: bottom  }
 #headerSearchButton { vertical-align: bottom; padding:0 }
+#newConversationLink { font-size: 10px; padding-left:72px; padding-top:7px }
