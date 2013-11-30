@@ -89,7 +89,7 @@ require_once('functions.php');
 		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0">
 		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white">
 			<tr>
-				<td width=219><a href="/"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td>
+				<td width=219><a href="/index.php"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td>
 				<td align="center">
 					<?php
 						echo "Welcome <b>$me</b>!";

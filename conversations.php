@@ -215,9 +215,9 @@ if ($username) {
 
 <script type="text/javascript">
 	<?php
-	/**** see if we have a new post, check if we are searching for old ones instead ****/
+	/**** see if we have a new post, if we came from the list of new posts or are working with our own post ****/
 	function wantNewPosts($postname) {
-		return strlen($postname) && !stripos($_SERVER['HTTP_REFERER'], "search.php");
+		return isset($_REQUEST['action']) || (strlen($postname) && stripos($_SERVER['HTTP_REFERER'], "index.php"));
 	}
 	
 	if ( wantNewPosts($topnew) ) {	
