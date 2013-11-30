@@ -9,6 +9,9 @@
 		
 		//Show the search form if we don't have a search string yet
 		if ( ($_REQUEST['q'] == "") || (!isset($_REQUEST['q']) && !isset($_REQUEST['q_matchAllComments'])) ) {
+			if (isset($_REQUEST['refine'])) {
+				$refine = stripslashes($_REQUEST['refine']);
+			}
 			?>
 			<h1>Search</h1>
 			<form name="search" method="GET" action="search.php">
@@ -18,7 +21,7 @@
 						<td style="padding:5px"></td></tr>
 					<tr>
 						<td style="padding:5px">these words:&nbsp;</td>
-						<td style="padding:5px"><input class="copy" type="text" size=20 name="q"></td></tr>
+						<td style="padding:5px"><input class="copy" type="text" size=20 name="q" value="<?php echo $refine;?>"></td></tr>
 					<tr>
 						<td style="padding:5px">by this author:&nbsp;</td>
 						<td style="padding:5px">
@@ -202,7 +205,11 @@
 				}
 				
 				//start building the table of results
-				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\"><tr><td><h1>Search Results</h1><p class=\"copy\">Your search for $searchparams returned $searchmod.</p><p class=\"copy\"><a class=\"content\" tabindex=\"15\" href=\"search.php\">Refine search</a></p></td><td width=10>&nbsp;</td><td align=\"right\">$searchbox</td></tr></table><br />";
+				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\">
+						<tr>
+							<td><h1>Search Results</h1><p class=\"copy\">Your search for $searchparams returned $searchmod.</p>
+								<p class=\"copy\"><a class=\"content\" tabindex=\"15\" href=\"search.php?refine=$q\">Refine search</a></p></td>
+							<td width=10>&nbsp;</td><td align=\"right\">$searchbox</td></tr></table><br />";
 				echo "$pagenav";
 								
 				echo "<table border=0 cellpadding=0 cellspacing=0 class=\"medium\" width=\"100%\">";
