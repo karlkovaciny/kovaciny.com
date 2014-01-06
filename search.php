@@ -8,7 +8,8 @@
 		}
 		
 		//Show the search form if we don't have a search string yet
-		if ( ($_REQUEST['q'] == "") || (!isset($_REQUEST['q']) && !isset($_REQUEST['q_matchAllComments'])) ) {
+		if ( ( ($_REQUEST['q'] == "") || (!isset($_REQUEST['q']) ) ) 
+						&& !isset($_REQUEST['q_matchAllComments']) ) {
 			if (isset($_REQUEST['refine'])) {
 				$refine = stripslashes($_REQUEST['refine']);
 			}
@@ -79,8 +80,8 @@
 			}
 								
 			if ($q_matchAllComments == TRUE) {
-				$rpp = 100; //more results per page when seeking big batches
-				$maxallowed = 500;
+				$rpp = 10; //more results per page when seeking big batches
+				$maxallowed = 50;
 			} else {
 				$rpp = 10; 
 				$maxallowed = 50;
