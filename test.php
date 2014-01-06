@@ -33,6 +33,7 @@ window.onload = hello();
         // Create the data table.
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Username');
+		data.addColumn('string', 'Searchlink');
         data.addColumn('number', 'Posts');
 
 		<?php
@@ -51,29 +52,48 @@ window.onload = hello();
 		echo "data.addRows([";
 		while ($row2 = mysql_fetch_array($res_comment_count)) {
 			$username = $userlist[$row2['authorid']];
-			echo "['" . $username . "', " . $row2['theCommentCount'] . "],\n";
+			echo "['" . $username . "', " . 
+				"\"search.php?q_author=" . $row2['authorid'] . "&q_timeframe=week&q_title=&q_matchAllComments=matchall\", " .
+				$row2['theCommentCount'] . "],\n";
 		}
-		echo "['', 0]";
-		
+		echo "['', '', 0]"; //hack because of trailing comma issue
 		echo "]);";
+		
 		?>
 		
-        // Set chart options
+		var view = new google.visualization.DataView(data);
+		view.setColumns([0, 2]); //because we are storing the link in a hidden column
+        
+		// Set chart options
         var options = {'title':'Posts per user this week',
                        'width':600,
-                       'height':300};
+                       'height':300,
+					   'titleTextStyle': {
+							color: '333333',
+							fontName: 'Arial',
+							fontSize: 20
+						},
+						legend: 'none'
+	};
 
         // Instantiate and draw our chart, passing in some options.
         var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
-      }
-	  function selectHandler(e) {
-			alert('A table row was selected');
-		}
+        chart.draw(view, options);
+		
 		// Every time the table fires the "select" event, it should call your
 		// selectHandler() function.
-		google.visualization.events.addListener(data, 'select', selectHandler);
-
+		google.visualization.events.addListener(chart, 'select', selectHandler);
+		
+		function selectHandler(e) {
+			var selection = chart.getSelection();
+			if (selection != null) {
+				var item = selection[0];
+				usernm = data.getValue(item.row, 0);
+				window.location = data.getValue(item.row, 1);				
+			}
+		}
+     }
+	
 		
     </script>
     <!--Div that will hold the pie chart-->
