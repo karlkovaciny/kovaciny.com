@@ -9,13 +9,14 @@ require_once ("head.php");
       google.load('visualization', '1.0', {'packages':['corechart']});
 
       // Set a callback to run when the Google Visualization API is loaded.
-      google.setOnLoadCallback(drawChart);
+      google.setOnLoadCallback(drawChart(7));
 
-	       // Callback that creates and populates a data table,
+	  // Callback that creates and populates a data table,
       // instantiates the pie chart, passes in the data and
       // draws it.
-      function drawChart() {
-
+      function drawChart(selectedtimeframe) {
+		console.log(selectedtimeframe);
+		
         // Create the data table.
         var data = new google.visualization.DataTable();
         data.addColumn('string', 'Username');
@@ -80,10 +81,15 @@ require_once ("head.php");
 		}
      }
 	
-		
     </script>
     <!--Div that will hold the pie chart-->
     <div id="chart_div"></div>
+	<select id="timeframeselect" class="copy" onChange="javascript:drawChart(this.value)">
+		<option value="7" selected>Week</option>
+		<option value="30">Month</option>
+		<option value="365">Year</option>
+		<option value="100000">All time</option>
+	</select>
 
 </body>
 </html>
