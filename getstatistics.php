@@ -1,5 +1,5 @@
 <?php
-/*	// db Connection
+	// db Connection
 	$db = mysql_connect('localhost', '***REMOVED***', '***REMOVED***'); //no error, yes connected
 	if (!$db) {
 		die('Not connected : ' . mysql_error());
@@ -17,16 +17,21 @@
 		$key = $row["userid"];
 		$userlist[$key] = $row["username"];
 	}
-	echo json_encode($userlist);*/
-$jsontable = '{"cols": [
-	{"id":"0", "label":"User ID", "type":"string"},
+	
+	$notfirst = false;
+	foreach ($userlist as $userid=>$username) {
+		if ($notfirst) {
+			$jsoncells .= ", ";
+		}
+		$notfirst = true;
+		$jsoncells .= '{"c":[{"v":' . $userid . ', "f":null}, {"v":"' . $username . '", "f":"' . strtoupper($username) . '"}]}';
+	}
+	
+$jsontable = '{"cols":[
+	{"id":"0", "label":"User ID", "type":"number"},
 	{"id":"1", "label":"Username", "type":"string"}
 ],
-"rows": [
-	{"c":[{"v":"69d", "f":"c1"}, {"v":"c2", "f":null}]},
-	{"c":[{"v":"2", "f":"f2-1"}, {"v":"c2-2", "f":null}]}
-]
-
+"rows": [' . $jsoncells . ']
 }';
 echo $jsontable;
 ?>
