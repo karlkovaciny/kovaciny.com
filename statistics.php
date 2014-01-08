@@ -10,10 +10,12 @@
 	</div>
 	<!--Load the AJAX API-->
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+
 	<script type="text/javascript">
  
 	  // Load the Visualization API and the piechart package.
-	  google.load('visualization', '1.0', {'packages':['corechart']});
+	  google.load('visualization', '1.0', {'packages':['table']});
 	  // Set a callback to run when the Google Visualization API is loaded.
 	  google.setOnLoadCallback(drawChart);
 
@@ -22,12 +24,22 @@
 	  // draws it.
 	  function drawChart() {
 
+        var jsonData = $.ajax({
+          url: "getstatistics.php",
+          dataType:"json",
+          async: false
+          }).responseText;
+
+		var data = new google.visualization.DataTable(jsonData);
+/*			
 		var selector = document.getElementById("timeframeselect");
 		var timeframevalue = selector.value;
 		console.log(timeframevalue);
 		var timeframename = selector.options[selector.selectedIndex].text;
 		console.log(timeframename);
 		
+		
+	
 	  // Create the data table.
 	    var data = new google.visualization.DataTable();
 	    data.addColumn('string', 'Username');
@@ -61,12 +73,7 @@
 		
 		var view = new google.visualization.DataView(data);
 		view.setColumns([0, 2]); //because we are storing the link in a hidden column
-	
-		var xhr = new XMLHttpRequest();
-		xhr.open("GET", "getstatistics.php?q=" + timeframename, false);
-		xhr.send();
-		var result = xhr.responseText;
-		alert(result);
+	*/
 		// Set chart options
 	    var options = {'width':600,
 	                   'height':300,
@@ -77,11 +84,11 @@
 							fontSize: 20
 						},
 						legend: 'none'
-	};
+					};
 
 	// Instantiate and draw our chart, passing in some options.
-	    var chart = new google.visualization.BarChart(document.getElementById('chart_div'));
-	    chart.draw(view, options);
+	    var chart = new google.visualization.Table(document.getElementById('chart_div'));
+	    chart.draw(data, options);
 		
 		// Every time the table fires the "select" event, it should call your
 		// selectHandler() function.
