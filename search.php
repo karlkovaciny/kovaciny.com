@@ -38,9 +38,9 @@
 						<td style="padding:5px">
 							<select class="copy" name="q_timeframe" style="width:44%">
 								<option value = "" selected></option>
-								<option value = "week">week</option>
-								<option value = "month">month</option>
-								<option value = "year">year</option>
+								<option value = 7>week</option>
+								<option value = 30>month</option>
+								<option value = 365>year</option>
 							</select></td></tr>
 					<tr>
 						<td style="padding:5px; vertical-align:top">where thread title contains:&nbsp;</td>
@@ -104,17 +104,7 @@
 					$searchquery .= "AND MATCH (`conversations`.`contitle`) AGAINST ('$q_title' IN BOOLEAN MODE) ";
 				}
 				if ($q_timeframe != "") {
-					switch($q_timeframe){
-					case "week":
-						$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= 7 ";
-						break;
-					case "month":
-						$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= 31 ";
-						break;
-					case "year":
-						$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= 365 ";
-						break;
-					}					
+					$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= $q_timeframe ";
 				}
 				$searchquery .= "ORDER BY `c`.`createdate`";
 				if ($q_oldestfirst == FALSE) {
@@ -183,7 +173,11 @@
 			}
 			
 			//show the user what was searched for and how many results
-			$searchparams = "<b>" . $q . "</b>";
+			if ($q != "") {
+				$searchparams = "<b>" . $q . "</b>";
+			} else {
+				$searchparams = "posts";
+			}
 			if ($q_author != "") {
 				$thisuser = $userlist[$q_author];
 				$searchparams .= " by <b>". $thisuser . "</b>";
@@ -192,7 +186,7 @@
 				$searchparams .= " in threads containing <b>" . $q_title . "</b>";
 			}
 			if ($q_timeframe != "") {
-				$searchparams .= " within the last <b>" . $q_timeframe . "</b>";
+				$searchparams .= " within the last <b>" . $q_timeframe . "</b> days";
 			}
 			
 			if ($numhits == 0) {
@@ -268,8 +262,11 @@
                 echo "</table><br>$pagenav<br>";
             }			
         }
-	}
+	
 
 ?></td></tr></table>
 </body>
 </html>
+<?php
+}
+?>
