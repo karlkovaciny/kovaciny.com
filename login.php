@@ -39,7 +39,6 @@
 <head>
 <title>Kovaciny.com</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<meta name="viewport" content="width=device-width" />
 <link href="kovaciny.css" rel="stylesheet" type="text/css">
 </head>
 

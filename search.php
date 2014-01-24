@@ -8,11 +8,7 @@
 		}
 		
 		//Show the search form if we don't have a search string yet
-		if ( ( ($_REQUEST['q'] == "") || (!isset($_REQUEST['q']) ) ) 
-						&& !isset($_REQUEST['q_matchAllComments']) ) {
-			if (isset($_REQUEST['refine'])) {
-				$refine = stripslashes($_REQUEST['refine']);
-			}
+		if (!isset($_REQUEST['q']) && !isset($_REQUEST['q_matchAllComments'])) {			
 			?>
 			<h1>Search</h1>
 			<form name="search" method="GET" action="search.php">
@@ -22,7 +18,7 @@
 						<td style="padding:5px"></td></tr>
 					<tr>
 						<td style="padding:5px">these words:&nbsp;</td>
-						<td style="padding:5px"><input class="copy" type="text" size=20 name="q" value="<?php echo $refine;?>"></td></tr>
+						<td style="padding:5px"><input class="copy" type="text" size=20 name="q"></td></tr>
 					<tr>
 						<td style="padding:5px">by this author:&nbsp;</td>
 						<td style="padding:5px">
@@ -38,9 +34,9 @@
 						<td style="padding:5px">
 							<select class="copy" name="q_timeframe" style="width:44%">
 								<option value = "" selected></option>
-								<option value = 7>week</option>
-								<option value = 30>month</option>
-								<option value = 365>year</option>
+								<option value = "week">week</option>
+								<option value = "month">month</option>
+								<option value = "year">year</option>
 							</select></td></tr>
 					<tr>
 						<td style="padding:5px; vertical-align:top">where thread title contains:&nbsp;</td>
@@ -80,8 +76,8 @@
 			}
 								
 			if ($q_matchAllComments == TRUE) {
-				$rpp = 10; //more results per page when seeking big batches
-				$maxallowed = 50;
+				$rpp = 100; //more results per page when seeking big batches
+				$maxallowed = 500;
 			} else {
 				$rpp = 10; 
 				$maxallowed = 50;
@@ -104,7 +100,17 @@
 					$searchquery .= "AND MATCH (`conversations`.`contitle`) AGAINST ('$q_title' IN BOOLEAN MODE) ";
 				}
 				if ($q_timeframe != "") {
-					$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= $q_timeframe ";
+					switch($q_timeframe){
+					case "week":
+						$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= 7 ";
+						break;
+					case "month":
+						$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= 31 ";
+						break;
+					case "year":
+						$searchquery .= "AND DATEDIFF(CURDATE(), `c`.`createdate`) <= 365 ";
+						break;
+					}					
 				}
 				$searchquery .= "ORDER BY `c`.`createdate`";
 				if ($q_oldestfirst == FALSE) {
@@ -173,11 +179,7 @@
 			}
 			
 			//show the user what was searched for and how many results
-			if ($q != "") {
-				$searchparams = "<b>" . $q . "</b>";
-			} else {
-				$searchparams = "posts";
-			}
+			$searchparams = "<b>" . $q . "</b>";
 			if ($q_author != "") {
 				$thisuser = $userlist[$q_author];
 				$searchparams .= " by <b>". $thisuser . "</b>";
@@ -186,7 +188,7 @@
 				$searchparams .= " in threads containing <b>" . $q_title . "</b>";
 			}
 			if ($q_timeframe != "") {
-				$searchparams .= " within the last <b>" . $q_timeframe . "</b> days";
+				$searchparams .= " within the last <b>" . $q_timeframe . "</b>";
 			}
 			
 			if ($numhits == 0) {
@@ -200,11 +202,7 @@
 				}
 				
 				//start building the table of results
-				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\">
-						<tr>
-							<td><h1>Search Results</h1><p class=\"copy\">Your search for $searchparams returned $searchmod.</p>
-								<p class=\"copy\"><a class=\"content\" tabindex=\"15\" href=\"search.php?refine=$q\">Refine search</a></p></td>
-							<td width=10>&nbsp;</td><td align=\"right\">$searchbox</td></tr></table><br />";
+				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\"><tr><td><h1>Search Results</h1><p class=\"copy\">Your search for $searchparams returned $searchmod.</p><p class=\"copy\"><a class=\"content\" tabindex=\"15\" href=\"search.php\">Refine search</a></p></td><td width=10>&nbsp;</td><td align=\"right\">$searchbox</td></tr></table><br />";
 				echo "$pagenav";
 								
 				echo "<table border=0 cellpadding=0 cellspacing=0 class=\"medium\" width=\"100%\">";
@@ -262,11 +260,8 @@
                 echo "</table><br>$pagenav<br>";
             }			
         }
-	
+	}
 
 ?></td></tr></table>
 </body>
 </html>
-<?php
-}
-?>

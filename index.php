@@ -20,12 +20,12 @@ if ($username) {
 			$unread = 1;
 			$norepeats = "";
 			$trspacer = "<tr height=6><td colspan=3><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
-			$res = mysql_query("SELECT DISTINCT con.* FROM conversations AS con, comments AS com WHERE con.visible = 'Y' AND com.visible = 'Y' AND con.conid = com.conid AND com.readby_$username = 0 ORDER BY changedate DESC",$db) or die (mysql_error());
+			$res = mysql_query("SELECT DISTINCT con.* FROM conversations AS con, comments AS com WHERE con.visible = 'Y' AND com.visible = 'Y' AND con.conid = com.conid AND com.readby_$username = 0 ORDER BY changedate DESC",$db);
 			$num_rows = mysql_num_rows($res);
-			echo "<p id=\"newConversationLink\"><a class=\"content\" href=\"newconv.php\">Add new conversation</a>&nbsp;</p>";
 			if ($num_rows == 0) {
-				echo "<p class=\"indent\"><i>No new conversations</i></p>";			
+				echo "<h1 style=\"padding-top: 7px\">New</h1><p class=\"indent\"><i>No new conversations</i></p>";			
 			} else {
+				echo "<h1 style=\"padding-top: 7px\">New</h1>";
 				echo "<form name=\"markasread\" action=\"index.php\" method=\"POST\"><input type=\"hidden\" name=\"markasread\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";
 				echo "<tr class=\"small\"><td>&nbsp;</td><td>Title (# of comments)</td><td>Most recent post</td><td class=\"small\">Mark read</td></tr>";
 				echo "<tr bgcolor=\"#6699CC\"><td colspan=4><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
@@ -33,7 +33,7 @@ if ($username) {
 		} else {
 			$unread = 2;
 			$trspacer = "<tr height=6><td colspan=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
-			$res = mysql_query("SELECT DISTINCT con.* FROM conversations AS con, comments AS com WHERE con.visible = 'Y' AND con.conid = com.conid AND com.readby_$username = 1 $norepeats ORDER BY changedate DESC $showall",$db) or die (mysql_error());
+			$res = mysql_query("SELECT DISTINCT con.* FROM conversations AS con, comments AS com WHERE con.visible = 'Y' AND con.conid = com.conid AND com.readby_$username = 1 $norepeats ORDER BY changedate DESC $showall",$db);
 			$num_rows = 1;
 			echo "<h1 style=\"padding-top: 7px\">Unchanged</h1>";
 			echo "<table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";

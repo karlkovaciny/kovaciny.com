@@ -53,34 +53,33 @@ function jtp(jumpto) {//jump to parent in threaded conversations
 }
 function flashcomm(e,bgc){document.getElementById(e).style.background=bgc;}
 
-function quoteme(authorname, commentTextId) {
+function quoteme(authorname) {
 	var txt = '';
 	var modtxt = '';
 	if (window.getSelection) {
-		txt = window.getSelection().toString();
+		txt = window.getSelection();
 	} else if (document.getSelection) {
-		txt = document.getSelection().toString();
+		txt = document.getSelection();
 	} else if (document.selection) {
 		txt = document.selection.createRange().text;
 	}
+	txt = txt + '';
 	if (txt.length == 0) {
-		txt = document.getElementById(commentTextId).innerHTML;
-		txt = txt.replace(/<br>\n<br>/gi, "\n");
-	} 
-	
-	var existingtext = document.forms.commentform.comment.value + '';
-	if (existingtext.length == 0) {
-		modtxt = '[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';
+		confirm('Please select the text you wish to quote and click this link again.');
 	} else {
-		modtxt = existingtext + '\n[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';
+		var existingtext = document.forms.commentform.comment.value + '';
+		var txtsnip = '';
+		if (txt.length > 45) {txtsnip = txt.substr(0,45) + '...';} else {txtsnip = txt}
+		if (existingtext.length == 0) {
+			if (confirm('Add the following quote to the comment box?\n\n' + authorname.toUpperCase() + ': ' + txtsnip)) {modtxt = '[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';}
+		} else {
+			if (confirm('Append the following quote to the comment box?\n\n' + authorname.toUpperCase() + ': ' + txtsnip)) {modtxt = existingtext + '\n[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';}
+		}
+		if (modtxt.length == 0) modtxt = existingtext;
+		document.forms.commentform.comment.value = modtxt;
+		//tinyMCE.updateContent("comment");
+		document.forms.commentform.comment.focus();
 	}
-	if (modtxt.length == 0) modtxt = existingtext;
-	document.forms.commentform.comment.value = modtxt;
-	//tinyMCE.updateContent("comment");
-	var commentForm = document.forms.commentform.comment;
-	setTimeout(function() {
-	  commentForm.focus();
-	}, 0);
 }
 
 function quoteentire(authorname) {

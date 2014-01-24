@@ -54,7 +54,6 @@ if ($username) {
 				$topnew = "";
 				while($comments = mysql_fetch_array($res)) {
 					$commentid = $comments["comid"];
-					$comment_text_id = "c_" . $commentid . "_text"; //for adding a div later
 					if ($hideallexcept == 0 || $commentid == $hideallexcept) {
 						$comment = $comments["comment"];
 						$commentdate = $comments["createdate"];
@@ -103,11 +102,11 @@ if ($username) {
 							} else {
 								$hilite = "";
 								if ($privatewith == 0) $ccc .= " &nbsp; &nbsp;<a href=\"conversations.php?id=$conv_id&comid=$commentid&action=reply\">Reply to this</a>";
-								$ccc .= " &nbsp; &nbsp;<a href=\"javascript://\" onmousedown=\"quoteme('$authorname', '$comment_text_id');\">Quote selected</a>";
+								$ccc .= " &nbsp; &nbsp;<a href=\"javascript://\" onmousedown=\"quoteme('$authorname');\">Quote selected</a>";
 							}	
 							$ccc .= "</div></td>";
 						} elseif (isset($replytoid)) {
-							$ccc .= "<td><a href=\"javascript://\" onmousedown=\"quoteme('$authorname', '$comment_text_id');\">Quote selected</a></td>"; // " &nbsp; &nbsp;<a href=\"javascript://\" onclick=\"quoteentire('$authorname');\">Quote entire post</a>"
+							$ccc .= "<td><a href=\"javascript://\" onmousedown=\"quoteme('$authorname');\">Quote selected</a></td>"; // " &nbsp; &nbsp;<a href=\"javascript://\" onclick=\"quoteentire('$authorname');\">Quote entire post</a>"
 						} else { //then we're editing and don't want the action bar to stretch out
 							$ccc .= "<td>";
 						}
@@ -122,13 +121,6 @@ if ($username) {
 						$replacefrom = array("[quote=Anna]", "[quote=Jon]", "[quote=Karl]", "[quote=Larry]", "[quote=Monica]", "[quote=Nate]", "[quote=Rachel]", "[quote=Rae]", "[quote=Roger]", "[quote=Ruth]", "[quote=John]", "[quote=john]");
 						$replaceto = array("$q1 Anna$q2", "$q1 Jon$q2", "$q1 Karl$q2", "$q1 Larry$q2", "$q1 Monica$q2", "$q1 Nate$q2", "$q1 Rachel$q2", "$q1 Rae$q2", "$q1 Roger$q2", "$q1 Ruth$q2", "$q1 John$q2", "$q1 John$q2");
 						$htmlcomment = str_replace($replacefrom, $replaceto, $htmlcomment);
-						
-						//Keep URLs that don't start with "http" from turning into relative links (does not alter the original comment)
-						$htmlcomment = turnRelativeLinksAbsolute($htmlcomment);
-						
-						//add a span to allow us to access the comment text
-						$htmlcomment = "\n\n<span id=\"$comment_text_id\">" . $htmlcomment . "</span>\n";
-						
 						//add in the user's graphic
 						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
 							$htmlcomment = "<img src=\"/gfx/" . strtolower($authorname) . ".jpg\" border=0 width=85 height=85 style=\"float:left; margin-right: 8px; margin-bottom: 8px\">" . $htmlcomment;
@@ -163,6 +155,7 @@ if ($username) {
 							$postcomm = "Reply to $authorname's comment:";
 							$postbutt = "post reply";
 						}
+						$canceledit = "<input type=\"button\" value=\"Cancel\" onclick=\"if (confirm('Cancel this reply and lose all changes?')) document.location.href='conversations.php?id=$conv_id';\" class=\"small gray\">&nbsp; ";
 						$comment = "[quote=$authorname]" . addslashes($comment) . "[/quote]";
 						if ($userid == 1) {
 							$hiddenitems = "<input type=\"text\" name=\"inreplyto\" value=\"$replytoid\" class=\"small\" size=3 onfocus=\"this.select();\"> &nbsp;<input type=\"hidden\" name=\"qe\" value=\"$comment\">";
@@ -173,6 +166,7 @@ if ($username) {
 					} else {
 						$postcomm = "Edit this comment:";
 						$postbutt = "save changes";
+						$canceledit = "<input type=\"button\" value=\"Cancel\" onclick=\"if (confirm('Cancel editing and lose all changes?')) document.location.href='conversations.php?id=$conv_id';\" class=\"small gray\">&nbsp; ";
 						$posttime = strtotime($commentdate) + ($tz * 3600);
 						$posttime = date('M d, Y g:i a', $posttime);
 						$posttime = " value=\"$posttime\"";
@@ -205,7 +199,7 @@ if ($username) {
 				$allcomments = rtrim($allcomments, ":");
 				$unreadcomments = rtrim($unreadcomments, ":");
 				echo "<tr><td colspan=2><input type=\"hidden\" name=\"ac\" value=\"$allcomments\"><input type=\"hidden\" name=\"ntc\" value=\"$unreadcomments\"><textarea name=\"comment\" cols=65 rows=9 class=\"medium\" tabindex=\"14\">$editcomment</textarea></td></tr>";
-				echo "<tr><td class=\"small blue\">$hiddenitems<input type=\"submit\" value=\"$postbutt\" tabindex=\"17\"></td><td align=\"right\"></td></tr>";
+				echo "<tr><td class=\"small blue\">$hiddenitems<input type=\"submit\" value=\"$postbutt\" tabindex=\"17\"></td><td align=\"right\">$canceledit</td></tr>";
 				echo "</table></form>";
 			}
 		}
@@ -215,9 +209,9 @@ if ($username) {
 
 <script type="text/javascript">
 	<?php
-	/**** see if we have a new post, if we came from the list of new posts or are working with our own post ****/
+	/**** see if we have a new post, check if we are searching for old ones instead ****/
 	function wantNewPosts($postname) {
-		return isset($_REQUEST['action']) || (strlen($postname) && stripos($_SERVER['HTTP_REFERER'], "index.php"));
+		return strlen($postname) && !stripos($_SERVER['HTTP_REFERER'], "search.php");
 	}
 	
 	if ( wantNewPosts($topnew) ) {	
