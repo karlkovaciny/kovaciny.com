@@ -254,7 +254,7 @@
 							$value = substr($value,1);
 						}
 						$value = addslashes($value);
-						echo "highlightInnerHTML('c_$comid', '$value');";
+						echo "highlightInnerHTML(document.getElementById('c_$comid'), '$value');";
 					}
 					echo "</script>";
 					$i++;

@@ -148,11 +148,30 @@ function jumpToAnchor(anchor) {
 	window.location.replace( newUrl );
 }
 
-function highlightInnerHTML(element_id, targetString){
-	if ( e_id = document.getElementById(element_id) ) {
-		var newHTML = e_id.innerHTML;
-		var pattern = new RegExp(targetString, "gi");
-		newHTML = newHTML.replace(pattern, "<span class=\'hilite\'>$&</span>");
-		e_id.innerHTML = newHTML;
+/* Adds a highlighted span around all instances of a string in a node and its children */ 
+function highlightInnerHTML(element, targetString){
+	var pattern = new RegExp(targetString, "gi");
+	if ( element !== null ) {
+		var numChildren = element.childNodes.length;
+		for (var i = 0; i < numChildren; i++) {
+			var child = element.childNodes[i];
+			if (child.nodeType === 3) {
+				var replacementNode = document.createElement('span');
+				var exploded = child.nodeValue.split(pattern);
+				for (var j = 0, len = exploded.length; j < len; j++) {
+					replacementNode.appendChild(document.createTextNode(exploded[j]));
+					if ( j < (len - 1) ) { //there was actually an instance of the pattern found, replace it back in
+						var highlighted = document.createElement("span");
+						highlighted.className = "hilite";
+						var match = child.nodeValue.match(pattern);
+						highlighted.innerHTML = match[j];
+						replacementNode.appendChild(highlighted);
+					}
+				}
+				child.parentNode.replaceChild(replacementNode, child);
+			} else {
+				highlightInnerHTML(child, targetString);
+			}
+		}
 	}
 }
