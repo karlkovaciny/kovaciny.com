@@ -191,7 +191,13 @@
 			
 			if ($numhits == 0) {
 				if (strlen($searchmod)==0) $searchmod = "<p>Please try alternative terms, check your spelling, or give up.</p>";
-				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\"><tr valign=\"top\"><td><h1>Search Results</h1><p>No conversations were found containing $searchparams.</p>$searchmod</td><td width=10>&nbsp;</td><td align=\"right\">$searchbox</td></tr></table>";
+				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\">
+						<tr valign=\"top\">
+							<td>
+								<h1>Search Results</h1>
+									<p>No conversations were found containing $searchparams.</p>
+									$searchmod</td>
+						</tr></table>";
 			} else {
 				if ($numhits == $maxallowed) {
 					$searchmod = "more than $maxallowed results";
@@ -204,7 +210,7 @@
 						<tr>
 							<td><h1>Search Results</h1><p class=\"copy\">Your search for $searchparams returned $searchmod.</p>
 								<p class=\"copy\"><a class=\"content\" tabindex=\"15\" href=\"search.php?refine=$q\">Refine search</a></p></td>
-							<td width=10>&nbsp;</td><td align=\"right\">$searchbox</td></tr></table><br />";
+							</tr></table><br />";
 				echo "$pagenav";
 								
 				echo "<table border=0 cellpadding=0 cellspacing=0 class=\"medium\" width=\"100%\">";
