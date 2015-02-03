@@ -190,7 +190,7 @@
 			}
 			
 			if ($numhits == 0) {
-				if (strlen($searchmod)==0) $searchmod = "<p>Please try alternative terms, check your spelling, or give up.</p>";
+				if (strlen($searchmod)==0) $searchmod = "<p>Note: Search ignores <a href=\"http://dev.mysql.com/doc/refman/5.0/en/fulltext-stopwords.html\">common words</a> and those with three letters or fewer.</p>";
 				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\">
 						<tr valign=\"top\">
 							<td>
