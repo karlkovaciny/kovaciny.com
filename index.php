@@ -16,7 +16,7 @@ if ($username) {
 	$unread = 0;
 	while ($unread != 2) {
 		$tdspacer = "****";
-		if ($unread == 0) {
+		if ($unread == 0) { //list unread conversations
 			$unread = 1;
 			$norepeats = "";
 			$trspacer = "<tr height=6><td colspan=3><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
@@ -30,10 +30,12 @@ if ($username) {
 				echo "<tr class=\"small\"><td>&nbsp;</td><td>Title (# of comments)</td><td>Most recent post</td><td class=\"small\">Mark read</td></tr>";
 				echo "<tr bgcolor=\"#6699CC\"><td colspan=4><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
 			}
-		} else {
+		} else { //list read conversations
+			$time = -microtime();
 			$unread = 2;
 			$trspacer = "<tr height=6><td colspan=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
-			$res = mysql_query("SELECT DISTINCT con.* FROM conversations AS con, comments AS com WHERE con.visible = 'Y' AND con.conid = com.conid AND com.readby_$username = 1 $norepeats ORDER BY changedate DESC $showall",$db) or die (mysql_error());
+			$res = mysql_query("SELECT DISTINCT con.* FROM conversations AS con, comments AS com WHERE con.visible = 'Y' AND con.conid = com.conid AND com.readby_$username = 1 $norepeats ORDER BY changedate DESC $showall",$db) or die ("Query took " . $time + microtime() . "seconds. " . mysql_error());
+			echo "Query took " . $time + microtime() . "seconds.<BR>";
 			$num_rows = 1;
 			echo "<h1 style=\"padding-top: 7px\">Unchanged</h1>";
 			echo "<table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";
@@ -82,5 +84,5 @@ if ($username) {
 </body>
 </html>
 <?php
-}
+} else die ("username variable not set");
 ?>
