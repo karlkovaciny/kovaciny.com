@@ -9,17 +9,14 @@
 		}
 		return $auto_string;
 	}
+	require_once('config.php');
 
 	if (isset($_POST['username']) && isset($_POST['password'])) {
 		$username= ltrim(rtrim(addslashes($_POST['username'])));
 		$password= ltrim(rtrim(addslashes($_POST['password'])));
 		$mdpass= md5($password);
-	//	$db = mysql_connect('internal-db.s7387.gridserver.com', 'db7387', '***REMOVED***');
-	//	mysql_select_db ("db7387_kovaciny");
-	//	$db = mysql_connect('***REMOVED***', '***REMOVED***', '***REMOVED***');
-	//	mysql_select_db ("db286662785");
-		$db = mysql_connect('localhost', '***REMOVED***', '***REMOVED***');
-		mysql_select_db ("***REMOVED***");
+		$db = mysql_connect(SQL_HOST, DATABASE, DB_PASSWORD); 
+		mysql_select_db (DATABASE);
 		$res= mysql_query("SELECT * FROM users WHERE username='$username' AND pass='$mdpass'") or die("Could not select user ID.");
 		if (mysql_num_rows($res)==1) {
 			$user_obj= mysql_fetch_object($res);
@@ -27,7 +24,7 @@
 			$username= strtolower($user_obj->username);
 			$logcode= md5(func_generate_string());
 			setcookie("user", md5("hello this is $username"), time()+14400, "/", "kovaciny.com", 0);
-			header("Location: http://kcom.kovaciny.com/index.php");
+			header("Location: " . HOST_NAME . "/index.php");
 			exit;
 		}
 	}
@@ -44,7 +41,7 @@
 </head>
 
 <body onLoad="document.login.username.focus();">
-<div align="center" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 36px; background-color:#EEE; border-bottom: 1px solid #AAA;"><p class="small"><a href="http://kcom.kovaciny.com/">Kovaciny.com</a> <span style="padding: 0 20px 0 20px">&curren;</span> <a href="http://www.mankatopedia.com/">Mankato, Minnesota</a> <span style="padding: 0 20px 0 20px">&curren;</span> <a href="http://www.ukrainianbible.org/">Ukrainian Bible Translation Project</a> <span style="padding: 0 20px 0 20px">&curren;</span> <a href="http://www.minnesotavalleychorale.org/">Mankato Chorus</a> <span style="padding: 0 20px 0 20px">&curren;</span> <a href="http://www.blc.edu/">Lutheran Colleges</a></p></div>
+<div align="center" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 36px; background-color:#EEE; border-bottom: 1px solid #AAA;"><p class="small"><a href="<? echo HOST_NAME ?>">Kovaciny.com</a> <span style="padding: 0 20px 0 20px">&curren;</span> <a href="http://www.mankatopedia.com/">Mankato, Minnesota</a> <span style="padding: 0 20px 0 20px">&curren;</span> <a href="http://www.ukrainianbible.org/">Ukrainian Bible Translation Project</a> <span style="padding: 0 20px 0 20px">&curren;</span> <a href="http://www.minnesotavalleychorale.org/">Mankato Chorus</a> <span style="padding: 0 20px 0 20px">&curren;</span> <a href="http://www.blc.edu/">Lutheran Colleges</a></p></div>
 <table border=0 cellpadding=0 cellspacing=0 height="70%" width="100%"><tr><td align="center"><form name="login" method="post" action="login.php">
 		<h1>Please Sign In</h1><table border=0 cellpadding=3 cellspacing=0><tr><td><input name="username" type="text" size=13 maxlength=10></td></tr>
 		<tr><td><input name="password" type="password" size=13 maxlength=32></td></tr>

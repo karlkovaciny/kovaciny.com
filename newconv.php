@@ -64,7 +64,7 @@ if ($username) {
 				if ($privatewith == 0) {
 					echo "<br>Your conversation has been added!</p><form name=\"conadded\" action=\"conversations.php?id=$conv_id\" method=\"POST\"><table border=0 cellpadding=0 cellspacing=0><tr><td><input type=\"submit\" value=\"View conversation\"></td><td class=\"sidepad\"><input type=\"button\" onclick=\"document.location.href='index.php';\" value=\"Return to main page\"></td></tr></table></form>";
 				} else {
-					header("Location: http://kcom.kovaciny.com/index.php?private=true");
+					header("Location: " . HOST_NAME . "/index.php?private=true");
 				}
 				exit;
 			}

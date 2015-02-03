@@ -1,13 +1,12 @@
 <?php
 // db Connection
-//	$db = mysql_connect('internal-db.s7387.gridserver.com', 'db7387', '***REMOVED***');
-//	mysql_select_db ("db7387_kovaciny");
-	$db = mysql_connect('localhost', '***REMOVED***', '***REMOVED***'); //no error, yes connected
+	require_once('config.php');
+	$db = mysql_connect(SQL_HOST, DATABASE, DB_PASSWORD); //no error, yes connected
 	if (!$db) {
 		die('Not connected : ' . mysql_error());
 	}
 
-	$db_selected = mysql_select_db ("***REMOVED***", $db);
+	$db_selected = mysql_select_db (DATABASE, $db);
 	if (!$db_selected) {
 		die ('Can\'t select db : ' . mysql_error());
 	}
@@ -45,7 +44,7 @@ require_once('functions.php');
 				$_SESSION['user'] = "";
 				session_destroy();
 			}
-			header("Location: http://kcom.kovaciny.com/login.php");
+			header("Location: " . HOST_NAME . "/login.php");
 		} else {
 			$usertoken = $_COOKIE['user'];
 			if (strlen($usertoken) == 0) {
@@ -89,7 +88,7 @@ require_once('functions.php');
 		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0">
 		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white">
 			<tr>
-				<td width=219><a href="/index.php"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td>
+				<td width=219><a href="index.php"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td>
 				<td align="center">
 					<?php
 						echo "Welcome <b>$me</b>!<BR>Now visiting the DEVELOPMENT VERSION of k.com";
@@ -119,7 +118,7 @@ require_once('functions.php');
 				<td width=10>&nbsp;</td><td class="copy" style="padding:5px">
 		<?php
 	} else {
-		header("Location: http://kcom.kovaciny.com/login.php");
+		header("Location: " . HOST_NAME . "/login.php");
 	}
 ?>
 

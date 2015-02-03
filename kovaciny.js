@@ -162,7 +162,7 @@ function highlightInnerHTML(element, targetString){
 					replacementNode.appendChild(document.createTextNode(exploded[j]));
 					if ( j < (len - 1) ) { //there was actually an instance of the pattern found, replace it back in
 						var highlighted = document.createElement("span");
-						highlighted.className = "hilite";
+						highlighted.className = "hilite_strong";
 						var match = child.nodeValue.match(pattern);
 						highlighted.innerHTML = match[j];
 						replacementNode.appendChild(highlighted);
