@@ -1,4 +1,4 @@
-<?php
+<?php	
 require_once('config.php');
 $db = mysql_connect(SQL_HOST, DATABASE, DB_PASSWORD); 
 mysql_select_db (DATABASE);
@@ -18,10 +18,11 @@ if( mysql_num_rows ($res) == 0 ) {
 require_once("head.php");
 $q_safe = htmlentities($q);
 echo "<h1 style=\"padding-top: 7px\">Search Results</h1>";
-echo "<p class=\"copy\">These conversation titles matched your search terms.</P><p class=\"copy\"><a class=\"content\" href=\"" . HOST_NAME . "/search.php?q=$q_safe\" tabindex=\"15\">Search for comments instead</a></p>";
-echo "<table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";
+echo "<p class=\"copy\">These conversation titles matched your search terms.</P>";
+echo "<p id=\"newConversationLink\"><a class=\"content\" href=\"newconv.php\">Add new conversation</a>&nbsp;</p>";
+echo "<table class=\"searchResults\">";
 echo "<tr class=\"small\"><td>Title</td><td>Most recent post</td></tr>";
-echo "<tr bgcolor=\"#6699CC\"><td colspan=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
+echo "<tr class=\"blueHR\"><td colspan=2 class=\"blueHR\"><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
 $tabindex = 10;
 while($convs = mysql_fetch_array($res)) {
 	$tabindex += 10;
@@ -32,15 +33,16 @@ while($convs = mysql_fetch_array($res)) {
 	$numcomm = $convs["numcomm"];
 	$convdate = format_interval(time() - strtotime($convdate));
 	$convdate = str_replace(array(" months", " month", " weeks", " week", " days", " day", " hrs", " hr", " min", " sec"),array("mo", "mo", "w", "w", "d", "d", "h", "h", "m", "s"),$convdate);
-	if ($rc == true) {$rowcolor = ""; $rc = false;} else {$rowcolor = " bgcolor=\"#F6F6F6\""; $rc = true;}
-//	if ($unread == 1) {
-//		echo "<tr$rowcolor><td><img src=\"gfx/new.gif\" border=0 width=31 height=12 hspace=8></td><td class=\"rowpad\"><a href=\"conversations.php?id=$convid\">$contitle</a> ($numcomm)</td><td nowrap class=\"small rowpad sidepad\">$convdate ago by <a href=\"?user=$lastpostuserid\">$lastpostusername</a></td>";
-//				echo "<td align=\"center\"><input type=\"checkbox\" onclick=\"document.forms.markasread.markasread.value='$convid';document.forms.markasread.submit();\" title=\"Check this box to mark conversation as read\"></td></tr>";
-//		echo "<td align=\"center\"><input type=\"checkbox\" name=\"m[]\" value=\"$convid\"></td></tr>";
-//	} else {
-		echo "<tr$rowcolor><td class=\"rowpad sidepad\" ><a href=\"conversations.php?id=$convid\" tabindex=\"$tabindex\" >$contitle</a> ($numcomm)</td><td nowrap class=\"small rowpad sidepad\">$convdate ago</td></tr>";
+	echo "<tr class=\"searchResults\">
+			<td class=\"searchResults\" ><a href=\"conversations.php?id=$convid\" tabindex=\"$tabindex\" >$contitle</a> ($numcomm)</td>
+			<td class=\"searchResults\">$convdate ago</td></tr>";
 }
-echo "</td></tr></table>
+echo "</td></tr></table>";
+echo "<script>
+</script>";
+
+echo "<p class=\"copy\"><a class=\"content\" href=\"" . HOST_NAME . "/search.php?q=$q_safe\" tabindex=\"15\">Search for comments instead</a></p>";
+echo "
 </body>
 </html>";
 ?>
