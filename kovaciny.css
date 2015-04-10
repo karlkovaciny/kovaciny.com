@@ -53,6 +53,7 @@ table.searchResults { border: 0px; border-spacing: 0px; padding-left: 25px; font
 	td.searchResults:last-child  { white-space: nowrap; font-size: 10px; }
 	tr.blueHR { background-color:#6699CC; }
 	td.blueHR { padding: 0px; }
+td.tableExpander { text-align: center; font-style: italic; border: 1px; font-size: 10px;}
 #headerSearchForm { text-align: right; margin-bottom: 0px;}
 #headerSearchBox { color: #999999; font-style:italic; height: 26px; border-style: outset; vertical-align: bottom  }
 #headerSearchButton { vertical-align: bottom; padding:0 }
