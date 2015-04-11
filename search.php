@@ -11,7 +11,7 @@
 		if ( ( ($_REQUEST['q'] == "") || (!isset($_REQUEST['q']) ) ) 
 						&& !isset($_REQUEST['q_matchAllComments']) ) {
 			if (isset($_REQUEST['refine'])) {
-				$refine = stripslashes($_REQUEST['refine']);
+				$refine = htmlentities($_REQUEST['refine']);
 			}
 			?>
 			<h1>Search</h1>
@@ -209,7 +209,7 @@
 				echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\">
 						<tr>
 							<td><h1>Search Results</h1><p class=\"copy\">Your search for $searchparams returned $searchmod.</p>
-								<p class=\"copy\"><a class=\"content\" tabindex=\"15\" href=\"search.php?refine=$q\">Refine search</a></p></td>
+								<p class=\"copy\"><a class=\"content\" tabindex=\"15\" href=\"search.php?refine=" . $_REQUEST['q'] . "\">Refine search</a></p></td>
 							</tr></table><br />";
 				echo "$pagenav";
 								
