@@ -68,7 +68,7 @@ echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"
 		}
 	}
 
-// Log in OK
+// Log in OK, show header
 	if ($username) {
 		if ($username == "jon") {$userid = 1;} elseif ($username == "rae") {$userid = 2;}
 		elseif ($username == "karl") {$userid = 3;} elseif ($username == "rachel") {$userid = 4;}
@@ -97,7 +97,9 @@ echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"
 					?></td>
 				<td width=10>&nbsp;</td>
 				<td><form id="headerSearchForm" name="headerSearchForm" method="GET" action="conversationsearch.php">
-					<input id="headerSearchBox" name="q" class="copy headerSearchBox" type="text" title="Search" placeholder="Search" tabindex="10"><input id="headerSearchButton" type="submit" class="copy searchbutton" title="Click to search" value="">
+					<input id="headerSearchBox" name="q" class="copy headerSearchBox" type="text" title="Search" placeholder="Search" tabindex="10">
+					<input id="headerSearchButton" type="submit" class="copy searchbutton" title="Click to search" value="">
+					<input type="hidden" name="q_searchConversations" value="true">
 				</form></td>
 				<td width=10>&nbsp;</td>
 			</tr>
