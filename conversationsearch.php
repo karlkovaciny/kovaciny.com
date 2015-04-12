@@ -16,6 +16,8 @@ if ( ( ($_REQUEST['q'] == "") || (!isset($_REQUEST['q']) ) )
 
 require_once("head.php");
 
+echo "<h1 style=\"padding-top: 7px\">Search Results</h1>";
+
 if ($_REQUEST['q_searchConversations'] === "true") { 
 	$q = stripslashes($_GET['q']);
 	$q_searchstring = preprocessForSqlBoolean($q);
@@ -23,14 +25,11 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 			WHERE `visible`='Y' AND MATCH `contitle` AGAINST ('$q_searchstring' IN BOOLEAN MODE) ORDER BY `changedate` DESC";
 	$res = mysql_query($sql) or die (mysql_error());
 
-
 	if( mysql_num_rows ($res) == 0 ) {
-		echo "<h1 style=\"padding-top: 7px\">Search Results</h1>";
 		echo "<p class=\"copy\">No conversation titles matched your search terms. 
 			<a class=\"content\" href=\"newconv.php\">Add new conversation</a>&nbsp;</p>";
 	} else {
 		$q_safe = htmlentities($q);
-		echo "<h1 style=\"padding-top: 7px\">Search Results</h1>";
 		echo "<p class=\"copy\">Your search matched these conversation titles. <a class=\"content\" href=\"newconv.php\">Add new conversation</a>&nbsp;</p>";
 		echo "<table class=\"searchResults\">";
 		echo "<tr class=\"small\"><td>Conversation</td><td>Most recent post</td></tr>";
@@ -83,13 +82,6 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 	</script>
 <?php
 }
-	//get a list of the usernames and ids; this should be gotten rid of
-	$res_users = mysql_query ("SELECT `userid`, `username` FROM `users`") or die ("Error getting usernames: " . mysql_error() . "<br />");
-	while ($row=mysql_fetch_array($res_users)) {
-		$key = $row["userid"];
-		$userlist[$key] = $row["username"];
-	}
-
 	// Pull the search string into variables.
 		$q = stripslashes($_REQUEST['q']); 
 		$q_searchstring = preprocessForSqlBoolean($q);
@@ -125,7 +117,7 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 				$searchquery .= "AND MATCH (`c`.`comment`) AGAINST ('$q_searchstring' IN BOOLEAN MODE) ";
 			}				
 			if ($q_author != "") {
-				$searchquery .= "AND `c`.`authorid` = $q_author ";
+				$searchquery .= "AND `users`.`username` = \"$q_author\" ";
 			}
 			if ($q_title != "") {
 				$searchquery .= "AND MATCH (`conversations`.`contitle`) AGAINST ('$q_title' IN BOOLEAN MODE) ";
@@ -206,8 +198,7 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 			$searchparams = "posts";
 		}
 		if ($q_author != "") {
-			$thisuser = $userlist[$q_author];
-			$searchparams .= " by <b>". $thisuser . "</b>";
+			$searchparams .= " by <b>". $q_author . "</b>";
 		}
 		if ($q_title != "") {
 			$searchparams .= " in threads containing <b>" . $q_title . "</b>";
@@ -259,12 +250,10 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 					$replaceto = array("<br>","$q1 quote$q2", "</td></tr></table>","</table>", "<u><a href=", "</a></u>");
 					$comment = str_replace($replacefrom, $replaceto, $comment);
 					unset($replacefrom,$replaceto);
-					foreach($userlist as $value) {
-						$replacefrom[] = "[quote=$value]";
-						$replaceto[] = "$q1 $value$q2";
-					}
-					$comment = str_replace($replacefrom, $replaceto, $comment);
-					unset($replacefrom,$replaceto,$value);
+					
+					//mark attributed quotes
+					$regex = "/\\[quote=([^\\]]*)\\]/i"; //matches [quote=(username)]
+					$comment = preg_replace($regex, "$q1 $1 $q2", $comment); //$1 is the captured username
 					
 					//replace line breaks
 					$replacefrom = array(chr(10));

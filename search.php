@@ -26,8 +26,8 @@ if (isset($_REQUEST['refine'])) {
 					<select class="copy" name="q_author" style="width:44%">
 						<option value = "" selected></option>
 						<?php 
-						foreach ($userlist as $key=>$value) {
-							echo "<option value = \"" . $key . "\">" . $value . "</option><br />";
+						foreach ($userlist as $value) {
+							echo "<option value = \"" . $value . "\">" . $value . "</option><br />";
 						} ?>
 					</select></td></tr>
 			<tr>
