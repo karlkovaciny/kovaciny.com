@@ -35,7 +35,11 @@ if ($username) {
 			$unread = 2;
 			$trspacer = "<tr height=6><td colspan=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
 			$res = mysql_query("SELECT DISTINCT con.* FROM conversations AS con, comments AS com WHERE con.visible = 'Y' AND con.conid = com.conid AND com.readby_$username = 1 $norepeats ORDER BY changedate DESC $showall",$db) or die ("Query took " . $time + microtime() . "seconds. " . mysql_error());
-			echo "Query took " . $time + microtime() . "seconds.<BR>";
+			if (DEBUG) {				
+				echo "Query " .
+					// "started at " . number_format($time, 6) . " and ended at " . number_format( microtime(), 6 ) . " and " .
+					"took " . number_format( ($time + microtime()), 6 ) . " seconds.<BR>";
+			}
 			$num_rows = 1;
 			echo "<h1 style=\"padding-top: 7px\">Unchanged</h1>";
 			echo "<table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";
