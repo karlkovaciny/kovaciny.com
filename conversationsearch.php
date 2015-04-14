@@ -212,7 +212,7 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 			echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\">
 					<tr valign=\"top\">
 						<td>
-								<p>No conversations were found containing $searchparams.</p>
+								<p>No comments were found containing $searchparams.</p>
 								$searchmod</td>
 					</tr></table>";
 		} else {
