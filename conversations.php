@@ -216,7 +216,7 @@ if ($username) {
 
 <div id="deleteConfirmation">
 	<div class="popupMessage">Post deleted.</div>
-	<div id="deleteConfirmationUndoButton" class="popupMessage">Undo</div>
+	<div id="deleteConfirmationUndoButton" class="popupMessage"><img src="gfx/Arrows-Undo-icon.png" id="undoArrow">Undo</div>
 </div>
 
 <script type="text/javascript">
