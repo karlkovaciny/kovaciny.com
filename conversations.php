@@ -92,7 +92,8 @@ if ($username) {
 							$ccc .= "<div id=\"c_s_$commentid\"><a href=\"javascript:show('c_h_$commentid');hide('c_s_$commentid');hide('c_$commentid');\">Hide comment</a>";
 							if ($userid == 1 || $userid == $authorid) {
 								$ccc .= " &nbsp; &nbsp;<a href=\"conversations.php?id=$conv_id&comid=$commentid&action=edit\">Edit</a>";
-								$ccc .= " &nbsp; &nbsp;<a href=\"javascript:if(confirm('Permanently Delete this Comment?')){document.location.href='conversations.php?id=$conv_id&comid=$commentid&action=delete';}//\">Delete</a>";
+								$ccc .= " &nbsp; &nbsp;<a href=\"#\" class=\"deleteCommentLink\">Delete</a>";
+/*								$ccc .= " &nbsp; &nbsp;<a href=\"javascript:if(confirm('Permanently Delete this Comment?')){document.location.href='conversations.php?id=$conv_id&comid=$commentid&action=delete';}//\">Delete</a>";*/
 							}
 							if ($userid == 1) {
 								$ccc .= " &nbsp; &nbsp;($commentage) <span style=\"cursor: pointer; text-decoration: underline\" onclick=\"makeRequest('c.xml');\">Load comment</span>";
@@ -213,11 +214,31 @@ if ($username) {
 ?>
 </td></tr></table>
 
+<div id="deleteConfirmation">
+	<div class="popupMessage">Post deleted.</div>
+	<div id="deleteConfirmationUndoButton" class="popupMessage">Undo</div>
+</div>
+
+<script type="text/javascript">
+	$(".deleteCommentLink").click(function(){
+		var pos = $(this).position();
+		var width = $(this).outerWidth();
+		$("#deleteConfirmation").css({
+			position: "absolute" ,
+			top: (pos.top + 4) + "px",
+			left: (pos.left + width + 4) + "px"
+		}).fadeIn(400).delay(3000).fadeOut(400);
+		return false;
+	});
+</script>
+
 <script type="text/javascript">
 	<?php
 	/**** see if we have a new post, if we came from the list of new posts or are working with our own post ****/
 	function wantNewPosts($postname) {
-		return isset($_REQUEST['action']) || (strlen($postname) && stripos($_SERVER['HTTP_REFERER'], "index.php"));
+	return isset($_REQUEST['action']) || 
+			(strlen($postname) && 
+			( ($_SERVER['HTTP_REFERER'] == HOST_NAME . "/") || stripos($_SERVER['HTTP_REFERER'], "index.php")) );
 	}
 	
 	if ( wantNewPosts($topnew) ) {	
