@@ -228,8 +228,16 @@ if ($username) {
 			top: (pos.top + 4) + "px",
 			left: (pos.left + width + 4) + "px"
 		}).fadeIn(400).delay(3000).fadeOut(400);
+		var deleteCountdown = setTimeout( function(){ alert("cute monica"); }, 3800 );
+		$("#deleteConfirmationUndoButton").click(function(){
+			window.clearTimeout(deleteCountdown);
+			$(this).css({ "background-color": "#6699CC" });
+			setTimeout( function(){ $("#deleteConfirmation").hide(); },200 );
+		});
 		return false;
 	});
+	
+	
 </script>
 
 <script type="text/javascript">
