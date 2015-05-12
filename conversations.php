@@ -221,17 +221,20 @@ if ($username) {
 
 <script type="text/javascript">
 	$(".deleteCommentLink").click(function(){
-		var pos = $(this).position();
+		var pos = $(this).position().top + $(this).height() + 4;
 		var width = $(this).outerWidth();
 		$("#deleteConfirmation").css({
 			position: "absolute" ,
-			top: (pos.top + 4) + "px",
-			left: (pos.left + width + 4) + "px"
+			top: pos + "px",
+			left: ($(window).width() / 2) + "px"
 		}).fadeIn(400).delay(3000).fadeOut(400);
+		var rightEdge = $("#deleteConfirmation")[0].getBoundingClientRect().right;
+		if( rightEdge > $(window).width() ){
+			$('body, html').scrollLeft(400);
+		}		
 		var deleteCountdown = setTimeout( function(){ alert("cute monica"); }, 3800 );
 		$("#deleteConfirmationUndoButton").click(function(){
 			window.clearTimeout(deleteCountdown);
-			$(this).css({ "background-color": "#6699CC" });
 			setTimeout( function(){ $("#deleteConfirmation").hide(); },200 );
 		});
 		return false;
