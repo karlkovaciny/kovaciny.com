@@ -92,7 +92,7 @@ if ($username) {
 							$ccc .= "<div id=\"c_s_$commentid\"><a href=\"javascript:show('c_h_$commentid');hide('c_s_$commentid');hide('c_$commentid');\">Hide comment</a>";
 							if ($userid == 1 || $userid == $authorid) {
 								$ccc .= " &nbsp; &nbsp;<a href=\"conversations.php?id=$conv_id&comid=$commentid&action=edit\">Edit</a>";
-								$ccc .= " &nbsp; &nbsp;<a href=\"#\" class=\"deleteCommentLink\">Delete</a>";
+								$ccc .= " &nbsp; &nbsp;<a href=\"#\" class=\"deleteCommentLink\" data-convid=\"$conv_id\" data-commentid=\"$commentid\">Delete</a>";
 /*								$ccc .= " &nbsp; &nbsp;<a href=\"javascript:if(confirm('Permanently Delete this Comment?')){document.location.href='conversations.php?id=$conv_id&comid=$commentid&action=delete';}//\">Delete</a>";*/
 							}
 							if ($userid == 1) {
@@ -149,7 +149,7 @@ if ($username) {
 				
 				//display footer
 				if ($hideallexcept == 0) echo "<hr noshade size=1><form name=\"markread\" action=\"index.php\" method=\"POST\"><input type=\"hidden\" name=\"markasread\" value=\"$conv_id\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></form><hr noshade size=1><br>";
-				echo "<form name=\"commentform\" method=\"post\" action=\"conversations.php";
+				echo "<form name=\"commentform\" method=\"post\" accept-charset=\"utf-8\" action=\"conversations.php";
 				if ($hideallexcept == 0) {
 					$postcomm = "Post a comment:";
 					$postbutt = "add comment";
@@ -215,27 +215,38 @@ if ($username) {
 </td></tr></table>
 
 <div id="deleteConfirmation">
-	<div class="popupMessage">Post deleted.</div>
+	<div class="popupMessage">Deleting post...</div>
 	<div id="deleteConfirmationUndoButton" class="popupMessage"><img src="gfx/Arrows-Undo-icon.png" id="undoArrow">Undo</div>
 </div>
 
 <script type="text/javascript">
 	$(".deleteCommentLink").click(function(){
+		//hide post and show "Deleted" toast with an undo button
 		var pos = $(this).position().top + $(this).height() + 4;
-		var width = $(this).outerWidth();
+		var popupMarginLeft = -1 * ($("#deleteConfirmation").outerWidth() / 2) + "px";
+		var popupMarginTop = -1 * ($("#deleteConfirmation").outerHeight() / 2) + "px";
 		$("#deleteConfirmation").css({
-			position: "absolute" ,
-			top: pos + "px",
-			left: ($(window).width() / 2) + "px"
+			position: "fixed",
+			top: "50%",
+			left: "50%",
+			"margin-top": popupMarginTop,
+			"margin-left": popupMarginLeft
 		}).fadeIn(400).delay(3000).fadeOut(400);
-		var rightEdge = $("#deleteConfirmation")[0].getBoundingClientRect().right;
-		if( rightEdge > $(window).width() ){
-			$('body, html').scrollLeft(400);
-		}		
-		var deleteCountdown = setTimeout( function(){ alert("cute monica"); }, 3800 );
+		
+		var convid = $(this).attr("data-convid");
+		var commentid = $(this).attr("data-commentid");
+		var comment = $(this).parents().closest('div').slideUp();
+		
+		//delete post
+		var deleteCountdown = setTimeout( function(){ 
+			document.location.href='conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
+			}, 3800 );
 		$("#deleteConfirmationUndoButton").click(function(){
 			window.clearTimeout(deleteCountdown);
-			setTimeout( function(){ $("#deleteConfirmation").hide(); },200 );
+			comment.slideDown();
+			setTimeout( function(){ 
+				$("#deleteConfirmation").hide(); 
+				},200 );				
 		});
 		return false;
 	});
