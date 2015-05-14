@@ -24,17 +24,17 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 	$sql = "SELECT `conid`, `contitle`, `changedate`, `createdate`, `numcomm`, `visible` FROM `conversations` 
 			WHERE `visible`='Y' AND MATCH `contitle` AGAINST ('$q_searchstring' IN BOOLEAN MODE) ORDER BY `changedate` DESC";
 	$res = mysql_query($sql) or die (mysql_error());
-
+	
 	if( mysql_num_rows ($res) == 0 ) {
 		echo "<p class=\"copy\">No conversation titles matched your search terms. 
-			<a class=\"content\" href=\"newconv.php\">Add new conversation</a>&nbsp;</p>";
+			<a class=\"content\" tabindex=\"20\" href=\"newconv.php\">Add new conversation</a>&nbsp;</p>";
 	} else {
 		$q_safe = htmlentities($q);
-		echo "<p class=\"copy\">Your search matched these conversation titles. <a class=\"content\" href=\"newconv.php\">Add new conversation</a>&nbsp;</p>";
+		echo "<p class=\"copy\">Your search matched these conversation titles. <a class=\"content\" tabindex=\"20\" href=\"newconv.php\">Add new conversation</a>&nbsp;</p>";
 		echo "<table class=\"searchResults\">";
 		echo "<tr class=\"small\"><td>Conversation</td><td>Most recent post</td></tr>";
 		echo "<tr class=\"blueHR\"><td colspan=2 class=\"blueHR\"><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
-		$tabindex = 10;
+		$tabindex = 20;
 		while($convs = mysql_fetch_array($res)) {
 			$tabindex += 10;
 			$convdate = $convs["changedate"];
@@ -52,8 +52,9 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 						<div class=\"slideme\" style=\"display: visible\">
 						$convdate ago</td></tr>";
 		}
+		$tabindex +=10;
 		echo "</td></tr>
-			<tr><td colspan=2 class=\"tableExpander\"><a href=\"#\" id=\"moreConversationsLink\">Show more conversations</a></td></tr>
+			<tr><td colspan=2 class=\"tableExpander\"><a href=\"#\" id=\"moreConversationsLink\" tabindex=\"$tabindex\">Show more conversations</a></td></tr>
 			</table>
 		<br><br><br>";
 	}
@@ -226,14 +227,14 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 			echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\">
 					<tr>
 						<td><p class=\"copy\">Your search for $searchparams returned $searchmod. 
-								<a class=\"content\" tabindex=\"15\" href=\"search.php?refine=" . htmlentities($_REQUEST['q']) . "\">Refine search</a>
+								<a class=\"content\" tabindex=\"400\" href=\"search.php?refine=" . htmlentities($_REQUEST['q']) . "\">Refine search</a>
 							</p></td>
 						</tr></table><br />";
 			echo "$pagenav";
 							
 			echo "<table border=0 cellpadding=0 cellspacing=0 class=\"medium\" width=\"100%\">";
 			$i = 0;
-			$tabindex = 10;
+			$tabindex = 410;
 			while ($searchresults = mysql_fetch_array($res) AND ($i < $rpp)) {					
 				$tabindex += 10;
 				$conid = $searchresults["conid"];
