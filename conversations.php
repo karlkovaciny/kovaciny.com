@@ -149,7 +149,7 @@ if ($username) {
 				
 				//display footer
 				if ($hideallexcept == 0) echo "<hr noshade size=1><form name=\"markread\" action=\"index.php\" method=\"POST\"><input type=\"hidden\" name=\"markasread\" value=\"$conv_id\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></form><hr noshade size=1><br>";
-				echo "<form name=\"commentform\" method=\"post\" accept-charset=\"utf-8\" action=\"conversations.php";
+				echo "<form name=\"commentform\" method=\"post\" action=\"conversations.php";
 				if ($hideallexcept == 0) {
 					$postcomm = "Post a comment:";
 					$postbutt = "add comment";
