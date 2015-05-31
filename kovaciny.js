@@ -83,20 +83,6 @@ function quoteme(authorname, commentTextId) {
 	}, 0);
 }
 
-function quoteentire(authorname) {
-	var txt = document.forms.commentform.comment.value + '';
-	var qe = document.forms.commentform.qe.value + '';
-	var pronoun = 'his';
-	if (txt.length == 0) {
-		txt = qe + '\n\n';
-	} else {
-		if (authorname == 'Anna' || authorname == 'Monica' || authorname == 'Rachel' || authorname == 'Rae' || authorname == 'Ruth') pronoun = 'her';
-		if (confirm('There is already text in the comment box.\n\nClick OK to prefix it with ' + authorname + '\'s comment, or click Cancel to append ' + pronoun + ' comment to the existing text.')) {txt = qe + '\n\n' + txt;} else {txt = txt + '\n\n' + qe + '\n\n';}
-	}
-	document.forms.commentform.comment.value = txt;
-	document.forms.commentform.comment.focus();
-}
-
 var http_request = false;
 
 function makeRequest(url) {

@@ -108,7 +108,7 @@ if ($username) {
 							}	
 							$ccc .= "</div></td>";
 						} elseif (isset($replytoid)) {
-							$ccc .= "<td><a href=\"javascript://\" onmousedown=\"quoteme('$authorname', '$comment_text_id');\">Quote selected</a></td>"; // " &nbsp; &nbsp;<a href=\"javascript://\" onclick=\"quoteentire('$authorname');\">Quote entire post</a>"
+							$ccc .= "<td><a href=\"javascript://\" onmousedown=\"quoteme('$authorname', '$comment_text_id');\">Quote selected</a></td>";
 						} else { //then we're editing and don't want the action bar to stretch out
 							$ccc .= "<td>";
 						}
@@ -166,9 +166,9 @@ if ($username) {
 						}
 						$comment = "[quote=$authorname]" . addslashes($comment) . "[/quote]";
 						if ($userid == 1) {
-							$hiddenitems = "<input type=\"text\" name=\"inreplyto\" value=\"$replytoid\" class=\"small\" size=3 onfocus=\"this.select();\"> &nbsp;<input type=\"hidden\" name=\"qe\" value=\"$comment\">";
+							$hiddenitems = "<input type=\"text\" name=\"inreplyto\" value=\"$replytoid\" class=\"small\" size=3 onfocus=\"this.select();\">";
 						} else {
-							$hiddenitems = "<input type=\"hidden\" name=\"inreplyto\" value=\"$replytoid\"><input type=\"hidden\" name=\"qe\" value=\"$comment\">";
+							$hiddenitems = "<input type=\"hidden\" name=\"inreplyto\" value=\"$replytoid\">";
 						}
 						echo "?id=$conv_id&comid=$hideallexcept&action=new";
 					} else {
