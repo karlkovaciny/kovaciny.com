@@ -76,7 +76,6 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 				extraRows.show(); 
 				extraRows.find(".slideme").hide();
 				extraRows.find(".slideme").slideDown();
-				$('table.searchResults')[0].scrollIntoView();
 				return false;
 			});
 		});

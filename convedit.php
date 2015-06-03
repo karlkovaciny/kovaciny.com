@@ -7,6 +7,10 @@ if (isset($_GET['action'])) {
 			$newinreplyto = $_GET['irtid'];
 			} else {$newinreplyto = 0;}
 		$newcomm = ltrim(rtrim($_POST['comment']));
+		if (!isset($_POST['comment']) ) { 
+			die ("error: tried to post blank post"); 
+		}
+		
 		$replacefrom = array("\\'","\\'",'\\"','\\"');
 		$replaceto = array("\'","\'",'\"','\"');
 		$newcomm = str_replace($replacefrom, $replaceto, $newcomm);
