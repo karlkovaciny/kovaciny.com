@@ -87,7 +87,7 @@ echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"
 		<script language="JavaScript" src="kovaciny.js" name="jsinc"></script>
 		</head>
 		
-		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0">
+		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white">
 			<tr>
 				<td width=219><a href="index.php"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td>

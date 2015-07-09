@@ -53,11 +53,14 @@ table.searchResults { border: 0px; border-spacing: 0px; font-size: 12px;}
 	td.searchResults:last-child  { white-space: nowrap; font-size: 10px; }
 	tr.blueHR { background-color:#6699CC; }
 	td.blueHR { padding: 0px; }
-td.tableExpander { text-align: center; font-style: italic; border: 1px; font-size: 10px;}
 #headerSearchForm { text-align: right; margin-bottom: 0px;}
 #headerSearchBox { color: #999999; font-style:italic; height: 26px; border-style: outset; vertical-align: bottom  }
 #headerSearchButton { vertical-align: bottom; padding:0 }
+	
+td.tableExpander { text-align: center; font-style: italic; border: 1px; font-size: 10px;}
+
 #newConversationLink { font-size: 10px; padding-left:72px; padding-top:7px }
+
 .popupMessage { background-color: #6699CC; color: white; border: 0px solid #7B7979; border-radius: 3px; float: left; font-size: 14px; padding:13px; 	    -webkit-box-shadow: 0px 0px 8px -1px rgba(56, 56, 56, 1);
 	  -moz-box-shadow: 0px 0px 8px -1px rgba(56, 56, 56, 1);
        box-shadow: 0px 0px 8px-1px rgba(56, 56, 56, 1);}
@@ -66,3 +69,12 @@ td.tableExpander { text-align: center; font-style: italic; border: 1px; font-siz
 #deleteConfirmationUndoButton:hover { background-color: #001177; }
 #deleteConfirmationUndoButton:active { background-color: #001177; }
 #undoArrow { filter:invert(1); margin-right:0.5em; height:14px; -webkit-filter: invert(100%); margin-top: 3px; margin-bottom: -3px;}
+
+span.commentContents img { width: auto; }
+span.commentContents img.squashed { 
+	width: 100%; 
+	height: auto;
+	cursor: -moz-zoom-in; 
+    cursor: -webkit-zoom-in; 
+    cursor: zoom-in;
+}

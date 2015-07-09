@@ -93,7 +93,6 @@ if ($username) {
 							if ($userid == 1 || $userid == $authorid) {
 								$ccc .= " &nbsp; &nbsp;<a href=\"conversations.php?id=$conv_id&comid=$commentid&action=edit\">Edit</a>";
 								$ccc .= " &nbsp; &nbsp;<a href=\"#\" class=\"deleteCommentLink\" data-convid=\"$conv_id\" data-commentid=\"$commentid\">Delete</a>";
-/*								$ccc .= " &nbsp; &nbsp;<a href=\"javascript:if(confirm('Permanently Delete this Comment?')){document.location.href='conversations.php?id=$conv_id&comid=$commentid&action=delete';}//\">Delete</a>";*/
 							}
 							if ($userid == 1) {
 								$ccc .= " &nbsp; &nbsp;($commentage) <span style=\"cursor: pointer; text-decoration: underline\" onclick=\"makeRequest('c.xml');\">Load comment</span>";
@@ -113,6 +112,8 @@ if ($username) {
 							$ccc .= "<td>";
 						}
 						$ccc .= "</tr></table></td></tr>"; //end of the action bar
+						
+						//Format quotes in comment
 						$q1 = "<table border=0 cellpadding=4 cellspacing=0 class=\"border\"><tr valign=\"top\"><td class=\"green small\" bgcolor=\"#F6F6F6\">";
 						$q2 = "</td><td class=\"quote\" bgcolor=\"#FFFFFF\">";
 						$c13 = chr(13);
@@ -128,12 +129,13 @@ if ($username) {
 						$htmlcomment = turnRelativeLinksAbsolute($htmlcomment);
 						
 						//add a span to allow us to access the comment text
-						$htmlcomment = "\n\n<span id=\"$comment_text_id\">" . $htmlcomment . "</span>\n";
+						$htmlcomment = "\n\n<span id=\"$comment_text_id\" class=\"commentContents\">" . $htmlcomment . "</span>\n";
 						
 						//add in the user's graphic
 						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
 							$htmlcomment = "<img src=\"/gfx/" . strtolower($authorname) . ".jpg\" border=0 width=85 height=85 style=\"float:left; margin-right: 8px; margin-bottom: 8px\">" . $htmlcomment;
 						}
+						
 						//add the comment itself
 						$ccc .= "<tr><td class=\"copy sidepad border$hilite\"><div id=\"c_$commentid\"$hidecomment>$changenotice&nbsp;<br>$htmlcomment<br>&nbsp;</div></td></tr>";
 						$cb_id[] = $commentid;
@@ -220,8 +222,19 @@ if ($username) {
 </div>
 
 <script type="text/javascript">
-	$(".deleteCommentLink").click(function(){
-		//hide post and show "Deleted" toast with an undo button
+	$( document ).ready( function() {
+		//shrink large images 
+		$(".commentContents img").each( function() {
+			if ( $(this)[0].naturalWidth > window.innerWidth ) {
+				$(this).addClass("squashed");
+				$(this).click( function() {
+					$(this).toggleClass("squashed");
+				});
+			} 
+		});
+
+		//hide deleted post and show "Deleted" toast with an undo button
+		$(".deleteCommentLink").click(function(){
 		var pos = $(this).position().top + $(this).height() + 4;
 		var popupMarginLeft = -1 * ($("#deleteConfirmation").outerWidth() / 2) + "px";
 		var popupMarginTop = -1 * ($("#deleteConfirmation").outerHeight() / 2) + "px";
@@ -250,6 +263,9 @@ if ($username) {
 		});
 		return false;
 	});
+
+	});
+
 	
 	
 </script>
@@ -269,6 +285,13 @@ if ($username) {
 	}
 
 	?>
+	
+	window.onbeforeunload=function() {
+    	var unsubmitted = document.forms.commentform.comment.value;
+		if (unsubmitted && unsubmitted.trim()) {
+			return 'This page is asking you to confirm that you want to leave - data you have entered may not be saved.';
+		}
+	};
 </script>
 </body>
 </html>
