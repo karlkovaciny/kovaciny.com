@@ -83,7 +83,7 @@ echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"
 		<head>
 		<title>Kovaciny.com</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link href="kovaciny.css" rel="stylesheet" type="text/css">
+		<link href="kovaciny2.css" rel="stylesheet" type="text/css">
 		<script language="JavaScript" src="kovaciny.js" name="jsinc"></script>
 		</head>
 		
