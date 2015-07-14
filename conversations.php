@@ -2,7 +2,8 @@
 require_once ('head.php');
 if ($username) {
 	$tdspacer = "<td width=12>&nbsp;</td>";
-	$hideallexcept = 0;
+	$hideallexcept = 0; //not in edit or reply mode
+						//convedit.php sets to the id of the comment to show
 	if (isset($_GET['id'])) {
 		$conv_id = $_GET['id'];
 		if (is_numeric($conv_id)) {
@@ -27,7 +28,8 @@ if ($username) {
 				$privatewith= $conv_obj->privatewith;
 				$spacer = "<td width=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td>";
 				if ($hideallexcept == 0) {
-					echo "<form name=\"markasread\" action=\"index.php\" method=\"POST\"><table border=0 cellpadding=0 cellspacing=0 class=\"small\"><tr><td><h1>$contitle</h1></td>";
+					echo "<form name=\"markasread\" action=\"index.php\" method=\"POST\">";
+					echo "<table border=0 cellpadding=0 cellspacing=0 class=\"small\"><tr><td><h1>$contitle</h1></td>";
 					echo "<td class=\"sidepad\"><input type=\"hidden\" name=\"markasread\" value=\"$conv_id\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></td>";
 					if ($userid == $authorid && $comcount == 1) {
 						echo "<td class=\"sidepad\"><input type=\"button\" onclick=\"if(confirm('Are you sure you want to delete this conversation?')) {document.location.href='newconv.php?deleteconversation=$conv_id';}\" value=\"Delete conversation\" style=\"color: red\"></td>";
@@ -224,8 +226,9 @@ if ($username) {
 <script type="text/javascript">
 	$( document ).ready( function() {
 		//shrink large images 
+		var containerWidth = window.innerWidth - $("#leftnavmenu").outerWidth() - 20; //20 = spacer, padding
 		$(".commentContents img").each( function() {
-			if ( $(this)[0].naturalWidth > window.innerWidth ) {
+			if ( $(this)[0].naturalWidth > containerWidth ) {
 				$(this).addClass("squashed");
 				$(this).click( function() {
 					$(this).toggleClass("squashed");

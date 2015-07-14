@@ -83,7 +83,7 @@ echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"
 		<head>
 		<title>Kovaciny.com</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link href="kovaciny2.css" rel="stylesheet" type="text/css">
+		<link href="kovaciny8.css" rel="stylesheet" type="text/css">
 		<script language="JavaScript" src="kovaciny.js" name="jsinc"></script>
 		</head>
 		
@@ -109,12 +109,11 @@ echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"
 		</table>
 		<table width="100%" border=0 cellpadding=0 cellspacing=0>
 			<tr valign="top" height=800>
-				<td bgcolor="#DDDDDD" style="padding:5px" width=130>
-					<p class="leftnavmenu" style="padding-left: 10px; padding-top: 7px"><a href="index.php?logout=true">Log out</a></li>
+				<td id="leftnavmenu">
+					<p class="leftnavmenu"><a href="index.php?logout=true">Log out</a></p>
 					<p class="b" style="padding-top: 10px">Links</p>
 					<ul style="padding-left: 10px">
 						<li class="small leftnavmenu"><a href="http://brain.kovaciny.com/">Brain</a>
-						<li class="small leftnavmenu"><del><a href="http://www.kovaciny.com/addressbook/index.php" onClick="confirm('Address Book\nUsername: veronica\nPassword: veronica');">Address Book</a></del></li>
 						<li class="small leftnavmenu"><a href="https://twitter.com/Noumenon72">Karl's Twitter</a></li>
 						<li class="small leftnavmenu"><a href="http://octavo-dia.blogspot.com/">Larry's blog</a></li>
 						<li class="small leftnavmenu"><a href="http://hamlette.blogspot.com/">Rachel's blog</a></li>
@@ -122,14 +121,10 @@ echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"
 						<li class="small leftnavmenu"><a href="http://www.youtube.com/user/Stingrae57?feature=watch">Rae's YouTube</a></li>			
 					</ul>
 					<p><font color="#CCCCCC"><small>***REMOVED***41</small></font></p></td>
-				<td width=10>&nbsp;</td><td class="copy" style="padding:5px">
+				<td width=10>&nbsp;</td>
+				<td id="bodyContent" class="copy">
 		<?php
 	} else {
 		header("Location: " . HOST_NAME . "/login.php");
 	}
 ?>
-
-
-
-
-
