@@ -225,6 +225,46 @@ if ($username) {
 
 <script type="text/javascript">
 	$( document ).ready( function() {
+		
+		$(".deleteCommentLink").click(function(){
+			//make "delete this comment" links  pop up a toast with an undo
+			var pos = $(this).position().top + $(this).height() + 4;
+			var popupMarginLeft = -1 * ($("#deleteConfirmation").outerWidth() / 2) + "px";
+			var popupMarginTop = -1 * ($("#deleteConfirmation").outerHeight() / 2) + "px";
+			$("#deleteConfirmation").css({
+				position: "fixed",
+				top: "50%",
+				left: "50%",
+				"margin-top": popupMarginTop,
+				"margin-left": popupMarginLeft
+			}).fadeIn(400).delay(3000).fadeOut(400);
+			
+			var convid = $(this).attr("data-convid");
+			var commentid = $(this).attr("data-commentid");
+			var comment = $(this).parents().closest('div').slideUp();
+			
+			//delete post
+			var deleteCountdown = setTimeout( function(){ 
+				document.location.href='conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
+				}, 3800 );
+			$("#deleteConfirmationUndoButton").click(function(){
+				window.clearTimeout(deleteCountdown);
+				comment.slideDown();
+				setTimeout( function(){ 
+					$("#deleteConfirmation").hide(); 
+					},200 );				
+				});
+			return false;
+		});
+
+		//Don't warn user when submitting a new post 
+		$("#commentform").submit(function () {
+			window.onbeforeunload = null;
+		});
+	});
+
+	
+	$(window).load( function(){	//wait till all images are loaded
 		//shrink large images 
 		var containerWidth = window.innerWidth - $("#leftnavmenu").outerWidth() - 20; //20 = spacer, padding
 		$(".commentContents img").each( function() {
@@ -235,45 +275,7 @@ if ($username) {
 				});
 			} 
 		});
-
-		//hide deleted post and show "Deleted" toast with an undo button
-		$(".deleteCommentLink").click(function(){
-		var pos = $(this).position().top + $(this).height() + 4;
-		var popupMarginLeft = -1 * ($("#deleteConfirmation").outerWidth() / 2) + "px";
-		var popupMarginTop = -1 * ($("#deleteConfirmation").outerHeight() / 2) + "px";
-		$("#deleteConfirmation").css({
-			position: "fixed",
-			top: "50%",
-			left: "50%",
-			"margin-top": popupMarginTop,
-			"margin-left": popupMarginLeft
-		}).fadeIn(400).delay(3000).fadeOut(400);
-		
-		var convid = $(this).attr("data-convid");
-		var commentid = $(this).attr("data-commentid");
-		var comment = $(this).parents().closest('div').slideUp();
-		
-		//delete post
-		var deleteCountdown = setTimeout( function(){ 
-			document.location.href='conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
-			}, 3800 );
-		$("#deleteConfirmationUndoButton").click(function(){
-			window.clearTimeout(deleteCountdown);
-			comment.slideDown();
-			setTimeout( function(){ 
-				$("#deleteConfirmation").hide(); 
-				},200 );				
-			});
-		return false;
-		});
-
-		//Don't warn user when submitting a new post 
-		$("#commentform").submit(function () {
-			window.onbeforeunload = null;
-		});
 	});
-
-	
 	
 </script>
 
@@ -290,7 +292,6 @@ if ($username) {
 		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",170)}"; 
 			//timeout 125 was not enough time to finish hiding posts in long threads, so the jump was off
 	}
-
 	?>
 	
 	window.onbeforeunload=function() {
