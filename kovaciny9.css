@@ -7,6 +7,8 @@ td#leftnavmenu {background-color: #DDDDDD; padding: 5px;}
 	li.leftnavmenu {background-position: left center;}
 td#bodycontent {padding: 5px;}
 
+div.commentContainer {padding-bottom: 15px;}
+
 a:link {color: #001177; text-decoration: none}
 a.content:link {color: #001177; text-decoration: underline}
 a:visited {color: #001177; text-decoration: none}

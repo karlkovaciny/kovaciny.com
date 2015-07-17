@@ -14,7 +14,9 @@
 
 require_once('functions.php');
 
-echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\" type=\"text/javascript\"></script>";
+$jquery_source = DEBUG ? "http://code.jquery.com/jquery-2.1.4.js"
+					: "http://code.jquery.com/jquery-2.1.4.min.js";
+echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
 
 // Log in
 	if (isset($_GET['user'])) {
@@ -83,8 +85,8 @@ echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"
 		<head>
 		<title>Kovaciny.com</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link href="kovaciny8.css" rel="stylesheet" type="text/css">
-		<script language="JavaScript" src="kovaciny.js" name="jsinc"></script>
+		<link href="kovaciny9.css" rel="stylesheet" type="text/css">
+		<script language="JavaScript" src="kovaciny10.js" name="jsinc"></script>
 		</head>
 		
 		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
@@ -121,7 +123,7 @@ echo "<script src=\"//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js\"
 						<li class="small leftnavmenu"><a href="http://www.youtube.com/user/Stingrae57?feature=watch">Rae's YouTube</a></li>			
 					</ul>
 					<p><font color="#CCCCCC"><small>***REMOVED***41</small></font></p></td>
-				<td width=10>&nbsp;</td>
+				<td id="spacer-10px"><div style="display:inline-block; width:10;">&nbsp;</div></td>
 				<td id="bodyContent" class="copy">
 		<?php
 	} else {

@@ -1,14 +1,36 @@
 function show(e){ //use if initial state is hide
-	element = document.getElementById(e).style;
-	element.display == 'block' ? element.display = 'none' : element.display='block';
-}
-function hide(e){ //use if initial state is show
-	element = document.getElementById(e).style;
-	element.display == 'none' ? element.display = 'block' : element.display='none';
+	element = document.getElementById(e);
+	if (element) {
+		if (element.style.display == 'block') {
+			element.style.display = 'none'
+		} else {
+			element.style.display='block';
+		}
+	}
 }
 
-function showonly(e){document.getElementById(e).style.display='block';} //will not hide if already shown
-function hideonly(e){document.getElementById(e).style.display='none';} //will not hide if already shown
+function hide(e){ //use if initial state is show
+	element = document.getElementById(e);
+	if (element) {
+		if (element.style.display == 'none') {
+			element.style.display = 'block'
+		} else {
+			element.style.display='none';
+		}
+	}
+	
+}
+
+function showonly(e){
+	element = document.getElementById(e);
+	if (element) //fails on comments whose parents were deleted
+		{element.style.display='block';} 
+}
+function hideonly(e){
+	element = document.getElementById(e);
+	if (element) 
+		{element.style.display='none';} 
+}
 
 function commenttoggle(expandcollapse) {// 0 = hide, 1 = show
 //this function is called not when you call habtop, nor when you hide/show an individual comment, but yes when you click the hide/show button.
@@ -19,7 +41,7 @@ function commenttoggle(expandcollapse) {// 0 = hide, 1 = show
 	var aca = new Array();
 	var delaytime = 0;
 	aca = ac.split(':');
-	for (i = aca.length; i >= 0; i--) {
+	for (i = aca.length - 1; i >= 0; i--) {
 		delaytime += 1;
 		if (expandcollapse == 1) {
 			//this is a dynamic function call: "showonly('c_4'); showonly('c_s_4'); hideonly('c_h_4');", delaytime
@@ -36,7 +58,7 @@ function habtop() {
 	var aca = new Array();
 	var delaytime = 0;
 	aca = ntc.split(':');
-	for (i = aca.length; i >= 0; i--) {
+	for (i = aca.length-1; i >= 0; i--) {
 		delaytime += 1;
 		setTimeout("hideonly('c_" + aca[i] + "'); hideonly('c_s_" + aca[i] + "'); showonly('c_h_" + aca[i] + "');", delaytime);
 	}

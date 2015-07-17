@@ -265,13 +265,22 @@ if ($username) {
 
 	
 	$(window).load( function(){	//wait till all images are loaded
+		
 		//shrink large images 
-		var containerWidth = window.innerWidth - $("#leftnavmenu").outerWidth() - 20; //20 = spacer, padding
 		$(".commentContents img").each( function() {
-			if ( $(this)[0].naturalWidth > containerWidth ) {
+			var parent = $(this).closest( ".commentContainer" );
+			var availableWidth = 
+				window.innerWidth - $("#leftnavmenu").outerWidth() 
+				- $("#spacer-10px").outerWidth() 
+				- parseInt(parent.css("padding-left"), 10) 
+				- parseInt(parent.css("padding-right"), 10) 
+				- 24 - 10 - 14; 
+				// 24 = .sidepad * 2, 10 = #bodyContent * 2, 14 = ???
+			if ( $(this)[0].naturalWidth > availableWidth ) {
 				$(this).addClass("squashed");
 				$(this).click( function() {
 					$(this).toggleClass("squashed");
+					$(this)[0].scrollIntoView();
 				});
 			} 
 		});
@@ -283,15 +292,21 @@ if ($username) {
 	<?php
 	/**** see if we have a new post, if we came from the list of new posts or are working with our own post ****/
 	function wantNewPosts($postname) {
-	return isset($_REQUEST['action']) || 
-			(strlen($postname) && 
-			( ($_SERVER['HTTP_REFERER'] == HOST_NAME . "/") || stripos($_SERVER['HTTP_REFERER'], "index.php")) );
+		if (isset($_REQUEST['action'])) {
+			if (($_REQUEST['action'] != "edit") && ($_REQUEST['action'] != "reply")) return true; 
+			// Would return true on "update" for old posts, but the common use case is on new posts and I can't tell them apart.
+		}
+		if (strlen($postname)) {
+			if ( ($_SERVER['HTTP_REFERER'] == HOST_NAME . "/") || stripos($_SERVER['HTTP_REFERER'], "index.php")) return true;
+			// This lets you come from search results or bookmarks to the post you wanted, not some new post.
+		}
+		return false;	
 	}
 	
 	if ( wantNewPosts($topnew) ) {	
-		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",170)}"; 
-			//timeout 125 was not enough time to finish hiding posts in long threads, so the jump was off
-	}
+		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",170)}";
+		//timeout 125 was not enough time to finish hiding posts in long threads, so the jump was off
+	} 
 	?>
 	
 	window.onbeforeunload=function() {
