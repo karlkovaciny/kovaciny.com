@@ -86,7 +86,7 @@ echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
 		<title>Kovaciny.com</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 		<link href="kovaciny9.css" rel="stylesheet" type="text/css">
-		<script language="JavaScript" src="kovaciny10.js" name="jsinc"></script>
+		<script language="JavaScript" src="scripts/kovaciny10.js" name="jsinc"></script>
 		</head>
 		
 		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>

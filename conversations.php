@@ -223,101 +223,16 @@ if ($username) {
 	<div id="deleteConfirmationUndoButton" class="popupMessage"><img src="gfx/Arrows-Undo-icon.png" id="undoArrow">Undo</div>
 </div>
 
-<script type="text/javascript">
-	$( document ).ready( function() {
-		
-		$(".deleteCommentLink").click(function(){
-			//make "delete this comment" links  pop up a toast with an undo
-			var pos = $(this).position().top + $(this).height() + 4;
-			var popupMarginLeft = -1 * ($("#deleteConfirmation").outerWidth() / 2) + "px";
-			var popupMarginTop = -1 * ($("#deleteConfirmation").outerHeight() / 2) + "px";
-			$("#deleteConfirmation").css({
-				position: "fixed",
-				top: "50%",
-				left: "50%",
-				"margin-top": popupMarginTop,
-				"margin-left": popupMarginLeft
-			}).fadeIn(400).delay(3000).fadeOut(400);
-			
-			var convid = $(this).attr("data-convid");
-			var commentid = $(this).attr("data-commentid");
-			var comment = $(this).parents().closest('div').slideUp();
-			
-			//delete post
-			var deleteCountdown = setTimeout( function(){ 
-				document.location.href='conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
-				}, 3800 );
-			$("#deleteConfirmationUndoButton").click(function(){
-				window.clearTimeout(deleteCountdown);
-				comment.slideDown();
-				setTimeout( function(){ 
-					$("#deleteConfirmation").hide(); 
-					},200 );				
-				});
-			return false;
-		});
-
-		//Don't warn user when submitting a new post 
-		$("#commentform").submit(function () {
-			window.onbeforeunload = null;
-		});
-	});
-
-	
-	$(window).load( function(){	//wait till all images are loaded
-		
-		//shrink large images 
-		$(".commentContents img").each( function() {
-			var parent = $(this).closest( ".commentContainer" );
-			var availableWidth = 
-				window.innerWidth - $("#leftnavmenu").outerWidth() 
-				- $("#spacer-10px").outerWidth() 
-				- parseInt(parent.css("padding-left"), 10) 
-				- parseInt(parent.css("padding-right"), 10) 
-				- 24 - 10 - 14; 
-				// 24 = .sidepad * 2, 10 = #bodyContent * 2, 14 = ???
-			if ( $(this)[0].naturalWidth > availableWidth ) {
-				$(this).addClass("squashed");
-				$(this).click( function() {
-					$(this).toggleClass("squashed");
-					$(this)[0].scrollIntoView();
-				});
-			} 
-		});
-	});
-	
-</script>
-
-<script type="text/javascript">
-	<?php
-	/**** see if we have a new post, if we came from the list of new posts or are working with our own post ****/
-	function wantNewPosts($postname) {
-		if (isset($_REQUEST['action'])) {
-			if (($_REQUEST['action'] != "edit") && ($_REQUEST['action'] != "reply")) return true; 
-			// Would return true on "update" for old posts, but the common use case is on new posts and I can't tell them apart.
-		}
-		if (strlen($postname)) {
-			if ( ($_SERVER['HTTP_REFERER'] == HOST_NAME . "/") || stripos($_SERVER['HTTP_REFERER'], "index.php")) return true;
-			// This lets you come from search results or bookmarks to the post you wanted, not some new post.
-		}
-		return false;	
-	}
-	
+<script src="scripts/conv_jquery2.js" type="text/javascript"></script>
+<?php
 	if ( wantNewPosts($topnew) ) {	
+		echo "<script type=\"text/javascript\">";
 		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",170)}";
 		//timeout 125 was not enough time to finish hiding posts in long threads, so the jump was off
+		echo "</script>";
 	} 
-	?>
-	
-	window.onbeforeunload=function() {
-    	var unsubmitted = document.forms.commentform.comment.value;
-		if (unsubmitted && unsubmitted.trim()) {
-			return 'This page is asking you to confirm that you want to leave - data you have entered may not be saved.';
-		}
-	};
-</script>
-</body>
-</html>
-<?php
+	echo "</body>";
+	echo "</html>";
 }
+
 ?>
