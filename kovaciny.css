@@ -9,6 +9,13 @@ td#bodycontent {padding: 5px;}
 
 div.commentContainer {padding-bottom: 15px;}
 
+textarea.comment {
+    width: 100%;
+    -webkit-box-sizing: border-box; /* <=iOS4, <= Android  2.3 */
+       -moz-box-sizing: border-box; /* FF1+ */
+            box-sizing: border-box; /* Chrome, IE8, Opera, Safari 5.1*/
+}
+
 a:link {color: #001177; text-decoration: none}
 a.content:link {color: #001177; text-decoration: underline}
 a:visited {color: #001177; text-decoration: none}

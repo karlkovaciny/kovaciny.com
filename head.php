@@ -85,8 +85,17 @@ echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
 		<head>
 		<title>Kovaciny.com</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link href="kovaciny9.css" rel="stylesheet" type="text/css">
-		<script language="JavaScript" src="scripts/kovaciny10.js" name="jsinc"></script>
+		<?php 
+		if (DEBUG) {
+			$rand = floor(rand() * 100);
+			echo "<link href=\"kovaciny.css?dev=$rand\" rel=\"stylesheet\" type=\"text/css\">";
+			echo "<script src=\"scripts/kovaciny.js?dev=$rand\"></script>";
+		} else {
+			echo "<link href=\"kovaciny?1.css\" rel=\"stylesheet\" type=\"text/css\">";
+			echo "<script src=\"scripts/kovaciny?13.js\"></script>";
+		}
+		?>
+		
 		</head>
 		
 		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>

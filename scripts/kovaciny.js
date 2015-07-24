@@ -33,11 +33,9 @@ function hideonly(e){
 }
 
 function commenttoggle(expandcollapse) {// 0 = hide, 1 = show
-//this function is called not when you call habtop, nor when you hide/show an individual comment, but yes when you click the hide/show button.
-//in fact it's never called with 0.
+//called only when you click "show all comments".
 //the difference between this and habtop is just that ac.value vs ntc.value, which are hidden items in line 223 of the commentform
-//ac is "all comments" (list of comment ids), ntc is list of marked-as-read comments.
-	var ac = document.forms.commentform.ac.value + '';
+	var ac = document.forms.commentform.ac.value + ''; //all comments (list of ids)
 	var aca = new Array();
 	var delaytime = 0;
 	aca = ac.split(':');
@@ -54,15 +52,12 @@ function commenttoggle(expandcollapse) {// 0 = hide, 1 = show
 }
 
 function habtop() {
-	var ntc = document.forms.commentform.ntc.value + '';
+	var ntc = document.forms.commentform.ntc.value + ''; //marked as read comments
 	var aca = new Array();
-	var delaytime = 0;
 	aca = ntc.split(':');
 	for (i = aca.length-1; i >= 0; i--) {
-		delaytime += 1;
-		setTimeout("hideonly('c_" + aca[i] + "'); hideonly('c_s_" + aca[i] + "'); showonly('c_h_" + aca[i] + "');", delaytime);
+		hideonly('c_' + aca[i]); hideonly('c_s_' + aca[i]); showonly('c_h_' + aca[i]);
 	}
-
 }
 
 function jtp(jumpto) {//jump to parent in threaded conversations
@@ -146,8 +141,14 @@ function alertContents() {
 
 }
 
-function autoHideOldComments(){
-	hide('ncb1');show('ncb2');habtop();
+function autoHideOldComments(callback){
+	console.log("Arguments", arguments);
+	console.time('myTimer');
+	hide('ncb1'); //the "show new comments only" button
+	show('ncb2'); //the "show all comments" button
+	habtop();
+	console.timeEnd('myTimer');
+	if (callback){ callback(); } else { console.log('autoHideOldComments got no callback'); }	
 }
 	
 function jumpToAnchor(anchor) {

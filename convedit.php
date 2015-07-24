@@ -15,7 +15,7 @@ if (isset($_GET['action'])) {
 		$replaceto = array("\'","\'",'\"','\"');
 		$newcomm = str_replace($replacefrom, $replaceto, $newcomm);
 		$newcomm = addslashes($newcomm);
-		if ($userid == 1) {
+		if ($userid == 1) {	//admin
 			$newcomm_author= explode (":", $_POST['postingas']);
 			$newcomm_authorid = $newcomm_author[0];
 			$newcomm_authorname = $newcomm_author[1];

@@ -102,7 +102,7 @@ if ($username) {
 				if (isset($conv_id) == false) echo "<h1>New Conversation</h1><table border=0 cellpadding=2 cellspacing=0>";
 			}
 			echo "<tr><td class=\"small blue\" colspan=2>Title:<br><input type=\"text\" name=\"convtitle\" size=60 maxlength=255 class=\"h2\"$contitle></td></tr>";
-			echo "<tr><td class=\"small blue\" colspan=2>First comment:<br><textarea name=\"comment\" cols=65 rows=11 class=\"medium\">$editcomment</textarea></td></tr>";
+			echo "<tr><td class=\"small blue\" colspan=2>First comment:<br><textarea name=\"comment\" cols=65 rows=11 class=\"medium comment\">$editcomment</textarea></td></tr>";
 			if ($userid == 1) {
 				echo "<tr><td colspan=2><table border=0 cellpadding=0 cellspacing=0 class=\"medium\"><tr><td>Posting as:&nbsp;</td><td><select name=\"postingas\" class=\"small\">";
 				$res = mysql_query("SELECT * FROM users ORDER BY username",$db);

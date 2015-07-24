@@ -3,7 +3,7 @@ require_once ('head.php');
 if ($username) {
 	$tdspacer = "<td width=12>&nbsp;</td>";
 	$hideallexcept = 0; //not in edit or reply mode
-						//convedit.php sets to the id of the comment to show
+						//convedit.php sets this to id of the comment to show
 	if (isset($_GET['id'])) {
 		$conv_id = $_GET['id'];
 		if (is_numeric($conv_id)) {
@@ -151,16 +151,21 @@ if ($username) {
 				//thread and display comments
 				require ('inc_commthreader.php');
 				
-				//display footer
-				if ($hideallexcept == 0) echo "<hr noshade size=1><form name=\"markread\" action=\"index.php\" method=\"POST\"><input type=\"hidden\" name=\"markasread\" value=\"$conv_id\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></form><hr noshade size=1><br>";
+				//display Mark as Read button
+				if ($hideallexcept == 0) echo "<hr noshade size=1><form name=\"markread\" action=\"index.php\" method=\"POST\"><input type=\"hidden\" name=\"markasread\" value=\"$conv_id\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></form>";
+				
+				echo "<hr noshade size=1><br>";
 				echo "<form name=\"commentform\" id=\"commentform\" method=\"post\" action=\"conversations.php";
+				
+				//configure comment editor
 				if ($hideallexcept == 0) {
 					$postcomm = "Post a comment:";
 					$postbutt = "add comment";
 					echo "?id=$conv_id&action=new";
 					if ($userid == 1) {$hiddenitems ="In reply to: <input type=\"text\" name=\"inreplyto\" class=\"small\" size=3 value=0 onfocus=\"this.select();\"> &nbsp;";}
-				} else {
-					if (isset($replytoid)) {
+				} else {	
+					if (isset($replytoid)) {	
+						//reply mode
 						if ($authorid == $userid) {
 							$postcomm = "Post a follow-up comment:";
 							$postbutt = "add comment";
@@ -175,7 +180,8 @@ if ($username) {
 							$hiddenitems = "<input type=\"hidden\" name=\"inreplyto\" value=\"$replytoid\">";
 						}
 						echo "?id=$conv_id&comid=$hideallexcept&action=new";
-					} else {
+					} else {	
+						//edit mode
 						$postcomm = "Edit this comment:";
 						$postbutt = "save changes";
 						$posttime = strtotime($commentdate) + ($tz * 3600);
@@ -189,7 +195,10 @@ if ($username) {
 						if ($userid == 1) {$hiddenitems ="In reply to: <input type=\"text\" name=\"inreplyto\" value=\"$inreplyto\" class=\"small\" size=3 onfocus=\"this.select();\"> &nbsp;";}
 					}
 				}
-				echo "\"><table border=0 cellpadding=2 cellspacing=0 class=\"medium\">";
+				echo "\">";
+				
+				//display comment editor
+				echo "<table border=0 cellpadding=2 cellspacing=0 class=\"medium\">";
 				if ($userid == 1) {
 					echo "<tr><td colspan=2><table border=0 cellpadding=0 cellspacing=0 class=\"medium\"><tr><td><h2>$postcomm</h2></td>$tdspacer<td>as&nbsp;</td><td><select name=\"postingas\" class=\"small\">";
 					$res = mysql_query("SELECT * FROM users ORDER BY username",$db);
@@ -203,13 +212,17 @@ if ($username) {
 						}
 						echo "<option value=\"$u_userid:$u_username\"$optselected>$u_username</option>";
 					}
-					echo "</select></td><td>&nbsp;at time&nbsp;</td><td><input type=\"text\" name=\"postingat\" width=13 class=\"small\"$posttime></td><td class=\"small\">&nbsp;(<a href=\"javascript://\" onclick=\"document.forms.commentform.postingat.value='';\">now</a>)</td></tr></table></td></tr>";
-				} else {
+					echo "</select></td><td>&nbsp;at time&nbsp;</td>";
+					echo "<td><input type=\"text\" name=\"postingat\" width=13 class=\"small\"$posttime></td>";
+					echo "<td class=\"small\">&nbsp;(" .
+						"<a href=\"javascript://\" onclick=\"document.forms.commentform.postingat.value='';\">now</a>" . //defaults to now()
+						")</td></tr></table></td></tr>";
+				} else { //not logged in as admin
 					echo "<tr><td colspan=2><h2>$postcomm</h2></td></tr>";
 				}
 				$allcomments = rtrim($allcomments, ":");
 				$unreadcomments = rtrim($unreadcomments, ":");
-				echo "<tr><td colspan=2><input type=\"hidden\" name=\"ac\" value=\"$allcomments\"><input type=\"hidden\" name=\"ntc\" value=\"$unreadcomments\"><textarea name=\"comment\" cols=65 rows=9 class=\"medium\" tabindex=\"14\">$editcomment</textarea></td></tr>";
+				echo "<tr><td colspan=2><input type=\"hidden\" name=\"ac\" value=\"$allcomments\"><input type=\"hidden\" name=\"ntc\" value=\"$unreadcomments\"><textarea name=\"comment\" cols=65 rows=9 class=\"medium comment\" tabindex=\"14\">$editcomment</textarea></td></tr>";
 				echo "<tr><td class=\"small blue\">$hiddenitems<input type=\"submit\" value=\"$postbutt\" tabindex=\"17\"></td><td align=\"right\"></td></tr>";
 				echo "</table></form>";
 			}
@@ -227,8 +240,7 @@ if ($username) {
 <?php
 	if ( wantNewPosts($topnew) ) {	
 		echo "<script type=\"text/javascript\">";
-		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",170)}";
-		//timeout 125 was not enough time to finish hiding posts in long threads, so the jump was off
+		echo "window.onload=function(){ autoHideOldComments( function(){jumpToAnchor('$topnew');} ); }";
 		echo "</script>";
 	} 
 	echo "</body>";
