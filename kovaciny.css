@@ -25,6 +25,8 @@ a:active {color: #001177; text-decoration: underline}
 h1 {font-size: 20px; color: #777777; font-weight: bold}
 h2 {font-size: 12px; color: #555555; font-weight: bold}
 
+div.hrnoshade {width: 100%; height: 0px; border: 1px solid #DDDDDD; background: #DDDDDD; overflow: hidden; margin-top:6px; margin-bottom:6px;}
+
 .copy {font-size: 12px; color: #000000; text-decoration: none; font-weight: normal}
 .serif {font-family: "Times New Roman", Times, serif;}
 .large {font-size: 14px}

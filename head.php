@@ -91,8 +91,8 @@ echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
 			echo "<link href=\"kovaciny.css?dev=$rand\" rel=\"stylesheet\" type=\"text/css\">";
 			echo "<script src=\"scripts/kovaciny.js?dev=$rand\"></script>";
 		} else {
-			echo "<link href=\"kovaciny?1.css\" rel=\"stylesheet\" type=\"text/css\">";
-			echo "<script src=\"scripts/kovaciny?13.js\"></script>";
+			echo "<link href=\"kovaciny.css?1\" rel=\"stylesheet\" type=\"text/css\">";
+			echo "<script src=\"scripts/kovaciny.js?13\"></script>";
 		}
 		?>
 		
