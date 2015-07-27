@@ -2,3 +2,7 @@ syntax: glob
 *.jpg
 *.gif
 *.docx
+*.csv
+*.py
+*.cmd
+error_log
