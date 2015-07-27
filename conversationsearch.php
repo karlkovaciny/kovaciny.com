@@ -6,19 +6,22 @@ $tz = -12;
 
 require_once('functions.php');
 
-//Show the search form if we don't have a search string yet
-if ( ( ($_REQUEST['q'] == "") || (!isset($_REQUEST['q']) ) ) 
-				&& !isset($_REQUEST['q_matchAllComments']) ) {
-	$redirect = "Location:" . HOST_NAME . "/search.php";
-	if (isset($_REQUEST['refine'])) { $redirect .= "?refine=" . $_REQUEST['refine']; }
+//Show the search form if we don't have a search string and need one
+if ( empty($_REQUEST['q']) ) {
+	$q = "";
+	if ( empty($_REQUEST['q_matchAllComments']) ) { 
+		$redirect = "Location:" . HOST_NAME . "/search.php";
+		if (isset($_REQUEST['refine'])) { $redirect .= "?refine=" . $_REQUEST['refine']; }
 		header ( $redirect );
+		}
 	} 
 
 require_once("head.php");
 
 echo "<h1 style=\"padding-top: 7px\">Search Results</h1>";
 
-if ($_REQUEST['q_searchConversations'] === "true") { 
+if (isset($_REQUEST['q_searchConversations']) && 
+		($_REQUEST['q_searchConversations'] === "true")) { 
 	$q = stripslashes($_GET['q']);
 	$q_searchstring = preprocessForSqlBoolean($q);
 	$sql = "SELECT `conid`, `contitle`, `changedate`, `createdate`, `numcomm`, `visible` FROM `conversations` 
@@ -82,14 +85,14 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 	</script>
 <?php
 }
-	// Pull the search string into variables.
+	// Pull the search string into variables if set.
 		$q = stripslashes($_REQUEST['q']); 
 		$q_searchstring = preprocessForSqlBoolean($q);
-		$q_author = $_REQUEST['q_author'];
-		$q_title = stripslashes($_REQUEST['q_title']);
-		$q_oldestfirst = $_REQUEST['q_oldestfirst'];
-		$q_matchAllComments = $_REQUEST['q_matchAllComments'];
-		$q_timeframe = $_REQUEST['q_timeframe'];
+		$q_author = !empty($_REQUEST['q_author']) ? $_REQUEST['q_author'] : "";
+		$q_title = !empty($_REQUEST['q_title']) ? stripslashes($_REQUEST['q_title']) : "";
+		$q_oldestfirst = !empty($_REQUEST['q_oldestfirst']) ? $_REQUEST['q_oldestfirst'] : "";
+		$q_matchAllComments = !empty($_REQUEST['q_matchAllComments']) ? $_REQUEST['q_matchAllComments'] : "";
+		$q_timeframe = !empty($_REQUEST['q_timeframe']) ? $_REQUEST['q_timeframe'] : "";
 		if (isset($_POST['resultcount'])) { //means we have navigated off the first page of results
 			$resultcount = $_POST['resultcount'];
 			$currentpage = $_POST['p'];
@@ -142,7 +145,7 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 		if ($numhits>$rpp) {
 			$maxPage = floor($numhits/$rpp);
 			if (($numhits % $rpp) == 0) $maxPage--;
-			$pageid = $_POST['p'];
+			$pageid = !empty($_POST['p']) ? $_POST['p'] : "";
 			if ($pageid == "") {$pageid = 0;} else {$pageid -= 0;}
 			$upid = $pageid + 1; $downid = $pageid - 1; $maxup = $maxPage + 1;
 			?>
@@ -189,7 +192,7 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 				$pagenav .= "<td>[<span class=\"gray\">Next</span>]</td><td>[<span class=\"gray\">Last</span>]</td>";
 			}
 			$pagenav .= "</tr></table><br>";
-		}
+		} else $pagenav = "";
 		
 		//show the user what was searched for and how many results
 		if ($q != "") {
@@ -207,26 +210,27 @@ if ($_REQUEST['q_searchConversations'] === "true") {
 			$searchparams .= " within the last <b>" . $q_timeframe . "</b> days";
 		}
 		
+		$refinelink = "<a class=\"content\" tabindex=\"400\" href=\"search.php?refine=" . htmlentities($_REQUEST['q']) . "\">Refine search</a>";
+		
 		if ($numhits == 0) {
-			if (strlen($searchmod)==0) $searchmod = "<p>Note: Search ignores <a href=\"http://dev.mysql.com/doc/refman/5.0/en/fulltext-stopwords.html\">common words</a> and those with three letters or fewer.</p>";
+			if (empty($searchmod)) $searchmod = "<p>Note: Search ignores <a href=\"http://dev.mysql.com/doc/refman/5.0/en/fulltext-stopwords.html\">common words</a> and those with three letters or fewer.</p>";
 			echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\">
 					<tr valign=\"top\">
 						<td>
-								<p>No comments were found containing $searchparams.</p>
-								$searchmod</td>
+								<p>No comments were found containing $searchparams. $refinelink</p>
+								$searchmod </td>
 					</tr></table>";
 		} else {
 			if ($numhits == $maxallowed) {
-				$searchmod = "more than $maxallowed comments";
+				$searchmod = "more than $maxallowed comments. ";
 			} else {
-				$searchmod = "$numhits " . pluralize($numhits, "comment");
+				$searchmod = "$numhits " . pluralize($numhits, "comment") . ". ";
 			}
-			
+						
 			//start building the table of results
 			echo "<table border=0 cellpadding=0 cellspacing=0 width=\"100%\">
 					<tr>
-						<td><p class=\"copy\">Your search for $searchparams returned $searchmod. 
-								<a class=\"content\" tabindex=\"400\" href=\"search.php?refine=" . htmlentities($_REQUEST['q']) . "\">Refine search</a>
+						<td><p class=\"copy\">Your search for $searchparams returned $searchmod $refinelink
 							</p></td>
 						</tr></table><br />";
 			echo "$pagenav";

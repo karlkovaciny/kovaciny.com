@@ -16,19 +16,28 @@
 	
 	// sort
 	$tl = 0;
-	for ($i=0; $i<$cb; $i++) {if ($cb_cd[$i] == 0) {$commentorder[] = $cb_id[$i];$tl++;}} //find top level keys
-	for ($l=1; $l<=$threaddepth; $l++) {
+	$commentorder = array();
+	for ($i=0; $i<$cb; $i++) { //find top level keys
+		if ($cb_cd[$i] == 0) {
+			$commentorder[] = $cb_id[$i];
+			$tl++;
+		}
+	} 
+	for ($l=1; $l<=$threaddepth; $l++) { //for each level of comments...
 		$ntl = 0;
 		$p = "";
-		for ($t=0; $t<=$tl; $t++) {
-			$parentid = $commentorder[$t];
+		for ($t=0; $t<$tl; $t++) {	//we iterate over the toplevel posts
+			$parentid = $commentorder[$t];	
 			$p .= "$parentid:";
 			$ntl++;
 			for ($i=0; $i<$cb; $i++) {
-				if ($cb_irt[$i] == $parentid && $cb_cd[$i] >= $l) {$p .= "$cb_id[$i]:"; $ntl++;}
+				if ($cb_irt[$i] == $parentid && $cb_cd[$i] >= $l) {
+					$p .= "$cb_id[$i]:"; 
+					$ntl++;
+				}
 			}
 		}
-		$tl = $ntl;
+		$tl = $ntl;	//now the next level down is the new top level
 		$commentorder = explode(":",rtrim($p,":"));
 	}
 

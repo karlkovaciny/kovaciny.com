@@ -15,7 +15,9 @@ if (isset($_GET['action'])) {
 		$replaceto = array("\'","\'",'\"','\"');
 		$newcomm = str_replace($replacefrom, $replaceto, $newcomm);
 		$newcomm = addslashes($newcomm);
+		$createtimeadminedit = "";
 		if ($userid == 1) {	//admin
+			$reqauthor = "";
 			$newcomm_author= explode (":", $_POST['postingas']);
 			$newcomm_authorid = $newcomm_author[0];
 			$newcomm_authorname = $newcomm_author[1];
@@ -40,6 +42,7 @@ if (isset($_GET['action'])) {
 			$newcomm_posttime = "NOW()";
 		}
 	}
+	$updatecommentcount = false;	//unless we successfully update
 	if ($_GET['action'] == "new") {
 		//delete duplicate posts, apparently
 		$res= mysql_query("DELETE FROM `comments` WHERE `authorid` = '$newcomm_authorid' AND `conid` = '$conv_id' AND `comment` = '$newcomm'") or die("Could not update database: " . mysql_error()); 

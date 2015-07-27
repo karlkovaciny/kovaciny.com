@@ -7,9 +7,7 @@ if ($username) {
 		$userlist[$key] = $row["username"];
 	}
 }		
-if (isset($_REQUEST['refine'])) {
-	$refine = htmlentities($_REQUEST['refine']);
-}
+$refine = !empty($_REQUEST['refine']) ? htmlentities($_REQUEST['refine']) : "";
 ?>
 	<h1>Search</h1>
 	<form name="search" method="GET" action="conversationsearch.php">

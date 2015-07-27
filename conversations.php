@@ -51,7 +51,7 @@ if ($username) {
 				$res = mysql_query("SELECT c.*, u.userid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND c.visible = 'Y' ORDER BY c.createdate",$db);
 				$allcomments = "";
 				$unreadcomments = "";
-				$cb = 0;
+				$cb = 0;	//number of comments retrieved, I think
 				$cb_id = array(); //initializing so it won't choke implode() if empty
 				$topnew = "";
 				while($comments = mysql_fetch_array($res)) {
@@ -64,20 +64,13 @@ if ($username) {
 						if ($commentage > 604800) {$commentage = "1w+";} else {$commentage = "-1w";}
 						$changedate = $comments["changedate"];
 						$inreplyto = $comments["inreplyto"];
-						/*if ($commentdate == $changedate) {$changenotice = "";} else {
-							$postmodified = strtotime($commentdate) - strtotime($changedate);
-							if ($postmodified > 420) {
-								$postmodified = format_interval(time() - strtotime($changedate));
-								$changenotice = "<span class=\"small green\">Note: This post was modified $postmodified ago.<br></span>";
-							}
-						}*/
 						$authorname = $comments["username"];
 						$authorid = $comments["userid"];
 						$markedasred = $comments["readby_$username"];
 						$commentintv = format_interval(time() - strtotime($commentdate)); //$commentdate = date('M d, g:i a', $commentdate);
 						$allcomments .= "$commentid:";
 						$commentanchor = "comment_$commentid";
-						if ($userid == 1) {$commentinfo = "<td class=\"small\">$commentid ($inreplyto) &nbsp;</td>";}
+						if ($userid == 1) {$commentinfo = "<td class=\"small\">$commentid ($inreplyto) &nbsp;</td>";} else $commentinfo = "";
 						if ($markedasred == "0") {
 							$isnew = "<td width=35><div style=\"padding-top:2px\"><img src=\"gfx/new.gif\" border=0 width=31 height=12 hspace=4></div></td>$tdspacer";
 						} else {
@@ -88,6 +81,7 @@ if ($username) {
 						$ccc = "<tr bgcolor=\"#DDDDDD\"><td class=\"sidepad\" id=\"cc_$commentid\"><a name=\"$commentanchor\"></a><div style=\"width:inherit\"><table border=0 cellpadding=0 cellspacing=0 class=\"small\" style=\"table-layout:fixed; width:100%\"><tr valign=\"middle\">";
 						$ccc .= "$commentinfo<td width=" . 15*strlen($authorname) . " class=\"large b\"><a href=\"?user=$authorid\">$authorname</a></td>$tdspacer";
 						$ccc .= "$isnew<td width=120>$commentintv ago</td>$tdspacer";
+						$hilite = "";
 						if ($hideallexcept == 0) {
 							//Add show comment/hide comment links, with only the relevant one being visible
 							$ccc .= "<td><div id=\"c_h_$commentid\" class=\"hide\"><a href=\"javascript:hide('c_h_$commentid');show('c_s_$commentid');show('c_$commentid');\">Show comment</a></div>";
@@ -103,14 +97,13 @@ if ($username) {
 								$hilite = " hilite";
 								if ($privatewith == 0) $ccc .= " &nbsp; &nbsp;<a href=\"conversations.php?id=$conv_id&comid=$commentid&action=reply\">Post follow-up</a>";
 							} else {
-								$hilite = "";
 								if ($privatewith == 0) $ccc .= " &nbsp; &nbsp;<a href=\"conversations.php?id=$conv_id&comid=$commentid&action=reply\">Reply to this</a>";
 								$ccc .= " &nbsp; &nbsp;<a href=\"javascript://\" onmousedown=\"quoteme('$authorname', '$comment_text_id');\">Quote selected</a>";
 							}	
 							$ccc .= "</div></td>";
 						} elseif (isset($replytoid)) {
 							$ccc .= "<td><a href=\"javascript://\" onmousedown=\"quoteme('$authorname', '$comment_text_id');\">Quote selected</a></td>";
-						} else { //then we're editing and don't want the action bar to stretch out
+						} else { //then we're editing one post and don't want the action bar to stretch out
 							$ccc .= "<td>";
 						}
 						$ccc .= "</tr></table></td></tr>"; //end of the action bar
@@ -139,12 +132,12 @@ if ($username) {
 						}
 						
 						//add the comment itself
-						$ccc .= "<tr><td class=\"copy sidepad border$hilite\"><div id=\"c_$commentid\"$hidecomment>$changenotice&nbsp;<br>$htmlcomment<br>&nbsp;</div></td></tr>";
+						$ccc .= "<tr><td class=\"copy sidepad border$hilite\"><div id=\"c_$commentid\">&nbsp;<br>$htmlcomment<br>&nbsp;</div></td></tr>";
 						$cb_id[] = $commentid;
 						$cb_irt[] = $inreplyto;
 						$cb_isnew[] = $isnew;
 						$cb_ccc[] = $ccc;
-						$cb_cd[] = 0;
+						$cb_cd[] = 0;	//comment depth in the tree
 						$cb += 1;
 					}
 				}
@@ -159,6 +152,8 @@ if ($username) {
 				echo "<form name=\"commentform\" id=\"commentform\" method=\"post\" action=\"conversations.php";
 				
 				//configure comment editor
+				$hiddenitems = "";	//except for admin
+				$editcomment = "";	//except in edit mode
 				if ($hideallexcept == 0) {
 					$postcomm = "Post a comment:";
 					$postbutt = "add comment";

@@ -41,7 +41,7 @@
 		$username = $userlist[$row2['authorid']];
 		$cells = array();
 		$cells[] = array('v'=>$username);
-		$cells[] = array('v'=>"search.php?q_author=" . $row2['authorid'] . "&q_timeframe=$timeframe&q_title=&q_matchAllComments=matchall");
+		$cells[] = array('v'=>"conversationsearch.php?q_author=$username&q_timeframe=$timeframe&q_title=&q_matchAllComments=matchall");
 		$cells[] = array('v'=>(int)$row2['theCommentCount']);
 		$rows[] = array('c'=>$cells);
 	}

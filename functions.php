@@ -101,7 +101,7 @@ function wantNewPosts($postname) {
 		if (($_REQUEST['action'] != "edit") && ($_REQUEST['action'] != "reply")) return true; 
 		// Would return true on "update" for old posts, but the common use case is on new posts and I can't tell them apart.
 	}
-	if (strlen($postname)) {
+	if (strlen($postname) && isset($_SERVER['HTTP_REFERER'])) {
 		if ( ($_SERVER['HTTP_REFERER'] == HOST_NAME . "/") || stripos($_SERVER['HTTP_REFERER'], "index.php")) return true;
 		// This lets you come from search results or bookmarks to the post you wanted, not some new post.
 	}

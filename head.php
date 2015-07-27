@@ -14,11 +14,8 @@
 
 require_once('functions.php');
 
-$jquery_source = DEBUG ? "http://code.jquery.com/jquery-2.1.4.js"
-					: "http://code.jquery.com/jquery-2.1.4.min.js";
-echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
-
 // Log in
+	$username = "";
 	if (isset($_GET['user'])) {
 		$login = strtolower($_GET['user']);
 		$pass = $_GET['pass'];
@@ -50,10 +47,11 @@ echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
 			}
 			header("Location: " . HOST_NAME . "/login.php");
 		} else {
-			$usertoken = $_COOKIE['user'];
-			if (strlen($usertoken) == 0) {
+			if (!empty($_COOKIE['user'])) {
+				$usertoken = $_COOKIE['user'];
+			} else {
 				session_start();
-				$usertoken = $_SESSION['user'];
+				$usertoken = !empty($_SESSION['user']) ? $_SESSION['user'] : "";
 			}
 			if ($usertoken == md5("hello this is jon")) {$username = "jon";}
 			elseif ($usertoken == md5("hello this is rae")) {$username = "rae";}
@@ -88,12 +86,17 @@ echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
 		<?php 
 		if (DEBUG) {
 			$rand = floor(rand() * 100);
-			echo "<link href=\"kovaciny.css?dev=$rand\" rel=\"stylesheet\" type=\"text/css\">";
-			echo "<script src=\"scripts/kovaciny.js?dev=$rand\"></script>";
+			$css_source = "kovaciny.css?dev=$rand";	//always refresh
+			$jquery_source = "http://code.jquery.com/jquery-2.1.4.js";
+			$js_source = "scripts/kovaciny.js?dev=$rand";
 		} else {
-			echo "<link href=\"kovaciny.css?1\" rel=\"stylesheet\" type=\"text/css\">";
-			echo "<script src=\"scripts/kovaciny.js?13\"></script>";
+			$css_source = "kovaciny.css?1";	//version number forces refresh
+			$jquery_source = "http://code.jquery.com/jquery-2.1.4.min.js";
+			$js_source = "scripts/kovaciny.js?13";
 		}
+		echo "<link href=\"$css_source\" rel=\"stylesheet\" type=\"text/css\">";
+		echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
+		echo "<script src=\"$js_source\"></script>";
 		?>
 		
 		</head>

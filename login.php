@@ -1,6 +1,7 @@
 <?php
 	function func_generate_string() {
 		$auto_string= chr(mt_rand(ord('A'), ord('Z')));
+		$auto_password = "";
 		for ($i= 0; $i<8; $i++) {
 			$ltr= mt_rand(1, 3);
 			if ($ltr==1) $auto_password .= chr(mt_rand(ord('A'), ord('Z')));
