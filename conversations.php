@@ -57,7 +57,8 @@ if ($username) {
 				while($comments = mysql_fetch_array($res)) {
 					$commentid = $comments["comid"];
 					$comment_text_id = "c_" . $commentid . "_text"; //for adding a div later
-					if ($hideallexcept == 0 || $commentid == $hideallexcept) {
+					if ($hideallexcept == 0 || $commentid == $hideallexcept) {	//We're not editing or this is the one we're editing.
+						//So go ahead and load them all.
 						$comment = $comments["comment"];
 						$commentdate = $comments["createdate"];
 						$commentage = time() - strtotime($commentdate);
