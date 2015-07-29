@@ -87,16 +87,16 @@ require_once('functions.php');
 		if (DEBUG) {
 			$rand = floor(rand() * 100);
 			$css_source = "kovaciny.css?dev=$rand";	//always refresh
-			$jquery_source = "http://code.jquery.com/jquery-2.1.4.js";
+			$hosted_jquery = "http://code.jquery.com/jquery-2.1.4.js";
 			$js_source = "scripts/kovaciny.js?dev=$rand";
 		} else {
 			$css_source = "kovaciny.css?1";	//version number forces refresh
-			$jquery_source = "http://code.jquery.com/jquery-2.1.4.min.js";
+			$hosted_jquery = "http://code.jquery.com/jquery-2.1.4.min.js";
 			$js_source = "scripts/kovaciny.js?13";
 		}
-		echo "<link href=\"$css_source\" rel=\"stylesheet\" type=\"text/css\">";
-		echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
-		echo "<script src=\"$js_source\"></script>";
+		echo "<link href=\"$css_source\" rel=\"stylesheet\" type=\"text/css\">\n\t\t";
+		echo "<script src=\"$hosted_jquery\" type=\"text/javascript\"></script>\n\t\t";
+		echo "<script src=\"$js_source\"></script>\n\t\t";
 		?>
 		
 		</head>

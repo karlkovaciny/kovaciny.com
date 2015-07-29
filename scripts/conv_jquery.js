@@ -41,23 +41,28 @@ $( document ).ready( function() {
 
 $(window).load( function(){	//wait till all images are loaded
 	
-	//shrink large images 
-	$(".commentContents img").each( function() {
+	//shrink large images and embedded videos inside commentContainers
+	$(".commentContents").find("img, iframe, embed").each( function() {
 		var parent = $(this).closest( ".commentContainer" );
 		var availableWidth = 
-			window.innerWidth - $("#leftnavmenu").outerWidth() 
-			- $("#spacer-10px").outerWidth() 
-			- parseInt(parent.css("padding-left"), 10) 
-			- parseInt(parent.css("padding-right"), 10) 
-			- 24 - 10 - 14; 
-			// 24 = .sidepad * 2, 10 = #bodyContent * 2, 14 = ???
-		if ( $(this)[0].naturalWidth > availableWidth ) {
-			$(this).addClass("squashed");
-			$(this).click( function() {
-				$(this).toggleClass("squashed");
-				$(this)[0].scrollIntoView();
-			});
-		} 
+			window.innerWidth - $( this ).offset().left 
+				- parseInt(parent.css("padding-right"), 10) - 24 - 6; 
+				// 24 = 2 * sidepad. 6 = fudge.
+				
+		if ( $(this).is("img") ) {	//add click-to-expand
+			console.log("is image, natural width: ", $( this )[0].naturalWidth);
+			if ( $( this )[0].naturalWidth > availableWidth ) {
+				$( this ).addClass("squashed");
+				$( this ).click( function() {
+					$( this ).toggleClass("squashed");
+					$( this )[0].scrollIntoView();
+				});
+			} 
+		} else { 
+			if ( $( this ).width() > availableWidth ) {
+				$( this ).width(availableWidth);
+			}
+		}
 	});
 });
 

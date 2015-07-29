@@ -27,7 +27,7 @@ if ($username) {
 				$lastpostid= $conv_obj->lastpostuserid;
 				$privatewith= $conv_obj->privatewith;
 				$spacer = "<td width=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td>";
-				if ($hideallexcept == 0) {
+				if ($hideallexcept == 0) {	//not editing or replying
 					echo "<form name=\"markasread\" action=\"index.php\" method=\"POST\">";
 					echo "<table border=0 cellpadding=0 cellspacing=0 class=\"small\"><tr><td><h1>$contitle</h1></td>";
 					echo "<td class=\"sidepad\"><input type=\"hidden\" name=\"markasread\" value=\"$conv_id\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></td>";
@@ -47,6 +47,7 @@ if ($username) {
 						echo "<h1>$contitle</h1>";
 					}
 				$comcount += 1;
+				echo "<div class=\"allCommentsContainer\">";
 			// Get comments
 				$res = mysql_query("SELECT c.*, u.userid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND c.visible = 'Y' ORDER BY c.createdate",$db);
 				$allcomments = "";
@@ -83,7 +84,7 @@ if ($username) {
 						$ccc .= "$commentinfo<td width=" . 15*strlen($authorname) . " class=\"large b\"><a href=\"?user=$authorid\">$authorname</a></td>$tdspacer";
 						$ccc .= "$isnew<td width=120>$commentintv ago</td>$tdspacer";
 						$hilite = "";
-						if ($hideallexcept == 0) {
+						if ($hideallexcept == 0) {	//not edit or reply mode
 							//Add show comment/hide comment links, with only the relevant one being visible
 							$ccc .= "<td><div id=\"c_h_$commentid\" class=\"hide\"><a href=\"javascript:hide('c_h_$commentid');show('c_s_$commentid');show('c_$commentid');\">Show comment</a></div>";
 							$ccc .= "<div id=\"c_s_$commentid\"><a href=\"javascript:show('c_h_$commentid');hide('c_s_$commentid');hide('c_$commentid');\">Hide comment</a>";
@@ -144,6 +145,7 @@ if ($username) {
 				}
 				//thread and display comments
 				require ('inc_commthreader.php');
+				echo "</div>";	//allCommentsContainer
 				
 				//display Mark as Read button
 				if ($hideallexcept == 0) {
@@ -233,8 +235,15 @@ if ($username) {
 	<div id="deleteConfirmationUndoButton" class="popupMessage"><img src="gfx/Arrows-Undo-icon.png" id="undoArrow">Undo</div>
 </div>
 
-<script src="scripts/conv_jquery2.js" type="text/javascript"></script>
-<?php
+<?php	//scripts to run after page loads
+	if ( DEBUG ) {
+		$rand = floor(rand() * 100);
+		$jquery_source = "scripts/conv_jquery.js?dev=$rand";
+	} else {
+		$jquery_source = "scripts/conv_jquery.js?1";
+	}
+	echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
+	
 	if ( wantNewPosts($topnew) ) {	
 		echo "<script type=\"text/javascript\">";
 		echo "window.onload=function(){ autoHideOldComments( function(){jumpToAnchor('$topnew');} ); }";

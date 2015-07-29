@@ -2,12 +2,11 @@ body { font-family: Verdana, Arial, Helvetica, sans-serif}
 p {font-size: 12px; color: #000000; text-decoration: none; font-weight: normal}
 ul {margin-left: 0; padding-left: 0; list-style: none; font-size: 14px}
 li {font-size: 12px; padding-left: 10px; background-image: url(gfx/ul.gif); background-repeat: no-repeat; background-position: 0px 4px;}
-td#leftnavmenu {background-color: #DDDDDD; padding: 5px;}
+
+#leftnavmenu {background-color: #DDDDDD; padding: 5px;}
 	p.leftnavmenu {padding-left: 10px; padding-top: 7px; width: 120px;}
 	li.leftnavmenu {background-position: left center;}
-td#bodycontent {padding: 5px;}
-
-div.commentContainer {padding-bottom: 15px;}
+#bodycontent {padding: 5px;}
 
 textarea.comment {
     width: 100%;
@@ -60,18 +59,18 @@ div.hrnoshade {width: 100%; height: 0px; border-top: 1px solid #DDDDDD; backgrou
 .tdot {padding-bottom: 10px; padding-top: 9px; border-bottom: 1px dotted #BBBBBB;}
 .quote {color: #777777; padding-left: 12px; padding-right: 12px; font-size: 12px;}
 
-input.searchbutton { height: 26px; width: 26px; background-color: #999999; background:url("./gfx/magnifyingglass.jpg") no-repeat}
-table.searchResults { border: 0px; border-spacing: 0px; font-size: 12px;}
-	tr.searchResults:nth-of-type(odd) { background-color: #F6F6F6;}
-	td.searchResults { padding: 3px 12px}
-	td.searchResults:last-child  { white-space: nowrap; font-size: 10px; }
-	tr.blueHR { background-color:#6699CC; }
-	td.blueHR { padding: 0px; }
+.searchbutton { height: 26px; width: 26px; background-color: #999999; background:url("./gfx/magnifyingglass.jpg") no-repeat}
+.searchResults { border: 0px; border-spacing: 0px; font-size: 12px;}
+	.searchResults:nth-of-type(odd) { background-color: #F6F6F6;}
+	.searchResults { padding: 3px 12px}
+	.searchResults:last-child  { white-space: nowrap; font-size: 10px; }
+	.blueHR { background-color:#6699CC; }
+	.blueHR { padding: 0px; }
 #headerSearchForm { text-align: right; margin-bottom: 0px;}
 #headerSearchBox { color: #999999; font-style:italic; height: 26px; border-style: outset; vertical-align: bottom  }
 #headerSearchButton { vertical-align: bottom; padding:0 }
 	
-td.tableExpander { text-align: center; font-style: italic; border: 1px; font-size: 10px;}
+.tableExpander { text-align: center; font-style: italic; border: 1px; font-size: 10px;}
 
 #newConversationLink { font-size: 10px; padding-left:72px; padding-top:7px }
 
@@ -79,13 +78,15 @@ td.tableExpander { text-align: center; font-style: italic; border: 1px; font-siz
 	  -moz-box-shadow: 0px 0px 8px -1px rgba(56, 56, 56, 1);
        box-shadow: 0px 0px 8px-1px rgba(56, 56, 56, 1);}
 #deleteConfirmation { display: none; }
-#deleteConfirmationUndoButton { float: right; font-size:14px; text-decoration: none; transition: all 0.2s ease 0s; }
+#deleteConfirmationUndoButton { 	float: right; font-size:14px;
+	text-decoration: none; transition: all 0.2s ease 0s;}
 #deleteConfirmationUndoButton:hover { background-color: #001177; }
 #deleteConfirmationUndoButton:active { background-color: #001177; }
 #undoArrow { filter:invert(1); margin-right:0.5em; height:14px; -webkit-filter: invert(100%); margin-top: 3px; margin-bottom: -3px;}
 
-span.commentContents img { width: auto; }
-span.commentContents img.squashed { 
+.commentContainer {padding-bottom: 15px;}
+.commentContents img { width: auto; }
+img.squashed { 
 	width: 100%; 
 	height: auto;
 	cursor: -moz-zoom-in; 

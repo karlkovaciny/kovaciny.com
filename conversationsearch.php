@@ -264,11 +264,11 @@ if (isset($_REQUEST['q_searchConversations']) &&
 					$replaceto = array(" &middot; ",);
 					$comment = str_replace($replacefrom, $replaceto, $comment);
 					
-					$comment = "<div id=\"c_$comid\">" . $comment . "</div>"; //so we can access it with Javascript
+					$comment = "<div id=\"c_$comid\" class=\"commentContents\">" . $comment . "</div>"; //so we can access it with Javascript
 				
 				//actually display the results
-				echo "<tr><td class=\"tdot\" style = \"width:20%\"><span class=\"nou\">$x_username<br />in </span><span class=\"b\"><a href=\"conversations.php?id=$conid#comment_$comid\" tabindex=\"$tabindex\">$contitle</a></span></td>";
-				echo "<td class=\"tdot\"></td><td class=\"tdot sidepad\">$comment</td></tr>";
+				echo "<tr><td class=\"tdot commentOrigins\" style = \"width:20%\"><span class=\"nou\">$x_username<br />in </span><span class=\"b\"><a href=\"conversations.php?id=$conid#comment_$comid\" tabindex=\"$tabindex\">$contitle</a></span></td>";
+				echo "<td class=\"tdot\"></td><td class=\"tdot sidepad commentContainer\">$comment</td></tr>";
 				
 				//highlight the search term (but not the operators and quotation marks)
 				echo "<script>";
@@ -285,8 +285,17 @@ if (isset($_REQUEST['q_searchConversations']) &&
 				echo "</script>";
 				$i++;
 			}
-			echo "</table><br>$pagenav<br>";
-		}			
+			echo "</table>\n<br>$pagenav<br>\n";
+		}		
+
+//scripts to run after page loads		
+if ( DEBUG ) {	
+	$rand = floor(rand() * 100);
+	$jquery_source = "scripts/conv_jquery.js?dev=$rand";
+} else {
+	$jquery_source = "scripts/conv_jquery.js?1";
+}
+echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
 	
 echo "
 </body>
