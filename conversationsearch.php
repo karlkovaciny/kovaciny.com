@@ -50,10 +50,10 @@ if (isset($_REQUEST['q_searchConversations']) &&
 			echo "<tr class=\"searchResults hide\" >
 					<td class=\"searchResults\" >
 						<div class=\"slideme\" style=\"display: visible\">
-						<a href=\"conversations.php?id=$convid\" tabindex=\"$tabindex\" >$contitle</a> ($numcomm)</td>
+						<a href=\"conversations.php?id=$convid\" tabindex=\"$tabindex\" >$contitle</a> ($numcomm)</div></td>
 					<td class=\"searchResults\">
 						<div class=\"slideme\" style=\"display: visible\">
-						$convdate ago</td></tr>";
+						$convdate ago</div>";
 		}
 		$tabindex +=10;
 		echo "</td></tr>
@@ -270,19 +270,6 @@ if (isset($_REQUEST['q_searchConversations']) &&
 				echo "<tr><td class=\"tdot commentOrigins\" style = \"width:20%\"><span class=\"nou\">$x_username<br />in </span><span class=\"b\"><a href=\"conversations.php?id=$conid#comment_$comid\" tabindex=\"$tabindex\">$contitle</a></span></td>";
 				echo "<td class=\"tdot\"></td><td class=\"tdot sidepad commentContainer\">$comment</td></tr>";
 				
-				//highlight the search term (but not the operators and quotation marks)
-				echo "<script>";
-				$operators = "+-~<>";
-				$q_phrases = explodePhrases($q, $operators);
-				foreach($q_phrases as $value) {
-					$value = str_replace("\"","", $value);
-					if ( strpbrk(substr($value,0,1), $operators) ) {
-						$value = substr($value,1);
-					}
-					$value = addslashes($value);
-					echo "highlightInnerHTML(document.getElementById('c_$comid'), '$value');";
-				}
-				echo "</script>";
 				$i++;
 			}
 			echo "</table>\n<br>$pagenav<br>\n";
@@ -296,7 +283,18 @@ if ( DEBUG ) {
 	$jquery_source = "scripts/conv_jquery.js?1";
 }
 echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
-	
+
+?>
+
+<script>
+$(document).ready( function() {
+	$(".commentcontents").each( function() {
+		var qstripped = <?php echo json_encode(stripBooleanOperators($q));?>;
+		highlightInnerHTML.apply(this, qstripped);
+	});
+});
+</script>
+<?php
 echo "
 </body>
 </html>";

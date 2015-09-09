@@ -54,7 +54,7 @@ if ($username) {
 				$unreadcomments = "";
 				$cb = 0;	//number of comments retrieved, I think
 				$cb_id = array(); //initializing so it won't choke implode() if empty
-				$topnew = "";
+				$topnewid = 0;
 				while($comments = mysql_fetch_array($res)) {
 					$commentid = $comments["comid"];
 					$comment_text_id = "c_" . $commentid . "_text"; //for adding a div later
@@ -244,13 +244,16 @@ if ($username) {
 	}
 	echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
 	
-	if ( wantNewPosts($topnew) ) {	
+	if ( wantNewPosts($topnewid) ) {	
 		echo "<script type=\"text/javascript\">";
-		echo "window.onload=function(){ autoHideOldComments( function(){jumpToAnchor('$topnew');} ); }";
+		echo "window.onload=function(){ 
+			autoHideOldComments( function(){
+				jumpToAnchor('comment_$topnewid');
+			} );
+		}";
 		echo "</script>";
 	} 
-	echo "</body>";
-	echo "</html>";
 }
-
 ?>
+</body>
+</html>

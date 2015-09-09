@@ -60,12 +60,12 @@ div.hrnoshade {width: 100%; height: 0px; border-top: 1px solid #DDDDDD; backgrou
 .quote {color: #777777; padding-left: 12px; padding-right: 12px; font-size: 12px;}
 
 .searchbutton { height: 26px; width: 26px; background-color: #999999; background:url("./gfx/magnifyingglass.jpg") no-repeat}
-.searchResults { border: 0px; border-spacing: 0px; font-size: 12px;}
-	.searchResults:nth-of-type(odd) { background-color: #F6F6F6;}
-	.searchResults { padding: 3px 12px}
-	.searchResults:last-child  { white-space: nowrap; font-size: 10px; }
-	.blueHR { background-color:#6699CC; }
-	.blueHR { padding: 0px; }
+table.searchResults { border: 0px; border-spacing: 0px; font-size: 12px;}
+	tr.searchResults:nth-of-type(odd) { background-color: #F6F6F6;}
+	td.searchResults { padding: 3px 12px}
+	td.searchResults:last-child  { white-space: nowrap; font-size: 10px; }
+	tr.blueHR { background-color:#6699CC; }
+	td.blueHR { padding: 0px; }	/* requires td to have colspan = 2 and contain <img width="1" border="0" height="1" src="gfx/-.gif">*/
 #headerSearchForm { text-align: right; margin-bottom: 0px;}
 #headerSearchBox { color: #999999; font-style:italic; height: 26px; border-style: outset; vertical-align: bottom  }
 #headerSearchButton { vertical-align: bottom; padding:0 }

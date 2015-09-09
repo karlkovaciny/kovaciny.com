@@ -2,7 +2,7 @@ $( document ).ready( function() {
 	
 	$(".deleteCommentLink").click(function(){
 		//make "delete this comment" links  pop up a toast with an undo
-		var pos = $(this).position().top + $(this).height() + 4;
+		var pos = $( this ).position().top + $( this ).height() + 4;
 		var popupMarginLeft = -1 * ($("#deleteConfirmation").outerWidth() / 2) + "px";
 		var popupMarginTop = -1 * ($("#deleteConfirmation").outerHeight() / 2) + "px";
 		$("#deleteConfirmation").css({
@@ -13,9 +13,9 @@ $( document ).ready( function() {
 			"margin-left": popupMarginLeft
 		}).fadeIn(400).delay(3000).fadeOut(400);
 		
-		var convid = $(this).attr("data-convid");
-		var commentid = $(this).attr("data-commentid");
-		var comment = $(this).parents().closest('div').slideUp();
+		var convid = $( this ).attr("data-convid");
+		var commentid = $( this ).attr("data-commentid");
+		var comment = $( this ).parents().closest('.commentContainer').slideUp();
 		
 		//delete post
 		var deleteCountdown = setTimeout( function(){ 
@@ -36,6 +36,10 @@ $( document ).ready( function() {
 	$("#commentform").submit(function () {
 		window.onbeforeunload = null;
 	});
+	
+	$("#commentform").bind('input propertychange', function() {
+		document.forms.commentform.modified = true;
+	});
 });
 
 
@@ -43,13 +47,13 @@ $(window).load( function(){	//wait till all images are loaded
 	
 	//shrink large images and embedded videos inside commentContainers
 	$(".commentContents").find("img, iframe, embed").each( function() {
-		var parent = $(this).closest( ".commentContainer" );
+		var parent = $( this ).closest( ".commentContainer" );
 		var availableWidth = 
-			window.innerWidth - $( this ).offset().left 
-				- parseInt(parent.css("padding-right"), 10) - 24 - 6; 
+			window.innerWidth - $( this ).offset().left - 
+			parseInt(parent.css("padding-right"), 10) - 24 - 6; 
 				// 24 = 2 * sidepad. 6 = fudge.
 				
-		if ( $(this).is("img") ) {	//add click-to-expand
+		if ( $( this ).is("img") ) {	//add click-to-expand
 			console.log("is image, natural width: ", $( this )[0].naturalWidth);
 			if ( $( this )[0].naturalWidth > availableWidth ) {
 				$( this ).addClass("squashed");
@@ -67,8 +71,9 @@ $(window).load( function(){	//wait till all images are loaded
 });
 
 window.onbeforeunload=function() {
-	var unsubmitted = document.forms.commentform.comment.value;
-	if (unsubmitted && unsubmitted.trim()) {
-		return 'This page is asking you to confirm that you want to leave - data you have entered may not be saved.';
+	if (document.forms.commentform) {
+		if (document.forms.commentform.modified) {
+			return 'This page is asking you to confirm that you want to leave - data you have entered may not be saved.';
+		}
 	}
 };

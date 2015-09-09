@@ -93,6 +93,7 @@ require_once('functions.php');
 			$css_source = "kovaciny.css?1";	//version number forces refresh
 			$hosted_jquery = "http://code.jquery.com/jquery-2.1.4.min.js";
 			$js_source = "scripts/kovaciny.js?13";
+			echo "<script>console.log = function(){}</script>"; //turn logging off
 		}
 		echo "<link href=\"$css_source\" rel=\"stylesheet\" type=\"text/css\">\n\t\t";
 		echo "<script src=\"$hosted_jquery\" type=\"text/javascript\"></script>\n\t\t";

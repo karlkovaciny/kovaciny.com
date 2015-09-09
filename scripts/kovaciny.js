@@ -1,8 +1,8 @@
 function show(e){ //use if initial state is hide
-	element = document.getElementById(e);
+	var element = document.getElementById(e);
 	if (element) {
 		if (element.style.display == 'block') {
-			element.style.display = 'none'
+			element.style.display = 'none';
 		} else {
 			element.style.display='block';
 		}
@@ -10,10 +10,10 @@ function show(e){ //use if initial state is hide
 }
 
 function hide(e){ //use if initial state is show
-	element = document.getElementById(e);
+	var element = document.getElementById(e);
 	if (element) {
 		if (element.style.display == 'none') {
-			element.style.display = 'block'
+			element.style.display = 'block';
 		} else {
 			element.style.display='none';
 		}
@@ -22,12 +22,12 @@ function hide(e){ //use if initial state is show
 }
 
 function showonly(e){
-	element = document.getElementById(e);
+	var element = document.getElementById(e);
 	if (element) //fails on comments whose parents were deleted
 		{element.style.display='block';} 
 }
 function hideonly(e){
-	element = document.getElementById(e);
+	var element = document.getElementById(e);
 	if (element) 
 		{element.style.display='none';} 
 }
@@ -36,10 +36,10 @@ function commenttoggle(expandcollapse) {// 0 = hide, 1 = show
 //called only when you click "show all comments".
 //the difference between this and habtop is just that ac.value vs ntc.value, which are hidden items in line 223 of the commentform
 	var ac = document.forms.commentform.ac.value + ''; //all comments (list of ids)
-	var aca = new Array();
+	var aca = [];
 	var delaytime = 0;
 	aca = ac.split(':');
-	for (i = aca.length - 1; i >= 0; i--) {
+	for (var i = aca.length - 1; i >= 0; i--) {
 		delaytime += 1;
 		if (expandcollapse == 1) {
 			//this is a dynamic function call: "showonly('c_4'); showonly('c_s_4'); hideonly('c_h_4');", delaytime
@@ -53,9 +53,9 @@ function commenttoggle(expandcollapse) {// 0 = hide, 1 = show
 
 function habtop() {
 	var ntc = document.forms.commentform.ntc.value + ''; //marked as read comments
-	var aca = new Array();
+	var aca = [];
 	aca = ntc.split(':');
-	for (i = aca.length-1; i >= 0; i--) {
+	for (var i = aca.length-1; i >= 0; i--) {
 		hideonly('c_' + aca[i]); hideonly('c_s_' + aca[i]); showonly('c_h_' + aca[i]);
 	}
 }
@@ -80,18 +80,18 @@ function quoteme(authorname, commentTextId) {
 	} else if (document.selection) {
 		txt = document.selection.createRange().text;
 	}
-	if (txt.length == 0) {
+	if (txt.length === 0) {
 		txt = document.getElementById(commentTextId).innerHTML;
 		txt = txt.replace(/<br>\n<br>/gi, "\n");
 	} 
 	
 	var existingtext = document.forms.commentform.comment.value + '';
-	if (existingtext.length == 0) {
+	if (existingtext.length === 0) {
 		modtxt = '[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';
 	} else {
 		modtxt = existingtext + '\n[quote=' + authorname + ']' + txt + '[/quote]' + '\n\n';
 	}
-	if (modtxt.length == 0) modtxt = existingtext;
+	if (modtxt.length === 0) modtxt = existingtext;
 	document.forms.commentform.comment.value = modtxt;
 	//tinyMCE.updateContent("comment");
 	var commentForm = document.forms.commentform.comment;
@@ -142,7 +142,6 @@ function alertContents() {
 }
 
 function autoHideOldComments(callback){
-	console.log("Arguments", arguments);
 	console.time('myTimer');
 	hide('ncb1'); //the "show new comments only" button
 	show('ncb2'); //the "show all comments" button
@@ -157,30 +156,70 @@ function jumpToAnchor(anchor) {
 	window.location.replace( newUrl );
 }
 
-/* Adds a highlighted span around all instances of a string in a node and its children */ 
-function highlightInnerHTML(element, targetString){
-	var pattern = new RegExp(targetString, "gi");
-	if ( element !== null ) {
-		var numChildren = element.childNodes.length;
-		for (var i = 0; i < numChildren; i++) {
-			var child = element.childNodes[i];
-			if (child.nodeType === 3) {
-				var replacementNode = document.createElement('span');
-				var exploded = child.nodeValue.split(pattern);
-				for (var j = 0, len = exploded.length; j < len; j++) {
-					replacementNode.appendChild(document.createTextNode(exploded[j]));
-					if ( j < (len - 1) ) { //there was actually an instance of the pattern found, replace it back in
-						var highlighted = document.createElement("span");
-						highlighted.className = "hilite_strong";
-						var match = child.nodeValue.match(pattern);
-						highlighted.innerHTML = match[j];
-						replacementNode.appendChild(highlighted);
-					}
-				}
-				child.parentNode.replaceChild(replacementNode, child);
-			} else {
-				highlightInnerHTML(child, targetString);
-			}
+/* 
+	params: array of tokens to highlight inside the node _this_ and all of its children
+*/
+function highlightInnerHTML() {
+	console.count('highlightinner called');
+	var element = this;
+	if (!element) {
+		console.log("highlight inner html called with no element to operate on");
+		return "";
+	}
+	var childNodes = element.hasChildNodes() ? element.childNodes : [];
+	var tokens = Array.prototype.slice.apply(arguments);
+	var pattern = new RegExp(tokens.join("|"), "gi");
+	var unhighlightedNodes = [];
+	
+	for (var i = 0; i < childNodes.length; i++) {
+		var child = childNodes[i];
+		if (child.nodeType === 3 && child.length > 0) {	//text, not empty
+			var highlightSpan = document.createElement("span");
+			highlightSpan.className = "hilite_strong";
+			wrapMatchesInTag(child, pattern, highlightSpan);
+		} else if (unhighlightedNodes.indexOf(child) == -1) {
+				unhighlightedNodes.push(child);
 		}
 	}
+
+	for (var j = 0; j < unhighlightedNodes.length; j++) {
+		highlightInnerHTML.apply(unhighlightedNodes[j], tokens);
+	}
+}
+
+//Searches a textNode for a pattern match (RegExps allowed), wraps all instances in clones of a wrapperNode, and replaces the original node.
+function wrapMatchesInTag(textNode, pattern, wrapperNode)  {
+    if (!textNode) {
+		console.log('wrapMatchesInTag was called with a blank textNode. Returning.');
+		return;
+	}
+	
+	var matches = textNode.nodeValue.match(pattern);
+	if (!matches) return;
+	
+    var exploded = textNode.nodeValue.split(pattern);
+    
+    replacementNodes = [];
+    for (var j = 0; j < exploded.length; j++) {
+        replacementNodes.push(document.createTextNode(exploded[j]));
+        if (j < matches.length) {
+            wrapped = wrapperNode.cloneNode(false);
+            wrapped.innerHTML = matches[j];
+            replacementNodes.push(wrapped);
+        }
+    }
+
+    var parent = textNode.parentNode;
+	if (!parent) {
+		console.log("wrapMatchesInTag: textNode parameter did not have a parent for some reason. Aborting highlight.");
+		return textNode;
+	}
+	
+	//I chose to replace the text node without creating a new parent for the new nodes
+	var lastReplacement = replacementNodes.slice(-1)[0];
+    parent.replaceChild(lastReplacement, textNode);
+    for (var k = replacementNodes.length - 2; k >= 0; k--) {
+        parent.insertBefore(replacementNodes[k], replacementNodes[k+1]);
+	}
+    parent.normalize();
 }
