@@ -37,7 +37,7 @@ $( document ).ready( function() {
 		window.onbeforeunload = null;
 	});
 	
-	$("#commentform").bind('input propertychange', function() {
+	$("#commentform").one('input propertychange', function() {
 		document.forms.commentform.modified = true;
 	});
 });
@@ -71,8 +71,9 @@ $(window).load( function(){	//wait till all images are loaded
 });
 
 window.onbeforeunload=function() {
-	if (document.forms.commentform) {
-		if (document.forms.commentform.modified) {
+	var form = document.forms.commentform;
+	if (form) {
+		if (form.modified && form.comment.value.trim()) {
 			return 'This page is asking you to confirm that you want to leave - data you have entered may not be saved.';
 		}
 	}
