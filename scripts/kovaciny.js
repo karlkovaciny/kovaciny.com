@@ -157,7 +157,8 @@ function jumpToAnchor(anchor) {
 }
 
 /* 
-	params: array of tokens to highlight inside the node _this_ and all of its children
+	params: array of tokens to highlight 
+	Highlights tokens inside the node _this_ and all of its children
 */
 function highlightInnerHTML() {
 	console.count('highlightinner called');
