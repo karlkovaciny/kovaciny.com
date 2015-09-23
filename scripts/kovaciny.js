@@ -164,7 +164,6 @@ function highlightInnerHTML() {
 	console.count('highlightinner called');
 	var element = this;
 	if (!element) {
-		console.log("highlight inner html called with no element to operate on");
 		return "";
 	}
 	var childNodes = element.hasChildNodes() ? element.childNodes : [];

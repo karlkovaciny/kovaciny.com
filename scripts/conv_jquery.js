@@ -54,7 +54,6 @@ $(window).load( function(){	//wait till all images are loaded
 				// 24 = 2 * sidepad. 6 = fudge.
 				
 		if ( $( this ).is("img") ) {	//add click-to-expand
-			console.log("is image, natural width: ", $( this )[0].naturalWidth);
 			if ( $( this )[0].naturalWidth > availableWidth ) {
 				$( this ).addClass("squashed");
 				$( this ).click( function() {
