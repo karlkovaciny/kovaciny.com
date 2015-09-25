@@ -34,7 +34,7 @@ if ($username) {
 					if ($userid == $authorid && $comcount == 1) {
 						echo "<td class=\"sidepad\"><input type=\"button\" onclick=\"if(confirm('Are you sure you want to delete this conversation?')) {document.location.href='newconv.php?deleteconversation=$conv_id';}\" value=\"Delete conversation\" style=\"color: red\"></td>";
 					} else {
-						echo "<td><div id=\"ncb1\"><input type=\"button\" onclick=\"hide('ncb1');show('ncb2');habtop();\" value=\"Show new comments only\"></div><div id=\"ncb2\" class=\"hide\"><input type=\"button\" onclick=\"hide('ncb2');show('ncb1');commenttoggle(1);\" value=\"Show all comments\"></div></td>";
+						echo "<td><div id=\"ncb1\"><input type=\"button\" onclick=\"hide('ncb1');show('ncb2');habtop();\" value=\"Show new comments only\"></div><div id=\"ncb2\" class=\"hide\"><input type=\"button\" onclick=\"hide('ncb2');show('ncb1');commentToggle(1);\" value=\"Show all comments\"></div></td>";
 					}
 					echo "</tr>";
 					if ($comcount == 1) {
@@ -52,9 +52,10 @@ if ($username) {
 				$res = mysql_query("SELECT c.*, u.userid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND c.visible = 'Y' ORDER BY c.createdate",$db);
 				$allcomments = "";
 				$unreadcomments = "";
-				$cb = 0;	//number of comments retrieved, I think
+				$commentsretrieved = 0;	
 				$cb_id = array(); //initializing so it won't choke implode() if empty
 				$topnewid = 0;
+				$topnewparentid = 0;
 				while($comments = mysql_fetch_array($res)) {
 					$commentid = $comments["comid"];
 					$comment_text_id = "c_" . $commentid . "_text"; //for adding a div later
@@ -71,7 +72,7 @@ if ($username) {
 						$markedasred = $comments["readby_$username"];
 						$commentintv = format_interval(time() - strtotime($commentdate)); //$commentdate = date('M d, g:i a', $commentdate);
 						$allcomments .= "$commentid:";
-						$commentanchor = "comment_$commentid";
+						$commentanchor = getCommentAnchor($commentid);
 						if ($userid == 1) {$commentinfo = "<td class=\"small\">$commentid ($inreplyto) &nbsp;</td>";} else $commentinfo = "";
 						if ($markedasred == "0") {
 							$isnew = "<td width=35><div style=\"padding-top:2px\"><img src=\"gfx/new.gif\" border=0 width=31 height=12 hspace=4></div></td>$tdspacer";
@@ -79,8 +80,13 @@ if ($username) {
 							$unreadcomments .= "$commentid:"; //variable name is a misnomer, this is a list of *already read* comments
 							$isnew = "";
 						}
-						//set up the action bar
-						$ccc = "<tr bgcolor=\"#DDDDDD\"><td class=\"sidepad\" id=\"cc_$commentid\"><a name=\"$commentanchor\"></a><div style=\"width:inherit\"><table border=0 cellpadding=0 cellspacing=0 class=\"small\" style=\"table-layout:fixed; width:100%\"><tr valign=\"middle\">";
+						$ccc = "<tr bgcolor=\"#DDDDDD\"><td class=\"sidepad\" id=\"cc_$commentid\">"
+							. "<a name=\"$commentanchor\"></a>";
+						
+						//set up the action bar links							
+						$ccc .= "<div style=\"width:inherit\">" 
+							. "<table border=0 cellpadding=0 cellspacing=0 class=\"small\" style=\"table-layout:fixed; width:100%\">"
+							. "<tr valign=\"middle\">";
 						$ccc .= "$commentinfo<td width=" . 15*strlen($authorname) . " class=\"large b\"><a href=\"?user=$authorid\">$authorname</a></td>$tdspacer";
 						$ccc .= "$isnew<td width=120>$commentintv ago</td>$tdspacer";
 						$hilite = "";
@@ -140,7 +146,7 @@ if ($username) {
 						$cb_isnew[] = $isnew;
 						$cb_ccc[] = $ccc;
 						$cb_cd[] = 0;	//comment depth in the tree
-						$cb += 1;
+						$commentsretrieved += 1;
 					}
 				}
 				//thread and display comments
@@ -158,7 +164,7 @@ if ($username) {
 				$hiddenitems = "";	//except for admin
 				$editcomment = "";	//except in edit mode
 				if ($hideallexcept == 0) {
-					$postcomm = "Post a comment:";
+					$modal_user_prompt = "Post a comment:";
 					$postbutt = "add comment";
 					echo "?id=$conv_id&action=new";
 					if ($userid == 1) {$hiddenitems ="In reply to: <input type=\"text\" name=\"inreplyto\" class=\"small\" size=3 value=0 onfocus=\"this.select();\"> &nbsp;";}
@@ -166,10 +172,10 @@ if ($username) {
 					if (isset($replytoid)) {	
 						//reply mode
 						if ($authorid == $userid) {
-							$postcomm = "Post a follow-up comment:";
+							$modal_user_prompt = "Post a follow-up comment:";
 							$postbutt = "add comment";
 						} else {
-							$postcomm = "Reply to $authorname's comment:";
+							$modal_user_prompt = "Reply to $authorname's comment:";
 							$postbutt = "post reply";
 						}
 						$comment = "[quote=$authorname]" . addslashes($comment) . "[/quote]";
@@ -181,7 +187,7 @@ if ($username) {
 						echo "?id=$conv_id&comid=$hideallexcept&action=new";
 					} else {	
 						//edit mode
-						$postcomm = "Edit this comment:";
+						$modal_user_prompt = "Edit this comment:";
 						$postbutt = "save changes";
 						$posttime = strtotime($commentdate) + ($tz * 3600);
 						$posttime = date('M d, Y g:i a', $posttime);
@@ -199,7 +205,7 @@ if ($username) {
 				//display comment editor
 				echo "<table border=0 cellpadding=2 cellspacing=0 class=\"medium\">";
 				if ($userid == 1) {
-					echo "<tr><td colspan=2><table border=0 cellpadding=0 cellspacing=0 class=\"medium\"><tr><td><h2>$postcomm</h2></td>$tdspacer<td>as&nbsp;</td><td><select name=\"postingas\" class=\"small\">";
+					echo "<tr><td colspan=2><table border=0 cellpadding=0 cellspacing=0 class=\"medium\"><tr><td><h2>$modal_user_prompt</h2></td>$tdspacer<td>as&nbsp;</td><td><select name=\"postingas\" class=\"small\">";
 					$res = mysql_query("SELECT * FROM users ORDER BY username",$db);
 					while($users = mysql_fetch_array($res)) {
 						$u_userid = $users["userid"];
@@ -217,7 +223,7 @@ if ($username) {
 						"<a href=\"javascript://\" onclick=\"document.forms.commentform.postingat.value='';\">now</a>" . //defaults to now()
 						")</td></tr></table></td></tr>";
 				} else { //not logged in as admin
-					echo "<tr><td colspan=2><h2>$postcomm</h2></td></tr>";
+					echo "<tr><td colspan=2><h2>$modal_user_prompt</h2></td></tr>";
 				}
 				$allcomments = rtrim($allcomments, ":");
 				$unreadcomments = rtrim($unreadcomments, ":");
@@ -245,11 +251,18 @@ if ($username) {
 	echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
 	
 	if ( wantNewPosts($topnewid) ) {	
-		echo "<script type=\"text/javascript\">";
-		echo "window.onload=function(){ 
-			autoHideOldComments( function(){
-				jumpToAnchor('comment_$topnewid');
-			} );
+		$jumpto = getCommentAnchor($topnewid);
+		echo "<script type=\"text/javascript\">
+			window.onload=function(){ 
+			console.log('We want to only show new posts');
+			autoHideOldComments( function(){";
+		if (!empty($topnewparentid)) {
+			echo "var com = new kcom.Comment($topnewparentid);
+			console.log('we are trying to display parent post ' + com.getId());
+			com.show();";
+		}
+		echo "jumpToAnchor('$jumpto');
+		} );
 		}";
 		echo "</script>";
 	} 

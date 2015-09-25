@@ -3,7 +3,7 @@
 
 	// find commentlevel
 	$threaddepth = 0;
-	for ($i=0; $i<$cb; $i++) {// loop through all
+	for ($i=0; $i < $commentsretrieved; $i++) {// loop through all
 		$infocus = $cb_irt[$i];
 		if ($infocus == 0) {
 			$cb_cd[$i] = 0; // no parents? you're top-level
@@ -17,7 +17,7 @@
 	// sort
 	$tl = 0;
 	$commentorder = array();
-	for ($i=0; $i<$cb; $i++) { //find top level keys
+	for ($i=0; $i < $commentsretrieved; $i++) { //find top level keys
 		if ($cb_cd[$i] == 0) {
 			$commentorder[] = $cb_id[$i];
 			$tl++;
@@ -30,8 +30,9 @@
 			$parentid = $commentorder[$t];	
 			$p .= "$parentid:";
 			$ntl++;
-			for ($i=0; $i<$cb; $i++) {
+			for ($i=0; $i < $commentsretrieved; $i++) {
 				if ($cb_irt[$i] == $parentid && $cb_cd[$i] >= $l) {
+					//without the comment depth check some comments would repost once per iteration
 					$p .= "$cb_id[$i]:"; 
 					$ntl++;
 				}
@@ -52,11 +53,15 @@
 				$irt = $cb_irt[$selfkey]; //find parent comment id
 				if ( empty($topnewid) && strlen($cb_isnew[$selfkey]) ) {
 					$topnewid = $cb_id[$selfkey];
+					$topnewparentid = $irt;
 				}
 				$indent = $cb_cd[$selfkey] * 26;
 				if ($indent == 0 || $hideallexcept > 0) {$indent = "";} else {$indent = "padding-left: ".$indent."px;";}
 				$commhtml = $cb_ccc[$selfkey];
-				if ($cb_cd[$selfkey] > 0) $commhtml = str_replace("<XXXYYYZZZYYYXXX>", "<td><a href=\"javascript://\" onclick=\"jtp($irt);\" title=\"Jump to parent comment\"><img src=\"gfx/up.gif\" border=1 width=6 height=6 hspace=7 vspace=3></a></td>", $commhtml);
+				if ($cb_cd[$selfkey] > 0) $commhtml = str_replace("<XXXYYYZZZYYYXXX>"
+				, "<a href=\"javascript://\" onclick=\"jumpToAnchor('" 
+					. getCommentAnchor($irt) 
+					. "');\" title=\"Jump to parent comment\"><img src=\"gfx/up.gif\" border=1 width=6 height=6 hspace=7 vspace=1></a>", $commhtml);
 				echo "<div class=\"commentContainer\" style=\"$indent\" >";
 				echo 	"<table border=0 cellpadding=3 cellspacing=0 style=\"table-layout:fixed; max-width: 850px;\">$commhtml</table>";
 				echo "</div>";

@@ -20,6 +20,9 @@ function format_plural($count, $singular, $plural) {
 
 function pluralize($count, $singular, $plural = false) {if (!$plural) {$plural = $singular . 's';} return ($count == 1 ? $singular : $plural);}
 
+function getCommentAnchor($commentid) {
+	return "comment_" . $commentid;
+}
 /*
 Handles URLs after href= and src=.
 */
