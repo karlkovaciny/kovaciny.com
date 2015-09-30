@@ -15,10 +15,14 @@ function format_interval($timestamp, $granularity = 2) {
 }
 
 function format_plural($count, $singular, $plural) {
-	if ($count == 1) {return $singular;} else {return $count . " " . $plural;}
+	if ($count == 1) {return $singular;} 
+    else {return $count . " " . $plural;}
 }
 
-function pluralize($count, $singular, $plural = false) {if (!$plural) {$plural = $singular . 's';} return ($count == 1 ? $singular : $plural);}
+function pluralize($count, $singular, $plural = false) {
+    if (!$plural) {$plural = $singular . 's';} 
+    return ($count == 1 ? $singular : $plural);
+}
 
 function getCommentAnchor($commentid) {
 	return "comment_" . $commentid;
@@ -53,15 +57,15 @@ explodePhrases
   Doesn't return empty strings.
   Up to one character from the $operators string is allowed to precede each word. (must be regex-friendly)
 ======================*/
-function explodePhrases( $string, $operators=NULL ) {
+function explodePhrases( $str, $operators=NULL ) {
 	$regex = "/[\s]*([$operators]?\"[^\"]*\")[\s]*/";
-	$quotesplit = preg_split($regex, $string, NULL, PREG_SPLIT_NO_EMPTY |  PREG_SPLIT_DELIM_CAPTURE);
+	$quotesplit = preg_split($regex, $str, NULL, PREG_SPLIT_NO_EMPTY |  PREG_SPLIT_DELIM_CAPTURE);
 	$phraselist = array();
 	foreach ($quotesplit as $value) {
 		if ( preg_match($regex, $value) ) {
 			$phraselist[] = $value;
 		} else {
-			$phraselist = array_merge($phraselist, preg_split("/\s+/",$value, NULL, PREG_SPLIT_NO_EMPTY));
+			$phraselist = array_merge($phraselist, preg_split("/\s+/", $value, NULL, PREG_SPLIT_NO_EMPTY));
 		}
 	}
 	return $phraselist;
@@ -75,16 +79,16 @@ preprocessForSqlBoolean
 function preprocessForSqlBoolean( $searchstring ) { //$searchstring should be unescaped
 	$operators = "+-~<>";
 	$searchPhrases = explodePhrases($searchstring, $operators);
-	
-	for ($i=0; $i<sizeof($searchPhrases); $i++) {
+	$len = count($searchPhrases);
+    for ($i=0; $i < $len; $i++) {
 		//check for operators, add a + if none
-		$first = substr($searchPhrases[$i],0,1);
+		$first = substr($searchPhrases[$i], 0, 1);
 		if ( strpbrk($first, $operators) ) {
 			$op = $first;
-			$searchPhrases[$i] = substr($searchPhrases[$i],1);
-		} else $op = "+";
+			$searchPhrases[$i] = substr($searchPhrases[$i], 1);
+		} else {$op = "+";}
 		//surround hyphenated words in quotes
-		if ( stripos($searchPhrases[$i],"-") && ($searchPhrases[$i][0] !== "\"") ) {
+		if ( stripos($searchPhrases[$i], "-") && ($searchPhrases[$i][0] !== "\"") ) {
 			$searchPhrases[$i] = "\"" . $searchPhrases[$i] . "\"";
 		}
 		$searchPhrases[$i] = $op . $searchPhrases[$i];
@@ -94,18 +98,18 @@ function preprocessForSqlBoolean( $searchstring ) { //$searchstring should be un
 	return mysql_real_escape_string($searchPhraseString); //sanitize single quotes
 }
 
-function stripBooleanOperators($string) {
+function stripBooleanOperators($str) {
 	//tokenize the search string, removing operators and quotation marks
 	//returns the tokens in an array
 	$operators = "+-~<>";
-	$q_phrases = explodePhrases($string, $operators);
+	$q_phrases = explodePhrases($str, $operators);
 	$strippedStrings = array();
 	foreach($q_phrases as $value) {
-		$value = str_replace("\"","", $value);
-		if ( strpbrk(substr($value,0,1), $operators) ) {
-			$value = substr($value,1);
+		$value = str_replace("\"", "", $value);
+		if ( strpbrk(substr($value, 0, 1), $operators) ) {
+			$value = substr($value, 1);
 		}
-		$value = addslashes($value);
+        $value = addslashes($value);
 		$strippedStrings[] = $value;
 	}
 	return $strippedStrings;
@@ -117,8 +121,10 @@ wantNewPosts
 ======================*/
 function wantNewPosts($postid) {
 	if (isset($_REQUEST['action'])) {
-		if (($_REQUEST['action'] != "edit") && ($_REQUEST['action'] != "reply")) return true; 
-		// Would return true on "update" for old posts, but the common use case is on new posts and I can't tell them apart.
+		if (($_REQUEST['action'] != "edit") && ($_REQUEST['action'] != "reply")) {
+            return true; 
+            // Would return true on "update" for old posts, but the common use case is on new posts and I can't tell them apart.
+        }
 	}
 	if (!empty($postid) && isset($_SERVER['HTTP_REFERER'])) {
 		if ( ($_SERVER['HTTP_REFERER'] == HOST_NAME . "/") || stripos($_SERVER['HTTP_REFERER'], "index.php")) return true;
