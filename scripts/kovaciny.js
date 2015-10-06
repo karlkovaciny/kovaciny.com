@@ -1,144 +1,3 @@
-var kcom = kcom || {};
-
-function show(e){ //use if initial state is hide
-    var element = document.getElementById(e);
-    if (element) {
-        if (element.style.display == 'block') {
-            element.style.display = 'none';
-        } else {
-            element.style.display='block';
-        }
-    }
-}
-
-function hide(e){ //use if initial state is show
-    var element = document.getElementById(e);
-    if (element) {
-        if (element.style.display == 'none') {
-            element.style.display = 'block';
-        } else {
-            element.style.display='none';
-        }
-    }
-}
-
-function showonly(e){
-    var element = document.getElementById(e);
-    if (element) { //fails on comments whose parents were deleted
-        element.style.display='block';
-    }
-}
-function hideonly(e){
-    var element = document.getElementById(e);
-    if (element) {
-    	element.style.display='none';
-    }
-}
-/**
-On the conversations page, return a list of all Comments on the page.
-**/
-function getAllComments() {
-    var allCommentIds = [];
-    allCommentIds = document.forms.commentform.ac.value.toString().split(':');
-    var comments = [];
-    for (var i = 0; i < allCommentIds.length; i++) {
-        comments.push(new kcom.Comment(allCommentIds[i]));
-    }
-    console.log('created comments', comments);
-    return comments;
-}
-
-/**
-    @param: expandcollapse - 0 = hide, 1 = show
-**/
-function commentToggle(expandcollapse) {
-//called only when you click "show all comments".
-//the difference between this and habtop is just that ac.value vs ntc.value, which are hidden items in line 223 of the commentform
-    var comments = getAllComments();
-    console.log('this should print, commenttoggling');
-    var delaytime = 0;
-    for (var i = comments.length - 1; i >= 0; i--) {
-        delaytime += 1;
-        if (expandcollapse == 1) {
-            setTimeout(comments[i].show(), delaytime);
-        } else {
-            setTimeout(comments[i].hide(), delaytime);
-        }
-    }    
-}
-
-kcom.Comment = function(id) {
-    this.id = id;
-    var self = this;
-    this.displayArea = new kcom.CommentDisplayArea(self);
-    this.showHideControl = new kcom.ShowHideControl(self);
-};
-
-kcom.Comment.prototype.show = function() {
-    this.showHideControl.changeState('visible');
-    this.displayArea.show();
-};
-
-kcom.Comment.prototype.hide = function() {
-    this.showHideControl.changeState('hidden');
-    this.displayArea.hide();
-};
-
-kcom.Comment.prototype.getId = function() {
-     return this.id;
-};
-
-/**
-    A ShowHideControl provides a control that toggles the state of a Hideable, and
-    changes its own UI in response.
-**/
-kcom.ShowHideControl = function(comment) {
-    this.parent = comment;
-};
-
-kcom.ShowHideControl.prototype.changeState = function(state) {
-    if (state == 'hidden') {
-        hideonly('c_h_' + this.parent.getId());
-        showonly('c_s_' + this.parent.getId());
-    } else if (state == 'visible') {
-        hideonly('c_s_' + this.parent.getId());
-        showonly('c_h_' + this.parent.getId());
-    } else console.log (this, 'Invalid parameter: ' + state);
-};
-
-/**
-    CommentDisplayArea provides a place to show the user picture and comment text.
-    It can be collapsed.
-    Constructor parameter is a pointer to the parent comment.
-**/
-kcom.CommentDisplayArea = function (comment) {
-    this.parent = comment;
-    this.isHidden = false;
-};
-
-kcom.CommentDisplayArea.prototype.show = function() {
-    showonly(this.getElementId());
-    this.isHidden = true;
-};
-
-kcom.CommentDisplayArea.prototype.hide = function() {
-    hideonly(this.getElementId());
-    this.isHidden = false;
-};
-
-kcom.CommentDisplayArea.prototype.getElementId = function() {
-    return 'c_' + this.parent.getId();
-};
-
-function habtop() {
-    var ntc = document.forms.commentform.ntc.value + '';//marked as read comments
-    var aca = [];
-    aca = ntc.split(':');
-    for (var i = aca.length-1; i >= 0; i--) {
-        hideonly('c_' + aca[i]); hideonly('c_s_' + aca[i]); showonly('c_h_' + aca[i]);
-    }
-}
-
 function jtp(jumpto) {//jump to parent in threaded conversations
     setTimeout("document.location.href='#comment_" + jumpto + "';window.scrollBy(0,-30);", 10);
     setTimeout("showonly('c_" + jumpto + "');showonly('c_s_" + jumpto + "');showonly('c_h_" + jumpto + "');hideonly('c_h_" + jumpto + "');", 20);
@@ -194,7 +53,7 @@ function makeRequest(url) {
         } catch (e) {
             try {
             http_request = new ActiveXObject("Microsoft.XMLHTTP");
-            } catch (e) {}
+            } catch (ex) {}
         }
     }
 
@@ -217,16 +76,6 @@ function alertContents() {
             alert('There was a problem with the request.');
         }
     }
-
-}
-
-function autoHideOldComments(callback){
-    console.time('myTimer');
-    hide('ncb1');//the "show new comments only" button
-    show('ncb2');//the "show all comments" button
-    habtop();
-    console.timeEnd('myTimer');
-    if (callback){ callback();} else { console.log('autoHideOldComments got no callback');}    
 }
 
 function jumpToAnchor(anchorname) {
@@ -235,18 +84,18 @@ function jumpToAnchor(anchorname) {
     window.location.replace( newUrl );
 }
 
-/* 
-    params: array of tokens to highlight 
-    Highlights tokens inside the node _this_ and all of its children
+/** 
+ * @param {Array} tokens - array of tokens to highlight 
+ * Highlights tokens inside the node _this_ and all of its children
 */
-function highlightInnerHTML() {
+function highlightInnerHTML(tokens) {
     console.count('highlightinner called');
     var element = this;
     if (!element) {
         return "";
     }
     var childNodes = element.hasChildNodes() ? element.childNodes : [];
-    var tokens = Array.prototype.slice.apply(arguments);
+    tokens = Array.prototype.slice.apply(arguments);
     var pattern = new RegExp(tokens.join("|"), "gi");
     var unhighlightedNodes = [];
     
