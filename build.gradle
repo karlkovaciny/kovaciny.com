@@ -1,0 +1,140 @@
+plugins {
+  id "base"
+  id "com.eriwen.gradle.js" version "1.12.1"
+}
+            
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    rhino 'com.google.javascript:closure-compiler:v20150920'
+}
+
+javascript.source {
+    dev {
+        js {
+            srcDir "/scripts"
+            include "*.js"
+            exclude "*.min.js"
+        }
+    }
+    prod {
+        js {
+            srcDir "/scripts"
+            include "*.min.js"
+        }
+    }
+}
+
+combineJs {
+    source = javascript.source.dev.js.files
+    dest = file("${buildDir}/all.js")
+}
+
+minifyJs {
+    if (false) {source = combineJs} //TODO for production
+    else source = javascript.source.dev.js.files
+    dest = file("${buildDir}/all-min.js")
+    sourceMap = file("${buildDir}/all.sourcemap.json")
+    closure {
+        warningLevel 'VERBOSE'
+        //dest 'bga.txt'
+        //outputs.files 'bga.txt'
+        //outputs.each{ it.getFiles().each{println it}}
+        
+  //          System.setErr(new PrintStream(new File("output.txt")));
+//System.err.println ('j;j;j');
+        // where the compiler should look for global variables
+        def jQueryExterns = new File("resources/jQueryExterns.js")
+        if (!jQueryExterns.exists()) {
+            new URL('https://raw.githubusercontent.com/google/closure-compiler/master/contrib/externs/jquery-1.9.js')
+                .withInputStream{ i -> jQueryExterns.withOutputStream{ it << i}}
+        }
+        externs = files(jQueryExterns, "resources/externs.js")
+    }
+}
+
+/*
+ * To see the errors for this task easily, run it as 
+ * gradle clean testCompileJs 2>info.txt 1>&2 & info.txt 
+ * (you have to redirect stdout to catch warnings, stderr to catch errors)
+ */
+task testCompileJs {
+    dependsOn minifyJs
+    ext.output = "${buildDir}\\testCompileOutput.js"
+}
+
+jshint {
+    //tasks.jshint.dependsOn minifyJs
+    tasks.jshint.source = javascript.source.dev.js.files
+    tasks.jshint.dest = file("${buildDir}/jshint.out.xml")
+    tasks.jshint.reporter = 'checkstyle'
+    jshint.options = [expr: "true", browser: "true", jquery: "true"]
+    jshint.options << [wsh: "true"] //for Jon's ActiveXObjects
+    if (true) {jshint.options << [devel: "true"]}
+}
+
+task showJshintResults (dependsOn:tasks.jshint, type:Exec) {
+    def outfile = "${tasks.jshint.dest}".toString()
+    def firefoxPath = /C:\Program Files (x86)\Mozilla Firefox\firefox.exe/
+    executable firefoxPath
+    args "${outfile}"
+}
+
+// FTP
+configurations {
+    ftpAntTask
+}
+
+dependencies {
+    ftpAntTask("org.apache.ant:ant-commons-net:1.9.4") {
+        module("commons-net:commons-net:1.4.1") {
+            dependencies "oro:oro:2.0.8:jar"
+        }
+    }
+}
+
+task ftp {
+    description "Uploads all files that have changed to the server"
+    dependsOn minifyJs
+    def identity = file("resources/ftpid.txt").readLines()
+    ext.remotedir = "/k/"
+    doLast {
+        ant {
+            taskdef(name: 'ftp',
+                    classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
+                    classpath: configurations.ftpAntTask.asPath)
+            ftp(server: "***REMOVED***", userid: "${identity[0]}", password: "${identity[1]}", remotedir: "${remotedir}", verbose: "yes", depends: "yes", serverTimeZoneConfig: "America/Los_Angeles", newer: "yes") {
+                fileset(dir: ".") {
+                    exclude(name: ".gradle/")
+                    exclude(name: "build.gradle")
+                    include(name: "**/*.php")
+                    include(name: "**/*.css")
+                    include(name: "scripts/**/*")
+                    include(name: "gfx/**/*")
+                }
+            }
+        }
+    }
+}
+
+task alertWhenServerUpdates (dependsOn: 'ftp', type:Exec){
+    description "Launches an external script to poll the server until new file is available"
+    inputs.files(fileTree(dir: 'scripts', include: '*.js'))
+    outputs.file 'always up-to-date without this fake file.txt'
+    workingDir "resources/"
+    commandLine "cmd", "/k", 
+        "start /d \"resources\" checkforupdatedjs-Shortcut"
+    doLast {
+        println 'Launched server polling script'
+    }
+}
+
+
+gradle.taskGraph.whenReady {
+    if (gradle.taskGraph.hasTask(':testCompileJs')) {
+        minifyJs.source = files("/scripts/kovaciny.js", "/scripts/conv_jquery.js")
+        minifyJs.dest = file("${testCompileJs.output}")
+    }
+}

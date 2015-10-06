@@ -6,3 +6,6 @@ syntax: glob
 *.py
 *.cmd
 error_log
+.gradle/*
+info.txt
+resources/ftpid.txt
