@@ -37,7 +37,6 @@ kcom.ShowHideControl = function(comment) {
 kcom.ShowHideControl.prototype.changeState = function(state) {
     console.log('changeState running', state);
     if (state == 'hidden') {
-        console.log("this comment's show-Hide control is in the 'show hidden' state: ", this.parent.id);
         showonly('c_h_' + this.parent.getId()); // show for hidden posts
         hideonly('c_s_' + this.parent.getId()); // show for shown posts, hide hidden
     } else if (state == 'visible') {
@@ -106,6 +105,9 @@ $( document ).ready( function() {
 	
 	$(".deleteCommentLink").click(function(){
 		//make "delete this comment" links  pop up a toast with an undo
+        
+        //to be a function this needs parameters of 'which request to submit after showing the dialog', 'which function to run immediately', 'which function to run if they click undo', 'what the dialog box should say it's doing', 'what the option button says (default undo?)' 'how long to show the toast (default in-delay-out)
+        //Really what we have here is a 'Toast With Option' and we'll pass it what to do if we select the option......
 		var popupMarginLeft = -1 * ($("#deleteConfirmation").outerWidth() / 2) + "px";
 		var popupMarginTop = -1 * ($("#deleteConfirmation").outerHeight() / 2) + "px";
 		$("#deleteConfirmation").css({
@@ -114,7 +116,7 @@ $( document ).ready( function() {
 			left: "50%",
 			"margin-top": popupMarginTop,
 			"margin-left": popupMarginLeft
-		}).fadeIn(400).delay(3000).fadeOut(400);
+		}).fadeIn(400).delay(3000).fadeOut(400);    //these should be variables so I can sum them later
 		
 		var convid = $( this ).attr("data-convid");
 		var commentid = $( this ).attr("data-commentid");

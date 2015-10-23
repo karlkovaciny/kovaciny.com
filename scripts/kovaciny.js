@@ -1,3 +1,12 @@
+
+$( document ).ready( function() {
+	
+    $("form[name=markread], form[name=markasread]").submit(function() {
+        alert('doing the thing!!!!5!!!!67')
+        var toast = new ToastWithOption("Post marked as read", "Undo", function() {alert('undid the thing');}, 3800);
+    });
+});
+
 function jtp(jumpto) {//jump to parent in threaded conversations
     setTimeout("document.location.href='#comment_" + jumpto + "';window.scrollBy(0,-30);", 10);
     setTimeout("showonly('c_" + jumpto + "');showonly('c_s_" + jumpto + "');showonly('c_h_" + jumpto + "');hideonly('c_h_" + jumpto + "');", 20);
@@ -150,4 +159,52 @@ function wrapMatchesInTag(textNode, pattern, wrapperNode)  {
         parent.insertBefore(replacementNodes[k], replacementNodes[k+1]);
     }
     parent.normalize();
+}
+
+/** 
+ * @constructor
+ * @param text
+ * @param optionText - label for the option buttion
+ * @param optionCallback - what to do if user selects the option
+ * @param duration - in ms, default = permanent 
+*/
+
+function ToastWithOption(text, optionText, optionCallback, duration) {
+    //Toast.makeText(MyActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+    //this should show one size/location of toast for each screen size
+    //need to pass in what kind of window is showing it, i guess which one to center it in? Or just base it on screen size
+    //imagine you might 
+    //TODO: make a permanent option for duration but make sure it goes away with the page?
+    var toast = document.createElement("div");
+    $( toast ).append('<div class="popupMessage">' + text + '</div>';
+    $( toast ).append('<div id="deleteConfirmationUndoButton" class="popupMessage"><img src="gfx/Arrows-Undo-icon.png" id="undoArrow">' + optionText + '</div>');
+    $( 'body' ).append( toast );
+    
+    var popupMarginLeft = -1 * ($( toast ).outerWidth() / 2) + "px";
+    var popupMarginTop = -1 * ($( toast ).outerHeight() / 2) + "px";
+    $( toast ).css({
+        position: "fixed",
+        top: "50%",
+        left: "50%",
+        "margin-top": popupMarginTop,
+        "margin-left": popupMarginLeft
+    }).fadeIn(400).delay(3000).fadeOut(400);    //these should be variables so I can sum them later
+    //TODO: this doesn't work when it loads a new page
+ /*   
+    var convid = $( this ).attr("data-convid");
+    var commentid = $( this ).attr("data-commentid");
+    var comment = $( this ).parents().closest('.commentContainer').slideUp();
+    
+    //delete post 
+    var deleteCountdown = setTimeout( function(){ 
+            var request = 'conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
+            jQuery.ajax(request);			
+        }, 3800 );
+    $("#deleteConfirmationUndoButton").click(function(){
+        window.clearTimeout(deleteCountdown);
+        optionCallback();
+        setTimeout( function(){ 
+            $( toast ).hide(); 
+            },200 );				
+        });*/
 }

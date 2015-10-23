@@ -9,6 +9,7 @@ if ($username) {
 			}
 		}
 	} elseif (isset($_POST['markasread']) and isset($_POST['readdate'])) { //user clicked "Mark as read" at the end of a conversation.
+        //this is not where we launch the javascript. This is the *code* that the javascript launches.
 		$markasread = $_POST['markasread'];
 		mysql_query("UPDATE `comments` SET `readby_$username` = 1 WHERE `conid` = '$markasread' and `changedate` <= '" . date('Y-m-d H:i:s', $_POST['readdate']) . "'");
 	}
@@ -26,7 +27,8 @@ if ($username) {
 			if ($num_rows == 0) {
 				echo "<p class=\"indent\"><i>No new conversations</i></p>";			
 			} else {
-				echo "<form name=\"markasread\" action=\"index.php\" method=\"POST\"><input type=\"hidden\" name=\"markasread\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">";
+				echo "<form name=\"markasread\" action=\"index.php\" method=\"POST\"><input type=\"hidden\" name=\"markasread\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">"; //when they submit this form, it needs to 
+                // a: move the conversation to the read ones (or just hide it) b: pop up the box c: send the GET request
 				echo "<tr class=\"small\"><td>&nbsp;</td><td>Title (# of comments)</td><td>Most recent post</td><td class=\"small\">Mark read</td></tr>";
 				echo "<tr bgcolor=\"#6699CC\"><td colspan=4><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
 			}

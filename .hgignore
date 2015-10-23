@@ -9,3 +9,5 @@ error_log
 .gradle/*
 info.txt
 resources/ftpid.txt
+build/*.*
+build/tmp/js/jshint-rhino-2.4.3.js

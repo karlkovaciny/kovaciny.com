@@ -155,14 +155,19 @@ if ($username) {
 				
 				//display Mark as Read button
 				if ($hideallexcept == 0) {
-					echo "<div class=\"hrnoshade\"></div><form name=\"markread\" action=\"index.php\" method=\"POST\"><input type=\"hidden\" name=\"markasread\" value=\"$conv_id\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></form>";
+					echo "<div class=\"hrnoshade\"></div>";
+                    echo "<form name=\"markread\" action=\"index.php\" method=\"POST\">"
+                       . "<input type=\"hidden\" name=\"markasread\" value=\"$conv_id\">"
+                       . "<input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\">"
+                       . "<input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\">"
+                       . "</form>";
 					echo "<div class=\"hrnoshade\"></div><br>";
 				}
 				echo "<form name=\"commentform\" id=\"commentform\" method=\"post\" action=\"conversations.php";
 				
 				//configure comment editor
-				$hiddenitems = "";	//except for admin
-				$editcomment = "";	//except in edit mode
+				$hiddenitems = "";	//used for admin
+				$editcomment = "";	//used in edit mode
 				if ($hideallexcept == 0) {
 					$modal_user_prompt = "Post a comment:";
 					$postbutt = "add comment";
