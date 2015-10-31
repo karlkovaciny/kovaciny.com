@@ -77,7 +77,7 @@ table.searchResults { border: 0px; border-spacing: 0px; font-size: 12px;}
 .popupMessage { background-color: #6699CC; color: white; border: 0px solid #7B7979; border-radius: 3px; float: left; font-size: 14px; padding:13px; 	    -webkit-box-shadow: 0px 0px 8px -1px rgba(56, 56, 56, 1);
 	  -moz-box-shadow: 0px 0px 8px -1px rgba(56, 56, 56, 1);
        box-shadow: 0px 0px 8px-1px rgba(56, 56, 56, 1);}
-#toast { display: none; }
+.toast { display: none; }
 .toastOptionButton { 	float: right; font-size:14px;
 	text-decoration: none; transition: all 0.2s ease 0s;}
 .toastOptionButton:hover { background-color: #001177; }

@@ -77,6 +77,7 @@ require_once('functions.php');
 		elseif ($username == "roger") {$userid = 10;} elseif ($username == "ruth") {$userid = 9;}
 		elseif ($username == "john") {$userid = 11;}
 		$me = ucfirst($username);
+        header("Cache-Control: no-cache, must-revalidate"); //HTTP 1.1
 		?>
 		<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 		<html>

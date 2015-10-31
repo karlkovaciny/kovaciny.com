@@ -259,7 +259,7 @@ if ($username) {
 		$jumpto = getCommentAnchor($topnewid);
 		echo "<script type=\"text/javascript\">
 			window.onload=function(){ 
-			console.log('We want to only show new posts');
+			console.log('We want to only show new posts, starting with $topnewid');
 			autoHideOldComments( function(){";
 		if (!empty($topnewparentid)) {
 			echo "var com = new kcom.Comment($topnewparentid);

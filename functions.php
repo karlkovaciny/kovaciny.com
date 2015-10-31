@@ -120,15 +120,18 @@ wantNewPosts
   On the conversations page, see if we have a new post, if we came from the list of new posts or are working with our own post
 ======================*/
 function wantNewPosts($postid) {
-	if (isset($_REQUEST['action'])) {
-		if (($_REQUEST['action'] != "edit") && ($_REQUEST['action'] != "reply")) {
+	if (empty($postid)) {return false;}
+    
+    if (isset($_REQUEST['action'])) {
+        if (DEBUG) echo "REQUEST['action'] is " . $_REQUEST['action'] . "<BR>";
+        if (($_REQUEST['action'] != "edit") && ($_REQUEST['action'] != "reply")) {
             return true; 
-            // Would return true on "update" for old posts, but the common use case is on new posts and I can't tell them apart.
         }
 	}
-	if (!empty($postid) && isset($_SERVER['HTTP_REFERER'])) {
+	if (isset($_SERVER['HTTP_REFERER'])) {
+        echo "postid is $postid<BR>";
 		if ( ($_SERVER['HTTP_REFERER'] == HOST_NAME . "/") || stripos($_SERVER['HTTP_REFERER'], "index.php")) return true;
-		// This lets you come from search results or bookmarks to the post you wanted, not some new post.
+		// If only the main page can trigger wantNew, you can come from search results or bookmarks to the post you wanted, not some new post.
 	}
 	return false;	
 }
