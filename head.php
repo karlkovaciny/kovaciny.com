@@ -90,9 +90,9 @@ require_once('functions.php');
 			$hosted_jquery = "http://code.jquery.com/jquery-2.1.4.js";
 			$js_source = "scripts/kovaciny.js?dev=$rand";
 		} else {
-			$css_source = "kovaciny.css?2";	//version number forces refresh
+			$css_source = "kovaciny.css?" . RELEASE_VERSION;	//version number forces refresh
 			$hosted_jquery = "http://code.jquery.com/jquery-2.1.4.min.js";
-			$js_source = "scripts/kovaciny.js?14";
+			$js_source = "scripts/kovaciny.js?" . RELEASE_VERSION;
 		}
 		echo "<script>var kcom = kcom || {}; kcom.HOST_NAME = \"" . HOST_NAME ."\"</script>";
         echo "<link href=\"$css_source\" rel=\"stylesheet\" type=\"text/css\">\n\t\t";

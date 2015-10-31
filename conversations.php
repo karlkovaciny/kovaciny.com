@@ -251,7 +251,7 @@ if ($username) {
 		$rand = floor(rand() * 100);
 		$jquery_source = "scripts/conv_jquery.js?dev=$rand";
 	} else {
-		$jquery_source = "scripts/conv_jquery.js?1";
+		$jquery_source = "scripts/conv_jquery.js?" . RELEASE_VERSION;
 	}
 	echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
 	
