@@ -94,9 +94,11 @@ require_once('functions.php');
 			$hosted_jquery = "http://code.jquery.com/jquery-2.1.4.min.js";
 			$js_source = "scripts/kovaciny.js?13";
 		}
-		echo "<link href=\"$css_source\" rel=\"stylesheet\" type=\"text/css\">\n\t\t";
+		echo "<script>var kcom = kcom || {}; kcom.HOST_NAME = \"" . HOST_NAME ."\"</script>";
+        echo "<link href=\"$css_source\" rel=\"stylesheet\" type=\"text/css\">\n\t\t";
 		echo "<script src=\"$hosted_jquery\" type=\"text/javascript\"></script>\n\t\t";
 		echo "<script src=\"$js_source\"></script>\n\t\t";
+        
 		?>
 		
 		</head>

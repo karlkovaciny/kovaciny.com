@@ -104,36 +104,20 @@ kcom.conv = new kcom.conversation();
 $( document ).ready( function() {
 	
 	$(".deleteCommentLink").click(function(){
-		//make "delete this comment" links  pop up a toast with an undo
-        
-        //to be a function this needs parameters of 'which request to submit after showing the dialog', 'which function to run immediately', 'which function to run if they click undo', 'what the dialog box should say it's doing', 'what the option button says (default undo?)' 'how long to show the toast (default in-delay-out)
-        //Really what we have here is a 'Toast With Option' and we'll pass it what to do if we select the option......
-		var popupMarginLeft = -1 * ($("#deleteConfirmation").outerWidth() / 2) + "px";
-		var popupMarginTop = -1 * ($("#deleteConfirmation").outerHeight() / 2) + "px";
-		$("#deleteConfirmation").css({
-			position: "fixed",
-			top: "50%",
-			left: "50%",
-			"margin-top": popupMarginTop,
-			"margin-left": popupMarginLeft
-		}).fadeIn(400).delay(3000).fadeOut(400);    //these should be variables so I can sum them later
-		
-		var convid = $( this ).attr("data-convid");
+		var comment = $( this ).parents().closest('.commentContainer');
+        var convid = $( this ).attr("data-convid");
 		var commentid = $( this ).attr("data-commentid");
-		var comment = $( this ).parents().closest('.commentContainer').slideUp();
 		
 		//delete post 
-		var deleteCountdown = setTimeout( function(){ 
-				var request = 'conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
-				jQuery.ajax(request);			
-			}, 3800 );
-		$("#deleteConfirmationUndoButton").click(function(){
-			window.clearTimeout(deleteCountdown);
-			comment.slideDown();
-			setTimeout( function(){ 
-				$("#deleteConfirmation").hide(); 
-				},200 );				
-			});
+		comment.slideUp();
+        var toast = new ToastWithOption("Deleting post...", 
+            "Undo", 
+            function() { comment.slideDown(); toast.done(null);}, 
+            ToastWithOption.LENGTH_LONG);
+        toast.done(function() {
+            var request = 'conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
+            jQuery.ajax(request);
+        });
 		return false;
 	});
 

@@ -9,7 +9,7 @@
 	if (!$db_selected) {
 		die ('Can\'t select db : ' . mysql_error());
 	}
-	$tz = -12;	
+	$tz = -12;
 	
 	//get a list of the usernames and ids 
 	$res_users = mysql_query ("SELECT `userid`, `username` FROM `users`") or die ("Error getting usernames: " . mysql_error() . "<br />");

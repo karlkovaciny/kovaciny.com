@@ -28,9 +28,13 @@ if ($username) {
 				$privatewith= $conv_obj->privatewith;
 				$spacer = "<td width=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td>";
 				if ($hideallexcept == 0) {	//not editing or replying
-					echo "<form name=\"markasread\" action=\"index.php\" method=\"POST\">";
-					echo "<table border=0 cellpadding=0 cellspacing=0 class=\"small\"><tr><td><h1>$contitle</h1></td>";
-					echo "<td class=\"sidepad\"><input type=\"hidden\" name=\"markasread\" value=\"$conv_id\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></td>";
+					//the top mark as read button
+                    echo "<form name=\"markread\"  action=\"\" method=\"POST\">"; 
+					echo "<table border=0 cellpadding=0 cellspacing=0 class=\"small\">"
+                        . "<tr><td><h1>$contitle</h1></td>"
+					    . "<td class=\"sidepad\"><input type=\"hidden\" name=\"markasread\" value=\"$conv_id\">" 
+                        . "<input type=\"hidden\" name=\"username\" value=\"$username\">" 
+                        . "<input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></td>";
 					if ($userid == $authorid && $comcount == 1) {
 						echo "<td class=\"sidepad\"><input type=\"button\" onclick=\"if(confirm('Are you sure you want to delete this conversation?')) {document.location.href='newconv.php?deleteconversation=$conv_id';}\" value=\"Delete conversation\" style=\"color: red\"></td>";
 					} else {
@@ -156,8 +160,9 @@ if ($username) {
 				//display Mark as Read button
 				if ($hideallexcept == 0) {
 					echo "<div class=\"hrnoshade\"></div>";
-                    echo "<form name=\"markread\" action=\"index.php\" method=\"POST\">"
+                    echo "<form name=\"markread\" action=\"\" method=\"POST\">"
                        . "<input type=\"hidden\" name=\"markasread\" value=\"$conv_id\">"
+                       . "<input type=\"hidden\" name=\"username\" value=\"$username\">"
                        . "<input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\">"
                        . "<input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\">"
                        . "</form>";
@@ -240,11 +245,6 @@ if ($username) {
 	}
 ?>
 </td></tr></table>
-
-<div id="deleteConfirmation">
-	<div class="popupMessage">Deleting post...</div>
-	<div id="deleteConfirmationUndoButton" class="popupMessage"><img src="gfx/Arrows-Undo-icon.png" id="undoArrow">Undo</div>
-</div>
 
 <?php	//scripts to run after page loads
 	if ( DEBUG ) {

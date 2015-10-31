@@ -104,6 +104,7 @@ task ftp (dependsOn: ':alertWhenServerUpdates') {
                     include(name: "**/*.php")
                     include(name: "**/*.css")
                     include(name: "scripts/**/*")
+                    include(name: "api/**/*")
                     include(name: "gfx/**/*")
                 }
             }
@@ -139,6 +140,6 @@ task release (dependsOn: ['build', 'ftp']) {
 gradle.taskGraph.whenReady {
     if (gradle.taskGraph.hasTask(release)) {
         //TODO: for some reason this line makes assemble not run even though combineJs uses the same inputs -- their bug?
-        minifyJs.source = combineJs  // don't need files and line numbers for release
+        //minifyJs.source = combineJs  // don't need files and line numbers for release
     }
 }

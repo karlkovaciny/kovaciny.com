@@ -2,7 +2,7 @@
 document.forms;
 
 /** @type {document.forms} */
- var commentform;
+var commentform;
  
 /** @type {Object} */
 var console;

@@ -1,11 +1,73 @@
+kcom.HOST_NAME = kcom.HOST_NAME || "";
+ 
 
-$( document ).ready( function() {
-	
-    $("form[name=markread], form[name=markasread]").submit(function() {
-        alert('doing the thing!!!!5!!!!67')
-        var toast = new ToastWithOption("Post marked as read", "Undo", function() {alert('undid the thing');}, 3800);
+$( document ).ready( 
+    bindSubmits
+);
+
+function bindSubmits() {
+    //picking conversations to mark as read in index.php
+    $("form[name=markasread]").submit(function(e) {
+        e.preventDefault();
+        var form = $( this )[0];
+        var formdata = {username: form.username.value};
+        var $hiddenRows = $();
+        var convIds = [];
+        $("input:checkbox[name='convIds[]']:checked").each( function() {
+            convIds.push($( this ).val());
+            $hiddenRows = $hiddenRows.add($( this ).closest("tr"));
+        });
+        
+        if (convIds.length) {
+            formdata.readdate = form.readdate.value;
+            formdata.convIds = convIds;
+            console.log('hidden rows: ', $hiddenRows);
+            $hiddenRows.slideUp();
+            var toast = new ToastWithOption("Post marked as read", "Undo", 
+                function() {$hiddenRows.slideDown(); toast.done(null);}, 
+                ToastWithOption.LENGTH_SHORT);
+            toast.done(function() {
+                var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", formdata);
+                jqxhr.fail(function( request, status, error) {console.log(request.status, ': ', request.responseText);
+                });
+            });
+        } else {
+            $("#markasreadsubmit").css({opacity: 0});
+            $("#markasreadsubmit").animate({opacity: 1}, 50);
+        }
     });
-});
+    
+    //user clicked "Mark as read" at the end of a conversation    
+    $("form[name=markread]").submit(
+    /** @suppress {deprecated} the Ajax version of .load is not deprecated */ 
+    function(e) {
+        e.preventDefault();        
+        var form = $( this )[0];
+        var formdata = {
+            username: form.username.value,
+            markasread: form.markasread.value,
+            readdate: form.readdate.value
+            };
+        var $hiddenRows = $();
+        
+        $("#bodyContent").load("index.php #bodyContent", function() {
+            var rowToHide = $("input:checkbox[value=" + formdata.markasread + "]");
+            window.scrollTo(0,0);
+            $hiddenRows = $hiddenRows.add(rowToHide.closest("tr"));
+            $hiddenRows.hide();
+            bindSubmits();
+            
+            var toast = new ToastWithOption("Post marked as read", "Undo",
+                function() {$hiddenRows.slideDown(); toast.done(null);}, 
+                ToastWithOption.LENGTH_LONG);
+            toast.done(function() {
+                var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", formdata);
+                jqxhr.fail(function( request, status, error) {console.log(request.status, ': ', request.responseText);});
+            });
+            window.history.pushState("", "", kcom.HOST_NAME + "/index.php");
+        });
+    });
+}
 
 function jtp(jumpto) {//jump to parent in threaded conversations
     setTimeout("document.location.href='#comment_" + jumpto + "';window.scrollBy(0,-30);", 10);
@@ -161,6 +223,8 @@ function wrapMatchesInTag(textNode, pattern, wrapperNode)  {
     parent.normalize();
 }
 
+
+
 /** 
  * @constructor
  * @param text
@@ -168,43 +232,46 @@ function wrapMatchesInTag(textNode, pattern, wrapperNode)  {
  * @param optionCallback - what to do if user selects the option
  * @param duration - in ms, default = permanent 
 */
-
 function ToastWithOption(text, optionText, optionCallback, duration) {
-    //Toast.makeText(MyActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-    //this should show one size/location of toast for each screen size
-    //need to pass in what kind of window is showing it, i guess which one to center it in? Or just base it on screen size
-    //imagine you might 
-    //TODO: make a permanent option for duration but make sure it goes away with the page?
+    "use strict";
+    var self = this;
+    this.done = function (callback)   {
+        self.doAfter = callback;
+        return this;
+    };
+    
     var toast = document.createElement("div");
-    $( toast ).append('<div class="popupMessage">' + text + '</div>';
-    $( toast ).append('<div id="deleteConfirmationUndoButton" class="popupMessage"><img src="gfx/Arrows-Undo-icon.png" id="undoArrow">' + optionText + '</div>');
+    $( toast ).addClass("toast");
+    $( toast ).css({display: "inline-block"});
+    $( toast ).append('<div class="popupMessage">' + text + '</div>');
+    $( toast ).append('<div class="toastOptionButton popupMessage"><img src="gfx/Arrows-Undo-icon.png" id="undoArrow">' + optionText + '</div>');
     $( 'body' ).append( toast );
     
-    var popupMarginLeft = -1 * ($( toast ).outerWidth() / 2) + "px";
+    var popupMarginLeft = -1 * ($( toast ).outerWidth() / 2);
+    console.log("popupMarginLeft", popupMarginLeft);
     var popupMarginTop = -1 * ($( toast ).outerHeight() / 2) + "px";
-    $( toast ).css({
+    var $toast = $( toast ).css({
         position: "fixed",
-        top: "50%",
+        top: "80%",
         left: "50%",
         "margin-top": popupMarginTop,
-        "margin-left": popupMarginLeft
-    }).fadeIn(400).delay(3000).fadeOut(400);    //these should be variables so I can sum them later
-    //TODO: this doesn't work when it loads a new page
- /*   
-    var convid = $( this ).attr("data-convid");
-    var commentid = $( this ).attr("data-commentid");
-    var comment = $( this ).parents().closest('.commentContainer').slideUp();
+        "margin-left": popupMarginLeft + "px"
+    }).fadeIn(400);
+    console.log("toast marg elft", $( toast ).css("margin-left"));
+    if (duration) {
+        $toast.delay(duration - 800).fadeOut(400);
+        setTimeout(function() {if (self.doAfter) { self.doAfter();} else console.log('ToastWithOption: nothing to do after');}, duration - 400);
+    }
     
-    //delete post 
-    var deleteCountdown = setTimeout( function(){ 
-            var request = 'conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
-            jQuery.ajax(request);			
-        }, 3800 );
-    $("#deleteConfirmationUndoButton").click(function(){
-        window.clearTimeout(deleteCountdown);
-        optionCallback();
-        setTimeout( function(){ 
-            $( toast ).hide(); 
-            },200 );				
-        });*/
+    var $optionButton = $(".toastOptionButton");
+    if ($optionButton.length) {
+        $(document).one("click", ".toastOptionButton", function(){
+            optionCallback();
+            setTimeout( function(){ 
+                    $( toast ).hide(); 
+                },200 );				
+        });
+    } else console.log('option button did not exist');
 }
+ToastWithOption.LENGTH_LONG = 3500;
+ToastWithOption.LENGTH_SHORT = 2000;

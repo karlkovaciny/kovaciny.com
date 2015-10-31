@@ -1,19 +1,7 @@
 <?php
 require_once ('head.php');
 if ($username) {
-	if (isset($_POST['m'])) { //user picked conversations to mark as read in index.php
-		$markasread = $_POST['m'];
-		if (is_array($markasread)) {
-			foreach ($markasread as $markas) {
-				mysql_query("UPDATE `comments` SET `readby_$username` = 1 WHERE `conid` = '$markas' and `changedate` <= '" . date('Y-m-d H:i:s', $_POST['readdate']) . "'");
-			}
-		}
-	} elseif (isset($_POST['markasread']) and isset($_POST['readdate'])) { //user clicked "Mark as read" at the end of a conversation.
-        //this is not where we launch the javascript. This is the *code* that the javascript launches.
-		$markasread = $_POST['markasread'];
-		mysql_query("UPDATE `comments` SET `readby_$username` = 1 WHERE `conid` = '$markasread' and `changedate` <= '" . date('Y-m-d H:i:s', $_POST['readdate']) . "'");
-	}
-	if (isset($_GET['showall'])) {$showall = "";} else {$showall = "LIMIT 25";}
+ 	if (isset($_GET['showall'])) {$showall = "";} else {$showall = "LIMIT 25";}
 	$unread = 0;
 	while ($unread != 2) {
 		$tdspacer = "****";
@@ -27,7 +15,11 @@ if ($username) {
 			if ($num_rows == 0) {
 				echo "<p class=\"indent\"><i>No new conversations</i></p>";			
 			} else {
-				echo "<form name=\"markasread\" action=\"index.php\" method=\"POST\"><input type=\"hidden\" name=\"markasread\"><input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">"; //when they submit this form, it needs to 
+				echo "<form name=\"markasread\" action=\"\" method=\"POST\">" 
+                . "<input type=\"hidden\" name=\"markasread\">" 
+                . "<input type=\"hidden\" name=\"username\" value=\"$username\">"
+                . "<input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\">" 
+                . "<table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">"; //when they submit this form, it needs to 
                 // a: move the conversation to the read ones (or just hide it) b: pop up the box c: send the GET request
 				echo "<tr class=\"small\"><td>&nbsp;</td><td>Title (# of comments)</td><td>Most recent post</td><td class=\"small\">Mark read</td></tr>";
 				echo "<tr bgcolor=\"#6699CC\"><td colspan=4><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
@@ -67,14 +59,13 @@ if ($username) {
 			if ($rc == true) {$rowcolor = ""; $rc = false;} else {$rowcolor = " bgcolor=\"#F6F6F6\""; $rc = true;}
 			if ($unread == 1) {
 				echo "<tr$rowcolor><td><img src=\"gfx/new.gif\" border=0 width=31 height=12 hspace=8></td><td class=\"rowpad\"><a href=\"conversations.php?id=$convid\" tabindex=\"$tabindex\">$contitle</a> ($numcomm)</td><td nowrap class=\"small rowpad sidepad\">$convdate ago by <a href=\"?user=$lastpostuserid\">$lastpostusername</a></td>";
-//				echo "<td align=\"center\"><input type=\"checkbox\" onclick=\"document.forms.markasread.markasread.value='$convid';document.forms.markasread.submit();\" title=\"Check this box to mark conversation as read\"></td></tr>";
-				echo "<td align=\"center\"><input type=\"checkbox\" name=\"m[]\" value=\"$convid\"></td></tr>";
+				echo "<td align=\"center\"><input type=\"checkbox\" name=\"convIds[]\" value=\"$convid\"></td></tr>";
 			} else {
 				echo "<tr$rowcolor><td class=\"rowpad sidepad\" ><a href=\"conversations.php?id=$convid\" tabindex=\"1000 + $tabindex\">$contitle</a> ($numcomm)</td><td nowrap class=\"small rowpad sidepad\">$convdate ago by <a href=\"?user=$lastpostuserid\">$lastpostusername</a></td></tr>"; 
 			}
 		}
 		if ($num_rows > 0) {
-			if ($unread == 1) echo "<tr><td colspan=4 align=\"right\"><input type=\"submit\" value=\"Mark as read\"></tr>";
+			if ($unread == 1) echo "<tr><td colspan=4 align=\"right\"><input type=\"submit\" id=\"markasreadsubmit\" value=\"Mark as read\"></tr>";
 			echo "</table>";
 			if ($unread == 1) echo "</form>";
 		}

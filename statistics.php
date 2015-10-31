@@ -80,5 +80,6 @@
 	<!--Div that will hold the chart-->
      <div id="chart_div"></div>
 	<div id="error_message"><p></p></div>
+    <div class="hrnoshade"></div>
  </body>
 </html>
