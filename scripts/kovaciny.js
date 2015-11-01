@@ -235,8 +235,11 @@ function wrapMatchesInTag(textNode, pattern, wrapperNode)  {
 function ToastWithOption(text, optionText, optionCallback, duration) {
     "use strict";
     var self = this;
+    
+    // function to call if the toast expires or is destroyed (but not when the option is clicked)
     this.done = function (callback)   {
         self.doAfter = callback;
+        window.addEventListener('unload', self.doAfter, false);    //in case they close the window
         return this;
     };
     
@@ -260,13 +263,18 @@ function ToastWithOption(text, optionText, optionCallback, duration) {
     console.log("toast marg elft", $( toast ).css("margin-left"));
     if (duration) {
         $toast.delay(duration - 800).fadeOut(400);
-        setTimeout(function() {if (self.doAfter) { self.doAfter();} else console.log('ToastWithOption: nothing to do after');}, duration - 400);
+        setTimeout(function() {
+            window.removeEventListener('unload', self.doAfter, false);
+            if (self.doAfter) { self.doAfter();} 
+            else console.log('ToastWithOption: nothing to do after');
+        }, duration - 400);
     }
     
     var $optionButton = $(".toastOptionButton");
     if ($optionButton.length) {
         $(document).one("click", ".toastOptionButton", function(){
             optionCallback();
+            window.removeEventListener('unload', self.doAfter, false);
             setTimeout( function(){ 
                     $( toast ).hide(); 
                 },200 );				

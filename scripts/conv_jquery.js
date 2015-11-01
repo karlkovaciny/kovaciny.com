@@ -115,6 +115,7 @@ $( document ).ready( function() {
             function() { comment.slideDown(); toast.done(null);}, 
             ToastWithOption.LENGTH_LONG);
         toast.done(function() {
+            console.log("toast .done function running");
             var request = 'conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
             jQuery.ajax(request);
         });
