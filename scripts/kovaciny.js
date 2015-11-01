@@ -1,5 +1,4 @@
 kcom.HOST_NAME = kcom.HOST_NAME || "";
- 
 
 $( document ).ready( 
     bindSubmits
@@ -251,7 +250,6 @@ function ToastWithOption(text, optionText, optionCallback, duration) {
     $( 'body' ).append( toast );
     
     var popupMarginLeft = -1 * ($( toast ).outerWidth() / 2);
-    console.log("popupMarginLeft", popupMarginLeft);
     var popupMarginTop = -1 * ($( toast ).outerHeight() / 2) + "px";
     var $toast = $( toast ).css({
         position: "fixed",
@@ -260,7 +258,6 @@ function ToastWithOption(text, optionText, optionCallback, duration) {
         "margin-top": popupMarginTop,
         "margin-left": popupMarginLeft + "px"
     }).fadeIn(400);
-    console.log("toast marg elft", $( toast ).css("margin-left"));
     if (duration) {
         $toast.delay(duration - 800).fadeOut(400);
         setTimeout(function() {
