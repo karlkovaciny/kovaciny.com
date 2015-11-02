@@ -31,10 +31,12 @@ if ($username) {
 					//the top mark as read button
                     echo "<form name=\"markread\"  action=\"\" method=\"POST\">"; 
 					echo "<table border=0 cellpadding=0 cellspacing=0 class=\"small\">"
-                        . "<tr><td><h1>$contitle</h1></td>"
-					    . "<td class=\"sidepad\"><input type=\"hidden\" name=\"markasread\" value=\"$conv_id\">" 
+                        . "<tr><td><h1>$contitle</h1></td><td class=\"sidepad\">"
+                        . "<input type=\"hidden\" name=\"markasread\" value=\"1\">" 
                         . "<input type=\"hidden\" name=\"username\" value=\"$username\">" 
-                        . "<input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\"><input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></td>";
+                        . "<input type=\"hidden\" name=\"convIds\" value=\"$conv_id\">"
+                        . "<input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\">"
+                        . "<input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></td>";
 					if ($userid == $authorid && $comcount == 1) {
 						echo "<td class=\"sidepad\"><input type=\"button\" onclick=\"if(confirm('Are you sure you want to delete this conversation?')) {document.location.href='newconv.php?deleteconversation=$conv_id';}\" value=\"Delete conversation\" style=\"color: red\"></td>";
 					} else {
@@ -53,7 +55,7 @@ if ($username) {
 				$comcount += 1;
 				echo "<div class=\"allCommentsContainer\">";
 			// Get comments
-				$res = mysql_query("SELECT c.*, u.userid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND c.visible = 'Y' ORDER BY c.createdate",$db);
+				$res = mysql_query("SELECT c.*, u.userid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND c.visible = 'Y' ORDER BY c.inreplyto, c.createdate", $db);
 				$allcomments = "";
 				$unreadcomments = "";
 				$commentsretrieved = 0;	
@@ -146,10 +148,9 @@ if ($username) {
 						//add the comment itself
 						$ccc .= "<tr><td class=\"copy sidepad border$hilite\"><div id=\"c_$commentid\">&nbsp;<br>$htmlcomment<br>&nbsp;</div></td></tr>";
 						$cb_id[] = $commentid;
-						$cb_irt[] = $inreplyto;
+						$cb_inReplyTo[] = $inreplyto;
 						$cb_isnew[] = $isnew;
-						$cb_ccc[] = $ccc;
-						$cb_cd[] = 0;	//comment depth in the tree
+						$cb_commentHTML[] = $ccc;
 						$commentsretrieved += 1;
 					}
 				}
@@ -157,11 +158,12 @@ if ($username) {
 				require ('inc_commthreader.php');
 				echo "</div>";	//allCommentsContainer
 				
-				//display Mark as Read button
+				//display bottom Mark as Read button
 				if ($hideallexcept == 0) {
 					echo "<div class=\"hrnoshade\"></div>";
                     echo "<form name=\"markread\" action=\"\" method=\"POST\">"
-                       . "<input type=\"hidden\" name=\"markasread\" value=\"$conv_id\">"
+                       . "<input type=\"hidden\" name=\"markasread\" value=\"1\">"
+                       . "<input type=\"hidden\" name=\"convIds\" value=\"$conv_id\">"
                        . "<input type=\"hidden\" name=\"username\" value=\"$username\">"
                        . "<input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\">"
                        . "<input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\">"
@@ -202,7 +204,7 @@ if ($username) {
 						$posttime = strtotime($commentdate) + ($tz * 3600);
 						$posttime = date('M d, Y g:i a', $posttime);
 						$posttime = " value=\"$posttime\"";
-						echo "?id=$conv_id&comid=$hideallexcept&irtid=$inreplyto&action=update";
+                        echo "?id=$conv_id&comid=$hideallexcept&irtid=$inreplyto&action=update";
 						$editcomment = $comment;
 						$replacefrom = array("\'",'\"');
 						$replaceto = array("'",'"');
@@ -228,7 +230,8 @@ if ($username) {
 						echo "<option value=\"$u_userid:$u_username\"$optselected>$u_username</option>";
 					}
 					echo "</select></td><td>&nbsp;at time&nbsp;</td>";
-					echo "<td><input type=\"text\" name=\"postingat\" width=13 class=\"small\"$posttime></td>";
+                    //$posttime is never set, but Jon hasn't complained
+                    echo "<td><input type=\"text\" name=\"postingat\" width=13 class=\"small\"$posttime></td>";
 					echo "<td class=\"small\">&nbsp;(" .
 						"<a href=\"javascript://\" onclick=\"document.forms.commentform.postingat.value='';\">now</a>" . //defaults to now()
 						")</td></tr></table></td></tr>";

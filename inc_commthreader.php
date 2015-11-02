@@ -1,65 +1,72 @@
 <?php
-	// handles threading of the comments
-
-	// find commentlevel
+	// Handles threading of the comments.
+    
+    // Assign comments their depth for nesting.
 	$threaddepth = 0;
-	for ($i=0; $i < $commentsretrieved; $i++) {// loop through all
-		$infocus = $cb_irt[$i];
-		if ($infocus == 0) {
-			$cb_cd[$i] = 0; // no parents? you're top-level
-		} else {
-			$parent = array_search($infocus,$cb_id); //find parent
-			$cb_cd[$i] = $cb_cd[$parent]+1; //add one to level to find current level
-			if ($threaddepth < $cb_cd[$i]) $threaddepth = $cb_cd[$i]; //figure out maximum thread depth
+	for ($i=0; $i < $commentsretrieved; $i++) {
+		$cb_commentDepth[$i] = 0;
+        if ($cb_inReplyTo[$i] > 0) {
+			$parentIndex = array_search($cb_inReplyTo[$i], $cb_id);
+            if ($parentIndex === FALSE) {    
+                //should only happen when parent was deleted but not children
+                if (DEBUG) error_log("Comment #$cb_id[$i] had depth $cb_commentDepth[$i] but it still found no parent. It had irt $cb_inReplyTo[$i] and text " . substr($cb_commentHTML[$i], strpos($cb_commentHTML[$i], "commentContents") + 17, 20) . "<br>Somehow cbid didn't have it: " . implode(", ", $cb_id));
+            }
+			$cb_commentDepth[$i] = $cb_commentDepth[$parentIndex] + 1; 
+			$threaddepth = max($threaddepth, $cb_commentDepth[$i]);
 		}
 	}
 	
 	// sort
-	$tl = 0;
-	$commentorder = array();
+	$topLevel = 0;
+	$orderedCommentIds = array();
 	for ($i=0; $i < $commentsretrieved; $i++) { //find top level keys
-		if ($cb_cd[$i] == 0) {
-			$commentorder[] = $cb_id[$i];
-			$tl++;
+		if ($cb_commentDepth[$i] == 0) {
+			$orderedCommentIds[] = $cb_id[$i];
+			$topLevel++;
 		}
 	} 
-	for ($l=1; $l<=$threaddepth; $l++) { //for each level of comments...
-		$ntl = 0;
+	for ($level=1; $level<=$threaddepth; $level++) { //for each level of comments...
+		$newTopLevel = 0;
 		$p = "";
-		for ($t=0; $t<$tl; $t++) {	//we iterate over the toplevel posts
-			$parentid = $commentorder[$t];	
-			$p .= "$parentid:";
-			$ntl++;
+		for ($t=0; $t<$topLevel; $t++) {	//we iterate over the toplevel posts
+			$parentCandidate = $orderedCommentIds[$t];	
+			$p .= "$parentCandidate:";
+			$newTopLevel++;
 			for ($i=0; $i < $commentsretrieved; $i++) {
-				if ($cb_irt[$i] == $parentid && $cb_cd[$i] >= $l) {
+                if ( $parentCandidate == $cb_inReplyTo[$i] && $cb_commentDepth[$i] >= $level) {
 					//without the comment depth check some comments would repost once per iteration
 					$p .= "$cb_id[$i]:"; 
-					$ntl++;
+					$newTopLevel++;
 				}
 			}
 		}
-		$tl = $ntl;	//now the next level down is the new top level
-		$commentorder = explode(":",rtrim($p,":"));
+		$topLevel = $newTopLevel;	//now the next level down is the new top level
+        $orderedCommentIds = explode(":",rtrim($p,":"));
 	}
 
 	//display
 	if (implode("",$cb_id) == "") {
 		echo "<p>This conversation is empty.<br>&nbsp;</p>";
 	} else {
-		foreach ($commentorder as $cbt) {
-			$cbt = explode(":", trim(str_replace("::",":",$cbt),":")); // clean up and explode threading results
-			foreach ($cbt as $node) {
-				$selfkey = array_search($node,$cb_id); //find array key
-				$irt = $cb_irt[$selfkey]; //find parent comment id
+		foreach ($orderedCommentIds as $ocIds) {
+            $ocIds = explode(":", trim(str_replace("::",":",$ocIds),":")); // clean up and explode threading results
+			foreach ($ocIds as $ocId) {
+				$selfkey = array_search($ocId, $cb_id); //find array key
+				$irt = $cb_inReplyTo[$selfkey]; //find parent comment id
 				if ( empty($topnewid) && strlen($cb_isnew[$selfkey]) ) {
 					$topnewid = $cb_id[$selfkey];
-					$topnewparentid = $irt;
+					$topnewparentCandidate = $irt;
 				}
-				$indent = $cb_cd[$selfkey] * 26;
-				if ($indent == 0 || $hideallexcept > 0) {$indent = "";} else {$indent = "padding-left: ".$indent."px;";}
-				$commhtml = $cb_ccc[$selfkey];
-				if ($cb_cd[$selfkey] > 0) $commhtml = str_replace("<XXXYYYZZZYYYXXX>"
-				, "<a href=\"javascript://\" onclick=\"jumpToAnchor('" 
+				
+                $indent = $cb_commentDepth[$selfkey] * 26;
+				if ($indent == 0 || $hideallexcept > 0) {
+                    $indent = "";
+                } else { $indent = "padding-left: ".$indent."px;"; }
+                
+				$commhtml = $cb_commentHTML[$selfkey];
+				if ($cb_commentDepth[$selfkey] > 0) $commhtml = str_replace(
+                    "<XXXYYYZZZYYYXXX>", 
+                    "<a href=\"javascript://\" onclick=\"jumpToAnchor('" 
 					. getCommentAnchor($irt) 
 					. "');\" title=\"Jump to parent comment\"><img src=\"gfx/up.gif\" border=1 width=6 height=6 hspace=7 vspace=1></a>", $commhtml);
 				echo "<div class=\"commentContainer\" style=\"$indent\" >";

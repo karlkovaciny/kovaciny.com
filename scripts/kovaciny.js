@@ -19,6 +19,7 @@ function bindSubmits() {
         
         if (convIds.length) {
             formdata.readdate = form.readdate.value;
+            formdata.markasread = form.markasread.value;
             formdata.convIds = convIds;
             console.log('hidden rows: ', $hiddenRows);
             $hiddenRows.slideUp();
@@ -45,6 +46,7 @@ function bindSubmits() {
         var formdata = {
             username: form.username.value,
             markasread: form.markasread.value,
+            convIds: [form.convIds.value],
             readdate: form.readdate.value
             };
         var $hiddenRows = $();

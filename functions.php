@@ -1,22 +1,31 @@
 <?php
-function format_interval($timestamp, $granularity = 2) {
-	$units = array('1 year|years' => 31536000, '1 week|weeks' => 604800, '1 day|days' => 86400, '1 hr|hrs' => 3600, '1 min|min' => 60, '1 sec|sec' => 1);
+function format_plural($count, $singular, $plural) {
+	if ($count == 1) {return $singular;} 
+    else {return $count . " " . $plural;}
+}
+
+/**
+  * Provides a string representation of how far apart two times are.
+  * @param (int) $timeInterval [in positive seconds]
+  * @param (int) $granularity [number of units to show before truncating]
+  */
+function format_interval($timeInterval, $granularity = 2) {
+	if ($timeInterval < 0) {
+        error_log("format_interval was passed a negative time inteval: $timeInterval, and returned 0 sec"); 
+        return "0 sec";
+    }
+    $units = array('1 year|years' => 31536000, '1 week|weeks' => 604800, '1 day|days' => 86400, '1 hr|hrs' => 3600, '1 min|min' => 60, '1 sec|sec' => 1);
 	$output = '';
 	foreach ($units as $key => $value) {
 		$key = explode('|', $key);
-		if ($timestamp >= $value) {
-			$output .= ($output ? ' ' : '') . format_plural(floor($timestamp / $value), $key[0], $key[1]);
-			$timestamp %= $value;
+		if ($timeInterval >= $value) {
+			$output .= ($output ? ' ' : '') . format_plural(floor($timeInterval / $value), $key[0], $key[1]);
+			$timeInterval %= $value;
 			$granularity--;
 		}
 		if ($granularity == 0) {break;}
 	}
 	return $output ? $output : "0 sec";
-}
-
-function format_plural($count, $singular, $plural) {
-	if ($count == 1) {return $singular;} 
-    else {return $count . " " . $plural;}
 }
 
 function pluralize($count, $singular, $plural = false) {
@@ -123,14 +132,12 @@ function wantNewPosts($postid) {
 	if (empty($postid)) {return false;}
     
     if (isset($_REQUEST['action'])) {
-        if (DEBUG) echo "REQUEST['action'] is " . $_REQUEST['action'] . "<BR>";
         if (($_REQUEST['action'] != "edit") && ($_REQUEST['action'] != "reply")) {
             return true; 
         }
 	}
 	if (isset($_SERVER['HTTP_REFERER'])) {
-        echo "postid is $postid<BR>";
-		if ( ($_SERVER['HTTP_REFERER'] == HOST_NAME . "/") || stripos($_SERVER['HTTP_REFERER'], "index.php")) return true;
+        if ( ($_SERVER['HTTP_REFERER'] == HOST_NAME . "/") || stripos($_SERVER['HTTP_REFERER'], "index.php")) return true;
 		// If only the main page can trigger wantNew, you can come from search results or bookmarks to the post you wanted, not some new post.
 	}
 	return false;	

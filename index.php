@@ -17,7 +17,7 @@ if ($username) {
 				echo "<p class=\"indent\"><i>No new conversations</i></p>";			
 			} else {
 				echo "<form name=\"markasread\" action=\"\" method=\"POST\">" 
-                . "<input type=\"hidden\" name=\"markasread\">" 
+                . "<input type=\"hidden\" name=\"markasread\" value=\"1\">" 
                 . "<input type=\"hidden\" name=\"username\" value=\"$username\">"
                 . "<input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\">" 
                 . "<table border=0 cellpadding=0 cellspacing=0 class=\"indent medium\">"; 

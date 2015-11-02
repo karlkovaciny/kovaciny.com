@@ -1,11 +1,6 @@
 <?php
-function http_error_response($code, $message) {
-    header('X-PHP-Response-Code: $code', true, $code);
-    echo "{\"code\":$code, \"message\":\"$message\"}";
-    echo "\n";
-    var_dump($_POST);
-    die();
-}
+require_once(dirname(__FILE__) . '/../config.php');
+require_once(dirname(__FILE__) . '/functions.php');
 
 //authentication of sorts
 if (!empty($_COOKIE['user'])) {
@@ -16,48 +11,31 @@ if (!empty($_COOKIE['user'])) {
 }
 
 if (empty($usertoken)) {
-    $msg = '{"code":401, "message":"no usertoken supplied"}';
-    var_dump($_POST); 
-    http_error_response(401, $msg);
+    http_error_response(401, "no usertoken supplied");
 }   
-         
-//	ini_set('display_errors', 1);
-// db Connection
-$db = mysql_connect('localhost', '***REMOVED***', '***REMOVED***'); //no error, yes connected
-if (!$db) {
-    die('Not connected : ' . mysql_error());
-}
 
-$db_selected = mysql_select_db ("***REMOVED***", $db);
-if (!$db_selected) {
-    die ('Can\'t select db : ' . mysql_error());
-}
-$tz = -12;
+require_once(dirname(__FILE__) . '/../dbconnect.php');
 
 if (empty($_POST['username'])) {
-    $msg = '{"code":401, "message":"no username supplied"}' . '<BR><PRE>' . var_dump($_POST) . '</PRE>'; 
-    http_error_response(401, $msg);
+    http_error_response(401, "no username supplied (type: string)");
 }
+
+if (empty($_POST['convIds'])) { http_error_response(400, "No conversation ids supplied (type: array of int");}
+
+if (!isset($_POST['markasread']) || $_POST['markasread'] == null) { http_error_response(400, "No mark as read flag supplied (type: int, value: 1 or 0)");}
 
 $username = mysql_real_escape_string($_POST['username']);
-$readdate = !empty($_POST['readdate']) ? mysql_real_escape_string($_POST['readdate']) : NULL;
+$readdate = !empty($_POST['readdate']) ? date(MYSQL_DATETIME_FORMAT, $_POST['readdate']) : date("MYSQL_DATETIME_FORMAT");   //converting from Unix timestamp
+$convIds = $_POST['convIds'];    //array
+$markAsRead = (int) $_POST['markasread']; //converting from string
+
 $queries = [];
 
-if (isset($_POST['convIds'])) { 
-    $markasread = $_POST['convIds'];
-    if (is_array($markasread)) {
-        foreach ($markasread as $markas) {
-            $markas = mysql_real_escape_string($markas);
-            $queries[] = "UPDATE `comments` SET `readby_$username` = 1 WHERE `conid` = '$markas' and `changedate` <= '" . date('Y-m-d H:i:s', $readdate) . "'";
-        }
-    }
-} elseif (isset($_POST['markasread']) and isset($_POST['readdate'])) { 
-    $markasread = mysql_real_escape_string($_POST['markasread']);
-    $queries[] = "UPDATE `comments` SET `readby_$username` = 1 WHERE `conid` = '$markasread' and `changedate` <= '" . date('Y-m-d H:i:s', $readdate) . "'";
-} else {
-    $msg = "Bad POST request"; 
-    http_error_response(400, $msg);
-}
+$convIds = $_POST['convIds'];
+foreach ($convIds as $convId) {
+    $convId = (int) $convId;
+    $queries[] = "UPDATE `comments` SET `readby_$username` = $markAsRead WHERE `conid` = '$convId' and `changedate` <= '$readdate'";
+} 
 
 foreach($queries as $query) {
     $success = mysql_query($query);
