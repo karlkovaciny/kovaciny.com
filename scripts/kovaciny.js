@@ -52,9 +52,10 @@ function bindSubmits() {
         var $hiddenRows = $();
         
         $("#bodyContent").load("index.php #bodyContent", function() {
-            var rowToHide = $("input:checkbox[value=" + formdata.markasread + "]");
+            var rowToHide = $("input:checkbox[value=" + formdata.convIds.value + "]");
             window.scrollTo(0,0);
             $hiddenRows = $hiddenRows.add(rowToHide.closest("tr"));
+            console.log('hidden rows: ', $hiddenRows);
             $hiddenRows.hide();
             bindSubmits();
             
