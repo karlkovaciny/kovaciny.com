@@ -26,7 +26,7 @@ function submitMarkAsRead(formdata) {
                         bindSubmits();
                     });
                 }, 
-                ToastWithOption.LENGTH_SHORT);
+                ToastWithOption.LENGTH_LONG);
         });
     });
 }

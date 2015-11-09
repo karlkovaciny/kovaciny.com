@@ -11,7 +11,7 @@ if ($username) {
 			// Get Conversation details
             $res = mysql_query("SELECT c.*, u.userid, u.username FROM conversations AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND (c.visible = 'Y' OR c.authorid = '$userid' OR c.privatewith = '$userid') ORDER BY c.createdate DESC",$db);
             $res2 = mysql_query("SELECT MAX(changedate) - INTERVAL 1 SECOND AS lastread FROM comments WHERE readby_$username = 0 AND conid = $conv_id");
-            $convlastread = mysql_fetch_object($res)->lastread;
+            $convlastread = mysql_fetch_object($res2)->lastread;
             if (mysql_num_rows($res)==1) {
 				$conv_obj= mysql_fetch_object($res);
 				$contitle= $conv_obj->contitle;
@@ -60,14 +60,11 @@ if ($username) {
 				$comcount += 1;
 				echo "<div class=\"allCommentsContainer\">";
 			// Get comments
-				$start = microtime(true);
-                $res = mysql_query("SELECT c.*, u.userid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND c.visible = 'Y' ORDER BY c.inreplyto, c.createdate", $db);
-                $finish = microtime(true);
-                if (DEBUG) echo "query took " . number_format($finish - $start, 3) . " seconds";
-				$allcomments = "";
+				$res = mysql_query("SELECT c.*, u.userid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND c.visible = 'Y' ORDER BY c.inreplyto, c.createdate", $db);
+                $allcomments = "";
 				$unreadcomments = "";
 				$commentsretrieved = 0;	
-				$cb_id = array(); //initializing so it won't choke implode() if empty
+				$cb_id = array();
 				$topnewid = 0;
 				$topnewparentid = 0;
 				while($comments = mysql_fetch_array($res)) {

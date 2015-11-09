@@ -21,7 +21,7 @@ if (empty($_POST['username'])) {
 }
 
 if (empty($_POST['convIds'])) { http_error_response(400, "No conversation ids supplied (type: array of int");}
-if (empty($_POST['readDates']) { http_error_response(400, "No read dates supplied (type: array of MySql datetimes");}
+if (empty($_POST['readDates'])) { http_error_response(400, "No read dates supplied (type: array of MySql datetimes");}
 if (count($readdates) != count($convIds)) { http_error_response(400, "Each conversation needs to have a corresponding mark as read date."); }
 
 $username = mysql_real_escape_string($_POST['username']);
