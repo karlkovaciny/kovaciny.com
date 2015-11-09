@@ -4,33 +4,58 @@ $( document ).ready(
     bindSubmits
 );
 
+function submitMarkAsRead(formdata) {
+    var $oldBody = $("#bodyContent").clone();
+    var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", formdata);
+    jqxhr.fail(function( request, status, error) {
+        console.log(request.status, ': ', request.responseText);
+    });
+    jqxhr.done(function() {
+        $("#bodyContent").load("index.php #bodyContent", function() {
+            window.scrollTo(0,0);
+            window.history.pushState("", "", kcom.HOST_NAME + "/index.php");
+            bindSubmits();
+            var toastMessage = formdata.convIds.length > 1 ? "Conversations marked as read" : "Conversation marked as read";
+            var toast = new ToastWithOption(toastMessage, "Undo", 
+                function() {
+                    var tempFormdata = formdata;
+                    tempFormdata.readDates = formdata.oldReadDates;
+                    var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", tempFormdata);
+                    jqxhr.done(function() {
+                        $("#bodyContent").html($oldBody.html());
+                        bindSubmits();
+                    });
+                }, 
+                ToastWithOption.LENGTH_SHORT);
+        });
+    });
+}
+
+/** @suppress {deprecated} the Ajax version of .load is not deprecated */ 
 function bindSubmits() {
+    
     //picking conversations to mark as read in index.php
     $("form[name=markasread]").submit(function(e) {
         e.preventDefault();
         var form = $( this )[0];
         var formdata = {username: form.username.value};
-        var $hiddenRows = $();
         var convIds = [];
+        var readDates = [];
+        var oldReadDates = [];
+        
         $("input:checkbox[name='convIds[]']:checked").each( function() {
             convIds.push($( this ).val());
-            $hiddenRows = $hiddenRows.add($( this ).closest("tr"));
+            readDates.push(form.readdate.value);
+            oldReadDates.push($( this ).closest("tr").find("input[name='dateRead[]']").val());
+            console.log ('id, oldReadDate: ', convIds[convIds.length - 1],  oldReadDates[oldReadDates.length - 1]);
         });
         
         if (convIds.length) {
-            formdata.readdate = form.readdate.value;
             formdata.markasread = form.markasread.value;
             formdata.convIds = convIds;
-            console.log('hidden rows: ', $hiddenRows);
-            $hiddenRows.slideUp();
-            var toast = new ToastWithOption("Post marked as read", "Undo", 
-                function() {$hiddenRows.slideDown(); toast.done(null);}, 
-                ToastWithOption.LENGTH_SHORT);
-            toast.done(function() {
-                var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", formdata);
-                jqxhr.fail(function( request, status, error) {console.log(request.status, ': ', request.responseText);
-                });
-            });
+            formdata.readDates = readDates;
+            formdata.oldReadDates = oldReadDates;
+            submitMarkAsRead(formdata);
         } else {
             $("#markasreadsubmit").css({opacity: 0});
             $("#markasreadsubmit").animate({opacity: 1}, 50);
@@ -38,36 +63,17 @@ function bindSubmits() {
     });
     
     //user clicked "Mark as read" at the end of a conversation    
-    $("form[name=markread]").submit(
-    /** @suppress {deprecated} the Ajax version of .load is not deprecated */ 
-    function(e) {
+    $("form[name=markread]").submit(function(e) {
         e.preventDefault();        
         var form = $( this )[0];
         var formdata = {
             username: form.username.value,
             markasread: form.markasread.value,
             convIds: [form.convIds.value],
-            readdate: form.readdate.value
+            readDates: [form.readdate.value],
+            oldReadDates: [form.conchangedate.value]
             };
-        var $hiddenRows = $();
-        
-        $("#bodyContent").load("index.php #bodyContent", function() {
-            var rowToHide = $("input:checkbox[value=" + formdata.convIds.value + "]");
-            window.scrollTo(0,0);
-            $hiddenRows = $hiddenRows.add(rowToHide.closest("tr"));
-            console.log('hidden rows: ', $hiddenRows);
-            $hiddenRows.hide();
-            bindSubmits();
-            
-            var toast = new ToastWithOption("Post marked as read", "Undo",
-                function() {$hiddenRows.slideDown(); toast.done(null);}, 
-                ToastWithOption.LENGTH_LONG);
-            toast.done(function() {
-                var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", formdata);
-                jqxhr.fail(function( request, status, error) {console.log(request.status, ': ', request.responseText);});
-            });
-            window.history.pushState("", "", kcom.HOST_NAME + "/index.php");
-        });
+        submitMarkAsRead(formdata);
     });
 }
 
@@ -238,10 +244,10 @@ function ToastWithOption(text, optionText, optionCallback, duration) {
     "use strict";
     var self = this;
     
-    // function to call if the toast expires or is destroyed (but not when the option is clicked)
+    // function to call if the toast expires or is destroyed (but not when the option is clicked). Will run if they click a link but not if they close the window.
     this.done = function (callback)   {
         self.doAfter = callback;
-        window.addEventListener('unload', self.doAfter, false);    //in case they close the window
+        window.addEventListener('unload', self.doAfter, false);
         return this;
     };
     
@@ -266,7 +272,6 @@ function ToastWithOption(text, optionText, optionCallback, duration) {
         setTimeout(function() {
             window.removeEventListener('unload', self.doAfter, false);
             if (self.doAfter) { self.doAfter();} 
-            else console.log('ToastWithOption: nothing to do after');
         }, duration - 400);
     }
     

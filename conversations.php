@@ -9,8 +9,10 @@ if ($username) {
 		if (is_numeric($conv_id)) {
 			require ('convedit.php');
 			// Get Conversation details
-			$res = mysql_query("SELECT c.*, u.userid, u.username FROM conversations AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND (c.visible = 'Y' OR c.authorid = '$userid' OR c.privatewith = '$userid') ORDER BY c.createdate DESC",$db);
-			if (mysql_num_rows($res)==1) {
+            $res = mysql_query("SELECT c.*, u.userid, u.username FROM conversations AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND (c.visible = 'Y' OR c.authorid = '$userid' OR c.privatewith = '$userid') ORDER BY c.createdate DESC",$db);
+            $res2 = mysql_query("SELECT MAX(changedate) - INTERVAL 1 SECOND AS lastread FROM comments WHERE readby_$username = 0 AND conid = $conv_id");
+            $convlastread = mysql_fetch_object($res)->lastread;
+            if (mysql_num_rows($res)==1) {
 				$conv_obj= mysql_fetch_object($res);
 				$contitle= $conv_obj->contitle;
 				$comcount= $conv_obj->numcomm;
@@ -18,7 +20,6 @@ if ($username) {
 				$conchanged = $conv_obj->changedate;
 				$concreated = strtotime($concreated);
 				$lastposttime = time() - strtotime($conchanged);
-				//if ($lastposttime <= 604800 && $comcount > 0 && $hideallexcept == 0) 
 				$lastposttime = format_interval(time() - strtotime($conchanged));
 				$concreated = date('M d, Y, g:i a', $concreated - ((0 + $tz) * 3600));
 				$authorname= $conv_obj->username;
@@ -27,18 +28,22 @@ if ($username) {
 				$lastpostid= $conv_obj->lastpostuserid;
 				$privatewith= $conv_obj->privatewith;
 				$spacer = "<td width=2><img src=\"gfx/-.gif\" border=0 width=1 height=1></td>";
+                $markasreadbutton = 
+                    "<form name=\"markread\" class=\"markread\" action=\"\" method=\"POST\">"
+                    . "<input type=\"hidden\" name=\"markasread\" value=\"1\">" 
+                    . "<input type=\"hidden\" name=\"conchangedate\" value=\"$convlastread\">" 
+                    . "<input type=\"hidden\" name=\"username\" value=\"$username\">" 
+                    . "<input type=\"hidden\" name=\"convIds\" value=\"$conv_id\">"
+                    . "<input type=\"hidden\" name=\"readdate\" value=\"" . date(MYSQL_DATETIME_FORMAT) . "\">"
+                    . "<input type=\"submit\" class=\"markreadsubmit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\">"
+                    . "</form>";
 				if ($hideallexcept == 0) {	//not editing or replying
-					//the top mark as read button
-                    echo "<form name=\"markread\"  action=\"\" method=\"POST\">"; 
 					echo "<table border=0 cellpadding=0 cellspacing=0 class=\"small\">"
-                        . "<tr><td><h1>$contitle</h1></td><td class=\"sidepad\">"
-                        . "<input type=\"hidden\" name=\"markasread\" value=\"1\">" 
-                        . "<input type=\"hidden\" name=\"username\" value=\"$username\">" 
-                        . "<input type=\"hidden\" name=\"convIds\" value=\"$conv_id\">"
-                        . "<input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\">"
-                        . "<input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\"></td>";
+                    . "<tr><td><h1>$contitle</h1></td>"
+                    . "<td class=\"sidepad\">$markasreadbutton</td>";
+					
 					if ($userid == $authorid && $comcount == 1) {
-						echo "<td class=\"sidepad\"><input type=\"button\" onclick=\"if(confirm('Are you sure you want to delete this conversation?')) {document.location.href='newconv.php?deleteconversation=$conv_id';}\" value=\"Delete conversation\" style=\"color: red\"></td>";
+						echo "<td class=\"sidepad\"><form class=\"markread\"><input type=\"button\" onclick=\"if(confirm('Are you sure you want to delete this conversation?')) {document.location.href='newconv.php?deleteconversation=$conv_id';}\" value=\"Delete conversation\" style=\"color: red\"></form></td>";
 					} else {
 						echo "<td><div id=\"ncb1\"><input type=\"button\" onclick=\"hide('ncb1');show('ncb2');habtop();\" value=\"Show new comments only\"></div><div id=\"ncb2\" class=\"hide\"><input type=\"button\" onclick=\"hide('ncb2');show('ncb1');commentToggle(1);\" value=\"Show all comments\"></div></td>";
 					}
@@ -48,14 +53,17 @@ if ($username) {
 					} else {
 						echo "<tr><td colspan=3 class=\"small\">$comcount comments (most recent by <a href=\"?user=$lastpostid\">$lastpostname</a>, $lastposttime ago)</td></tr>";
 					}
-					echo "</table></form><br>";
+					echo "</table><br>";
 					} else {
 						echo "<h1>$contitle</h1>";
 					}
 				$comcount += 1;
 				echo "<div class=\"allCommentsContainer\">";
 			// Get comments
-				$res = mysql_query("SELECT c.*, u.userid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND c.visible = 'Y' ORDER BY c.inreplyto, c.createdate", $db);
+				$start = microtime(true);
+                $res = mysql_query("SELECT c.*, u.userid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = $conv_id AND c.visible = 'Y' ORDER BY c.inreplyto, c.createdate", $db);
+                $finish = microtime(true);
+                if (DEBUG) echo "query took " . number_format($finish - $start, 3) . " seconds";
 				$allcomments = "";
 				$unreadcomments = "";
 				$commentsretrieved = 0;	
@@ -76,8 +84,8 @@ if ($username) {
 						$authorname = $comments["username"];
 						$authorid = $comments["userid"];
 						$markedasred = $comments["readby_$username"];
-						$commentintv = format_interval(time() - strtotime($commentdate)); //$commentdate = date('M d, g:i a', $commentdate);
-						$allcomments .= "$commentid:";
+						$commentintv = format_interval(time() - strtotime($commentdate)); 
+                        $allcomments .= "$commentid:";
 						$commentanchor = getCommentAnchor($commentid);
 						if ($userid == 1) {$commentinfo = "<td class=\"small\">$commentid ($inreplyto) &nbsp;</td>";} else $commentinfo = "";
 						if ($markedasred == "0") {
@@ -158,16 +166,9 @@ if ($username) {
 				require ('inc_commthreader.php');
 				echo "</div>";	//allCommentsContainer
 				
-				//display bottom Mark as Read button
 				if ($hideallexcept == 0) {
 					echo "<div class=\"hrnoshade\"></div>";
-                    echo "<form name=\"markread\" action=\"\" method=\"POST\">"
-                       . "<input type=\"hidden\" name=\"markasread\" value=\"1\">"
-                       . "<input type=\"hidden\" name=\"convIds\" value=\"$conv_id\">"
-                       . "<input type=\"hidden\" name=\"username\" value=\"$username\">"
-                       . "<input type=\"hidden\" name=\"readdate\" value=\"" . time() . "\">"
-                       . "<input type=\"submit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\">"
-                       . "</form>";
+                    echo $markasreadbutton;
 					echo "<div class=\"hrnoshade\"></div><br>";
 				}
 				echo "<form name=\"commentform\" id=\"commentform\" method=\"post\" action=\"conversations.php";
@@ -204,7 +205,7 @@ if ($username) {
 						$posttime = strtotime($commentdate) + ($tz * 3600);
 						$posttime = date('M d, Y g:i a', $posttime);
 						$posttime = " value=\"$posttime\"";
-                        echo "?id=$conv_id&comid=$hideallexcept&irtid=$inreplyto&action=update";
+                        echo "?id=$conv_id&comid=$hideallexcept&irtid=$inreplyto&action=update"; // the action for the edit form submit
 						$editcomment = $comment;
 						$replacefrom = array("\'",'\"');
 						$replaceto = array("'",'"');
@@ -218,7 +219,7 @@ if ($username) {
 				echo "<table border=0 cellpadding=2 cellspacing=0 class=\"medium\">";
 				if ($userid == 1) {
 					echo "<tr><td colspan=2><table border=0 cellpadding=0 cellspacing=0 class=\"medium\"><tr><td><h2>$modal_user_prompt</h2></td>$tdspacer<td>as&nbsp;</td><td><select name=\"postingas\" class=\"small\">";
-					$res = mysql_query("SELECT * FROM users ORDER BY username",$db);
+					$res = mysql_query("SELECT * FROM users ORDER BY username", $db);
 					while($users = mysql_fetch_array($res)) {
 						$u_userid = $users["userid"];
 						$u_username = $users["username"];

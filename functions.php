@@ -6,8 +6,8 @@ function format_plural($count, $singular, $plural) {
 
 /**
   * Provides a string representation of how far apart two times are.
-  * @param (int) $timeInterval [in positive seconds]
-  * @param (int) $granularity [number of units to show before truncating]
+  * @param <int> $timeInterval [in positive seconds]
+  * @param <int> $granularity [number of units to show before truncating]
   */
 function format_interval($timeInterval, $granularity = 2) {
 	if ($timeInterval < 0) {
@@ -141,6 +141,38 @@ function wantNewPosts($postid) {
 		// If only the main page can trigger wantNew, you can come from search results or bookmarks to the post you wanted, not some new post.
 	}
 	return false;	
+}
+
+/**
+ * Visual dump of MySql query results for debugging.
+ */
+function echo_mysql($query, $returntype='array') {
+    $start = microtime(true);
+    $res = mysql_query($query) or die (mysql_error());
+    $finish = microtime(true);
+    echo "<pre>$query<BR><hr>";
+    echo "(took " . number_format(($finish - $start), 3) . " seconds)<BR>";
+    if (is_bool($res)) { 
+        echo "Result: " . (string) $res . "<BR>";
+        return;
+    }
+    if ($returntype == 'array') {
+        echo "<TABLE>";
+        while ($row = mysql_fetch_assoc($res)) {
+            foreach ($row as $key=>$value) {
+                echo "<TR class='searchResults'><TD class='searchResults'>$key</TD><TD class='searchResults'>$value</TD></TR>";
+            }
+            echo "<TR><td>&nbsp;</TD><td>&nbsp;</TD></TR>";
+            echo "<TR><td>&nbsp;</TD><td>&nbsp;</TD></TR>";
+        }
+        echo "</TABLE>";
+    } else if ($returntype == 'scalar') {
+        echo "scalar 'row': <bR>";
+        var_dump($row);
+        $row = mysql_fetch_array($res);
+            echo $row[0];
+    }
+    echo "</pre><br> ";
 }
 
 ?>

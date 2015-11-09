@@ -21,20 +21,18 @@ if (empty($_POST['username'])) {
 }
 
 if (empty($_POST['convIds'])) { http_error_response(400, "No conversation ids supplied (type: array of int");}
-
-if (!isset($_POST['markasread']) || $_POST['markasread'] == null) { http_error_response(400, "No mark as read flag supplied (type: int, value: 1 or 0)");}
+if (empty($_POST['readDates']) { http_error_response(400, "No read dates supplied (type: array of MySql datetimes");}
+if (count($readdates) != count($convIds)) { http_error_response(400, "Each conversation needs to have a corresponding mark as read date."); }
 
 $username = mysql_real_escape_string($_POST['username']);
-$readdate = !empty($_POST['readdate']) ? date(MYSQL_DATETIME_FORMAT, $_POST['readdate']) : date("MYSQL_DATETIME_FORMAT");   //converting from Unix timestamp
-$convIds = $_POST['convIds'];    //array
-$markAsRead = (int) $_POST['markasread']; //converting from string
-
-$queries = [];
-
 $convIds = $_POST['convIds'];
+$readdates = $_POST['readDates'];
+$queries = [];
 foreach ($convIds as $convId) {
     $convId = (int) $convId;
-    $queries[] = "UPDATE `comments` SET `readby_$username` = $markAsRead WHERE `conid` = '$convId' and `changedate` <= '$readdate'";
+    foreach($readdates as $readdate) {
+        $queries[] = "UPDATE `comments` SET `readby_$username` = (`changedate` <= '$readdate') WHERE `conid` = '$convId'";
+    }
 } 
 
 foreach($queries as $query) {

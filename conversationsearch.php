@@ -1,9 +1,6 @@
 <?php	
 require_once('config.php');
-$db = mysql_connect(SQL_HOST, DATABASE, DB_PASSWORD); 
-mysql_select_db (DATABASE);
-$tz = -12;
-
+require_once('dbconnect.php');
 require_once('functions.php');
 
 //Show the search form if we don't have a search string and need one

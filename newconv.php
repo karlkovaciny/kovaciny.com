@@ -91,7 +91,7 @@ if ($username) {
 			if (isset($_GET['private']) || $privatewith != 0) {
 				if (isset($conv_id) == false) echo "<h1>New Dialogue</h1><p>A dialogue is a private conversation between two users.</p><table border=0 cellpadding=2 cellspacing=0><tr><td class=\"small blue\" colspan=2>";
 				echo "With:<br><input type=\"hidden\" name=\"topic\" value=0><select name=\"privatewith\">";
-				$res = mysql_query("SELECT * FROM users ORDER BY username",$db);
+				$res = mysql_query("SELECT * FROM users ORDER BY username", $db);
 				while($users = mysql_fetch_array($res)) {
 					$u_userid = $users["userid"];
 					$u_username = $users["username"];
@@ -105,7 +105,7 @@ if ($username) {
 			echo "<tr><td class=\"small blue\" colspan=2>First comment:<br><textarea name=\"comment\" cols=65 rows=11 class=\"medium comment\">$editcomment</textarea></td></tr>";
 			if ($userid == 1) {
 				echo "<tr><td colspan=2><table border=0 cellpadding=0 cellspacing=0 class=\"medium\"><tr><td>Posting as:&nbsp;</td><td><select name=\"postingas\" class=\"small\">";
-				$res = mysql_query("SELECT * FROM users ORDER BY username",$db);
+				$res = mysql_query("SELECT * FROM users ORDER BY username", $db);
 				while($users = mysql_fetch_array($res)) {
 					$u_userid = $users["userid"];
 					$u_username = $users["username"];

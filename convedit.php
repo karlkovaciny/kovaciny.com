@@ -42,12 +42,14 @@ if (isset($_GET['action'])) {
 			$newcomm_posttime = "NOW()";
 		}
 	}
-	$updatecommentcount = false;	//unless we successfully update
+	$updatecommentcount = false;
 	if ($_GET['action'] == "new") {
 		//delete duplicate posts, apparently
 		$res= mysql_query("DELETE FROM `comments` WHERE `authorid` = '$newcomm_authorid' AND `conid` = '$conv_id' AND `comment` = '$newcomm'") or die("Could not update database: " . mysql_error()); 
 		$res= mysql_query("INSERT INTO `comments` (`comid`, `inreplyto`, `conid`, `authorid`, `comment`, `createdate`, `changedate`) VALUES ('', '$newinreplyto', '$conv_id', '$newcomm_authorid', '$newcomm', $newcomm_posttime , $newcomm_posttime);") or die("Could not update comment database.");
-		if ($newcomm_posttime == "NOW()") {$res= mysql_query("UPDATE `conversations` SET `changedate` = NOW(), `lastpostuserid` = '$newcomm_authorid', `lastpostusername` = '$newcomm_authorname' WHERE `authorid` = '$userid' AND `conid` = '$conv_id' LIMIT 1") or die("Could not update conversation database.");}
+		if ($newcomm_posttime == "NOW()") {
+            $res= mysql_query("UPDATE `conversations` SET `changedate` = NOW(), `lastpostuserid` = '$newcomm_authorid', `lastpostusername` = '$newcomm_authorname' WHERE `authorid` = '$userid' AND `conid` = '$conv_id' LIMIT 1") or die("Could not update conversation database.");
+        }
 		$updatecommentcount = true;
 	} elseif ($_GET['action'] == "delete") {
 		if (isset($_GET['comid'])) {
@@ -75,26 +77,29 @@ if (isset($_GET['action'])) {
 				$hideallexcept = $replytoid;
 			}
 		}
-	} elseif ($_GET['action'] == "update") {
+	} elseif ($_GET['action'] == "update") { //submitted the edit form
 		if (isset($_GET['comid'])) {
 			$editcomid = $_GET['comid'];
 			if ($userid != 1) $reqauthor = " AND `authorid` = '$userid'";
 			$res = mysql_query("SELECT * FROM `comments` WHERE `conid` = '$conv_id' AND `comid` = '$editcomid'$reqauthor",$db);
 			if (mysql_num_rows($res)==1) {
 				mysql_query("UPDATE `comments` SET `comment` = '$newcomm'$createtimeadminedit, `changedate` = $newcomm_posttime, `authorid` = '$newcomm_authorid', `inreplyto` = '$newinreplyto' WHERE `conid` = '$conv_id' AND `comid` = '$editcomid';") or die("Could not update comment");
-				$updatecommentcount = true;
+				$updatecommentcount = true; // I don't see why, maybe for admin
 			}
 		}
 	}
 	if ($updatecommentcount == true) {
+        // Update the conversation with the number of comments
 		$res = mysql_query("SELECT count(*) AS CommCount FROM `comments` WHERE `conid` = '$conv_id' AND `visible` = 'Y'",$db);
-		if (mysql_num_rows($res)==1) {
+        if (mysql_num_rows($res) == 1) { 
 			$conv_obj= mysql_fetch_object($res);
 			$comcount= $conv_obj->CommCount;
 			mysql_query("UPDATE `conversations` SET `numcomm` = '$comcount' WHERE `conid` = '$conv_id';") or die("Could not update comment count");
 		}
-		$res = mysql_query("SELECT `createdate` FROM `comments` WHERE `conid` = '$conv_id' AND `visible` = 'Y' ORDER BY `createdate` DESC LIMIT 1;",$db);
-		if (mysql_num_rows($res)==1) {
+        
+        // Update the conversation about the new last post
+		$res = mysql_query("SELECT `createdate` FROM `comments` WHERE `conid` = '$conv_id' AND `visible` = 'Y' ORDER BY `createdate` DESC LIMIT 1;", $db);
+		if (mysql_num_rows($res) == 1) {
 			$conv_obj= mysql_fetch_object($res);
 			$finalpost= $conv_obj->createdate;
 			$res = mysql_query("SELECT c.createdate, c.authorid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = '$conv_id' AND c.visible = 'Y' AND c.createdate = '$finalpost';",$db);

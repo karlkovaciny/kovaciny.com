@@ -35,12 +35,10 @@ kcom.ShowHideControl = function(comment) {
 };
 
 kcom.ShowHideControl.prototype.changeState = function(state) {
-    console.log('changeState running', state);
     if (state == 'hidden') {
         showonly('c_h_' + this.parent.getId()); // show for hidden posts
         hideonly('c_s_' + this.parent.getId()); // show for shown posts, hide hidden
     } else if (state == 'visible') {
-        console.log("this comment's show-Hide control is being made visible: ", this.parent.id); 
         showonly('c_s_' + this.parent.getId());
         hideonly('c_h_' + this.parent.getId());
     } else console.log (this, 'Invalid parameter: ' + state);
@@ -115,7 +113,6 @@ $( document ).ready( function() {
             function() { comment.slideDown(); toast.done(null);}, 
             ToastWithOption.LENGTH_LONG);
         toast.done(function() {
-            console.log("toast .done function running");
             var request = 'conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
             jQuery.ajax(request);
         });
@@ -135,7 +132,6 @@ $( document ).ready( function() {
 });
 
 function autoHideOldComments(callback){
-    console.log('autoHideOldComments running');
     console.time('time to hide old comments');
     $('#ncb1').hide();//the "show new comments only" button
     $('#ncb2').show();//the "show all comments" button
@@ -151,7 +147,6 @@ function autoHideOldComments(callback){
  */
 function commentToggle(expandcollapse) {
     var comments = kcom.conv.getComments();
-    console.log('this should print, commenttoggling');
     var delaytime = 0;
     for (var i = comments.length - 1; i >= 0; i--) {
         delaytime += 1;

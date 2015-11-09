@@ -16,7 +16,7 @@
 		$username= ltrim(rtrim(addslashes($_POST['username'])));
 		$password= ltrim(rtrim(addslashes($_POST['password'])));
 		$mdpass= md5($password);
-		$db = mysql_connect(SQL_HOST, DATABASE, DB_PASSWORD); 
+		$db = mysql_connect(SQL_SERVER, SERVER_USERNAME, DB_PASSWORD); 
 		mysql_select_db (DATABASE);
 		$res= mysql_query("SELECT * FROM users WHERE username='$username' AND pass='$mdpass'") or die("Could not select user ID.");
 		if (mysql_num_rows($res)==1) {
