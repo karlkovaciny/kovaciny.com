@@ -150,7 +150,7 @@ function echo_mysql($query, $returntype='array') {
     $start = microtime(true);
     $res = mysql_query($query) or die (mysql_error());
     $finish = microtime(true);
-    echo "<pre>$query<BR><hr>";
+    echo "<pre>" . wordwrap($query, 60, "<BR>") . "<BR><hr>";
     echo "(took " . number_format(($finish - $start), 3) . " seconds)<BR>";
     if (is_bool($res)) { 
         echo "Result: " . (string) $res . "<BR>";
@@ -160,7 +160,8 @@ function echo_mysql($query, $returntype='array') {
         echo "<TABLE>";
         while ($row = mysql_fetch_assoc($res)) {
             foreach ($row as $key=>$value) {
-                echo "<TR class='searchResults'><TD class='searchResults'>$key</TD><TD class='searchResults'>$value</TD></TR>";
+                echo "<TR class='searchResults'><TD class='searchResults'>$key</TD><TD class='searchResults'>" 
+                . wordwrap($value, 90, "<BR>") . "</TD></TR>";
             }
             echo "<TR><td>&nbsp;</TD><td>&nbsp;</TD></TR>";
             echo "<TR><td>&nbsp;</TD><td>&nbsp;</TD></TR>";

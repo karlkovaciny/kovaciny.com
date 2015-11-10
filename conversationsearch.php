@@ -21,10 +21,8 @@ if (isset($_REQUEST['q_searchConversations']) &&
 		($_REQUEST['q_searchConversations'] === "true")) { 
 	$q = stripslashes($_GET['q']);
 	$q_searchstring = preprocessForSqlBoolean($q);
-	$sql = "SELECT `conid`, `contitle`, `changedate`, `createdate`, `numcomm`, `visible` FROM `conversations` 
-			WHERE `visible`='Y' AND MATCH `contitle` AGAINST ('$q_searchstring' IN BOOLEAN MODE) ORDER BY `changedate` DESC";
-	$res = mysql_query($sql) or die (mysql_error());
-	
+	$sql = "SELECT `conid`, `contitle`, `changedate`, `createdate`, `numcomm`, `visible` FROM `conversations` WHERE `visible`='Y' AND MATCH `contitle` AGAINST ('$q_searchstring' IN BOOLEAN MODE) ORDER BY `changedate` DESC";
+	$res = mysql_query($sql) or die (mysql_error()); 
 	if( mysql_num_rows ($res) == 0 ) {
 		echo "<p class=\"copy\">No conversation titles matched your search terms. 
 			<a class=\"content\" tabindex=\"20\" href=\"newconv.php\">Add new conversation</a>&nbsp;</p>";
@@ -99,11 +97,11 @@ if (isset($_REQUEST['q_searchConversations']) &&
 		}
 							
 		if ($q_matchAllComments == TRUE) {
-			$rpp = 10; //more results per page when seeking big batches
-			$maxallowed = 50;
+			$rpp = 25; //more results per page when seeking big batches
+			$maxallowed = 150;
 		} else {
-			$rpp = 10; 
-			$maxallowed = 50;
+			$rpp = 25; 
+			$maxallowed = 150;
 		}
 		$searchquery = 
 			"SELECT `c`.`comid`, `c`.`conid`, `c`.`comment`, `c`.`createdate`, `c`.`authorid`, `c`.`visible`, " .
@@ -134,8 +132,8 @@ if (isset($_REQUEST['q_searchConversations']) &&
 				$searchquery .= "LIMIT $startpoint, " . min($rpp, $resultcount - $startpoint) . " ";
 			} else $searchquery .= "LIMIT 0, $maxallowed ";
 		
-		$res = mysql_query($searchquery, $db) or die(mysql_error());
-		if ($resultcount == 0) $numhits = mysql_num_rows($res); //you need the record count this first time
+		$res = mysql_query($searchquery, $db) or die(mysql_error());  // .011 seconds
+        if ($resultcount == 0) $numhits = mysql_num_rows($res); //you need the record count this first time
 		else $numhits = $resultcount;
 		
 		//paginate results

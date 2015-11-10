@@ -108,10 +108,10 @@ $( document ).ready( function() {
 		
 		//delete post 
 		comment.slideUp();
-        var toast = new ToastWithOption("Deleting post...", 
+        var toast = new kcom.ToastWithOption("Deleting post...", 
             "Undo", 
             function() { comment.slideDown(); toast.done(null);}, 
-            ToastWithOption.LENGTH_LONG);
+            kcom.ToastWithOption.LENGTH_LONG);
         toast.done(function() {
             var request = 'conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
             jQuery.ajax(request);

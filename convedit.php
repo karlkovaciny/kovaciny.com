@@ -90,25 +90,30 @@ if (isset($_GET['action'])) {
 	}
 	if ($updatecommentcount == true) {
         // Update the conversation with the number of comments
-		$res = mysql_query("SELECT count(*) AS CommCount FROM `comments` WHERE `conid` = '$conv_id' AND `visible` = 'Y'",$db);
+		$res = mysql_query("SELECT count(*) AS CommCount FROM `comments` WHERE `conid` = '$conv_id' AND `visible` = 'Y'", $db);
         if (mysql_num_rows($res) == 1) { 
 			$conv_obj= mysql_fetch_object($res);
 			$comcount= $conv_obj->CommCount;
-			mysql_query("UPDATE `conversations` SET `numcomm` = '$comcount' WHERE `conid` = '$conv_id';") or die("Could not update comment count");
+			$sql = "UPDATE `conversations` SET `numcomm` = '$comcount' WHERE `conid` = '$conv_id';";
+            mysql_query($sql) or die("Could not update comment count");
 		}
         
         // Update the conversation about the new last post
-		$res = mysql_query("SELECT `createdate` FROM `comments` WHERE `conid` = '$conv_id' AND `visible` = 'Y' ORDER BY `createdate` DESC LIMIT 1;", $db);
+		$sql = "SELECT MAX(`createdate`) FROM `comments` WHERE `conid` = '$conv_id' AND `visible` = 'Y';"; 
+        $res = mysql_query($sql, $db);
 		if (mysql_num_rows($res) == 1) {
 			$conv_obj= mysql_fetch_object($res);
 			$finalpost= $conv_obj->createdate;
-			$res = mysql_query("SELECT c.createdate, c.authorid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = '$conv_id' AND c.visible = 'Y' AND c.createdate = '$finalpost';",$db);
+            $sql = "SELECT c.createdate, c.authorid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = '$conv_id' AND c.visible = 'Y' AND c.createdate = '$finalpost';";
+            $res = mysql_query($sql, $db);
+            
 			if (mysql_num_rows($res)==1) {
 				$conv_obj= mysql_fetch_object($res);
 				$lastposttime = $conv_obj->createdate;
 				$lastpostid= $conv_obj->authorid;
 				$lastpostname= $conv_obj->username;
-				mysql_query("UPDATE `conversations` SET `changedate` = '$lastposttime', `lastpostuserid` = '$lastpostid', `lastpostusername` = '$lastpostname' WHERE `conid` = '$conv_id';") or die("Could not update last post info.");
+				$sql = "UPDATE `conversations` SET `changedate` = '$lastposttime', `lastpostuserid` = '$lastpostid', `lastpostusername` = '$lastpostname' WHERE `conid` = '$conv_id';";
+                mysql_query($sql) or die("Could not update last post info.");
 			}
 		}
 	}

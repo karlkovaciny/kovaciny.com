@@ -58,14 +58,14 @@ jshint {
     tasks.jshint.source = javascript.source.dev.js.files
     tasks.jshint.dest = file("${buildDir}/jshint.out.xml")
     tasks.jshint.reporter = 'checkstyle'
-    jshint.options = [expr: "true", browser: "true", jquery: "true"]
-    jshint.options << [wsh: "true"] //for Jon's ActiveXObjects
-    if (false) {jshint.options << [devel: "true"]}
+    jshint.options = [browser: "true", jquery: "true"] //environments
+    jshint.options << [expr: "true", wsh: "true"] //for Jon's ActiveXObjects
+    jshint.options << [globals: {"kcom"}]
 }
 
 task viewJshintResults (dependsOn:tasks.jshint, type:Exec) {
     onlyIf {
-        tasks.jshint.state.failure != null
+        tasks.jshint.dest.readLines().join('') =~ /error|pattern/
     }
     def firefoxPath = /C:\Program Files (x86)\Mozilla Firefox\firefox.exe/
     executable firefoxPath
@@ -141,5 +141,7 @@ gradle.taskGraph.whenReady {
     if (gradle.taskGraph.hasTask(release)) {
         //TODO: for some reason this line makes assemble not run even though combineJs uses the same inputs -- their bug?
         //minifyJs.source = combineJs  // don't need files and line numbers for release
+    } else {
+        jshint.options << [devel: "true"] //for console.log
     }
 }

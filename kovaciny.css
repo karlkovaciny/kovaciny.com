@@ -1,6 +1,7 @@
 body { font-family: Verdana, Arial, Helvetica, sans-serif}
 p {font-size: 12px; color: #000000; text-decoration: none; font-weight: normal}
-ul {margin-left: 0; padding-left: 0; list-style: none; font-size: 14px}
+ul {margin-left: 0; padding-left: 0; list-style: none; font-size: 14px; 
+    display: inline-block}
 li {font-size: 12px; padding-left: 10px; background-image: url(gfx/ul.gif); background-repeat: no-repeat; background-position: 0px 4px;}
 
 #leftnavmenu {background-color: #DDDDDD; padding: 5px;}

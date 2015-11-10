@@ -1,9 +1,11 @@
+/** @suppress {duplicate} */ var kcom = kcom || {};
 kcom.HOST_NAME = kcom.HOST_NAME || "";
 
 $( document ).ready( 
     bindSubmits
 );
 
+/** @suppress {deprecated} the Ajax version of .load is not deprecated */ 
 function submitMarkAsRead(formdata) {
     var $oldBody = $("#bodyContent").clone();
     var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", formdata);
@@ -11,27 +13,27 @@ function submitMarkAsRead(formdata) {
         console.log(request.status, ': ', request.responseText);
     });
     jqxhr.done(function() {
-        $("#bodyContent").load("index.php #bodyContent", function() {
+        $("#bodyContent").load("index.php #bodyContent > *", function() {
             window.scrollTo(0,0);
             window.history.pushState("", "", kcom.HOST_NAME + "/index.php");
             bindSubmits();
             var toastMessage = formdata.convIds.length > 1 ? "Conversations marked as read" : "Conversation marked as read";
-            var toast = new ToastWithOption(toastMessage, "Undo", 
+            var toast = new kcom.ToastWithOption(toastMessage, "Undo", 
                 function() {
                     var tempFormdata = formdata;
                     tempFormdata.readDates = formdata.oldReadDates;
                     var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", tempFormdata);
                     jqxhr.done(function() {
-                        $("#bodyContent").html($oldBody.html());
+                        $("#bodyContent").html(String($oldBody.html()));
                         bindSubmits();
                     });
                 }, 
-                ToastWithOption.LENGTH_LONG);
+                kcom.ToastWithOption.LENGTH_LONG);
         });
     });
 }
 
-/** @suppress {deprecated} the Ajax version of .load is not deprecated */ 
+/** @suppress {missingProperties} To access forms with dot notation. */ 
 function bindSubmits() {
     
     //picking conversations to mark as read in index.php
@@ -71,7 +73,7 @@ function bindSubmits() {
             markasread: form.markasread.value,
             convIds: [form.convIds.value],
             readDates: [form.readdate.value],
-            oldReadDates: [form.conchangedate.value]
+            oldReadDates: new Array(form.conchangedate.value)
             };
         submitMarkAsRead(formdata);
     });
@@ -240,7 +242,7 @@ function wrapMatchesInTag(textNode, pattern, wrapperNode)  {
  * @param optionCallback - what to do if user selects the option
  * @param duration - in ms, default = permanent 
 */
-function ToastWithOption(text, optionText, optionCallback, duration) {
+kcom.ToastWithOption = function(text, optionText, optionCallback, duration) {
     "use strict";
     var self = this;
     
@@ -285,6 +287,6 @@ function ToastWithOption(text, optionText, optionCallback, duration) {
                 },200 );				
         });
     } else console.log('option button did not exist');
-}
-ToastWithOption.LENGTH_LONG = 3500;
-ToastWithOption.LENGTH_SHORT = 2000;
+};
+kcom.ToastWithOption.LENGTH_LONG = 3500;
+kcom.ToastWithOption.LENGTH_SHORT = 2000;
