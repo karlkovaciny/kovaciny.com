@@ -1,21 +1,6 @@
 <?php
-require_once(dirname(__FILE__) . '/../config.php');
-require_once(dirname(__FILE__) . '/functions.php');
-
-//authentication of sorts
-if (!empty($_COOKIE['user'])) {
-    $usertoken = $_COOKIE['user'];
-} else {
-    session_start();
-    $usertoken = !empty($_SESSION['user']) ? $_SESSION['user'] : "";
-}
-
-if (empty($usertoken)) {
-    http_error_response(401, "no usertoken supplied");
-}   
-
-require_once(dirname(__FILE__) . '/../dbconnect.php');
-
+require_once('access_token.php'); //in lieu of a real one
+require_once('dbconnect.php');
 if (empty($_POST['username'])) {
     http_error_response(401, "no username supplied (type: string)");
 }
