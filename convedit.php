@@ -99,11 +99,11 @@ if (isset($_GET['action'])) {
 		}
         
         // Update the conversation about the new last post
-		$sql = "SELECT MAX(`createdate`) FROM `comments` WHERE `conid` = '$conv_id' AND `visible` = 'Y';"; 
+		$sql = "SELECT MAX(`createdate`) AS finalpostdate FROM `comments` WHERE `conid` = '$conv_id' AND `visible` = 'Y';"; 
         $res = mysql_query($sql, $db);
 		if (mysql_num_rows($res) == 1) {
 			$conv_obj= mysql_fetch_object($res);
-			$finalpost= $conv_obj->createdate;
+			$finalpost= $conv_obj->finalpostdate;
             $sql = "SELECT c.createdate, c.authorid, u.username FROM comments AS c, users AS u WHERE u.userid = c.authorid AND c.conid = '$conv_id' AND c.visible = 'Y' AND c.createdate = '$finalpost';";
             $res = mysql_query($sql, $db);
             

@@ -35,7 +35,7 @@ if ($username) {
                     . "<input type=\"hidden\" name=\"username\" value=\"$username\">" 
                     . "<input type=\"hidden\" name=\"convIds\" value=\"$conv_id\">"
                     . "<input type=\"hidden\" name=\"readdate\" value=\"" . date(MYSQL_DATETIME_FORMAT) . "\">"
-                    . "<input type=\"submit\" class=\"markreadsubmit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\">"
+                    . "<input type=\"submit\" class=\"markAsReadSubmit\" value=\"Mark as read\" title=\"Mark all comments in this conversation as read.\">"
                     . "</form>";
 				if ($hideallexcept == 0) {	//not editing or replying
 					echo "<table border=0 cellpadding=0 cellspacing=0 class=\"small\">"

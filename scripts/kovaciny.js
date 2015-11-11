@@ -35,7 +35,7 @@ function submitMarkAsRead(formdata) {
 
 /** @suppress {missingProperties} To access forms with dot notation. */ 
 function bindSubmits() {
-    
+    $(".markAsReadSubmit").prop("disabled", false);
     //picking conversations to mark as read in index.php
     $("form[name=markasread]").submit(function(e) {
         e.preventDefault();
@@ -60,13 +60,14 @@ function bindSubmits() {
             submitMarkAsRead(formdata);
         } else {
             $("#markasreadsubmit").css({opacity: 0});
-            $("#markasreadsubmit").animate({opacity: 1}, 50);
+            $("#markasreadsubmit").animate({opacity: 1}, 80);
         }
     });
     
     //user clicked "Mark as read" at the end of a conversation    
     $("form[name=markread]").submit(function(e) {
         e.preventDefault();        
+        $(".markAsReadSubmit").prop("disabled", true);
         var form = $( this )[0];
         var formdata = {
             username: form.username.value,

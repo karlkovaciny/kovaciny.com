@@ -67,7 +67,7 @@ if ($username) {
 			}
 		}
 		if ($num_rows > 0) {
-			if ($unread == 1) echo "<tr><td colspan=4 align=\"right\"><input type=\"submit\" id=\"markreadsubmit\" value=\"Mark as read\"></tr>";
+			if ($unread == 1) echo "<tr><td colspan=4 align=\"right\"><input type=\"submit\" class=\"markAsReadSubmit\" value=\"Mark as read\"></tr>";
 			echo "</table>";
 			if ($unread == 1) echo "</form>";
 		}
