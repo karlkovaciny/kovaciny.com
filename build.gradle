@@ -2,6 +2,10 @@ plugins {
   id "base"
   id "com.eriwen.gradle.js" version "1.12.1"
 }
+
+configurations {
+    ftpAntTask
+}
             
 repositories {
     mavenCentral()
@@ -9,6 +13,11 @@ repositories {
 
 dependencies {
     rhino 'com.google.javascript:closure-compiler:v20150920'
+    ftpAntTask("org.apache.ant:ant-commons-net:1.9.4") {
+        module("commons-net:commons-net:1.4.1") {
+            dependencies "oro:oro:2.0.8:jar"
+        }
+    }
 }
 
 javascript.source { // source sets
@@ -27,12 +36,6 @@ javascript.source { // source sets
     }
 }
 
-
-/*
- * To see the errors for this task easily, run it as 
- * gradle clean check 2>info.txt 1>&2 & info.txt 
- * (you have to redirect stdout to catch warnings, stderr to catch errors)
- */ 
 check {
     dependsOn 'viewJshintResults'
     dependsOn 'minifyJs'
@@ -59,11 +62,14 @@ jshint {
     tasks.jshint.dest = file("${buildDir}/jshint.out.xml")
     tasks.jshint.reporter = 'checkstyle'
     jshint.options = [browser: "true", jquery: "true"] //environments
-    jshint.options << [expr: "true", wsh: "true"] //for Jon's ActiveXObjects
+    jshint.options << [expr: "true"] //don't suppress warning
+    jshint.options << [wsh: "true"] //for ActiveXObjects
     jshint.options << [globals: {"kcom"}]
+    jshint.options << [devel: "true"] //console.log is off already
 }
 
 task viewJshintResults (dependsOn:tasks.jshint, type:Exec) {
+    description "Shows Jshint XML in a browser for legibility"
     onlyIf {
         tasks.jshint.dest.readLines().join('') =~ /error|pattern/
     }
@@ -73,26 +79,12 @@ task viewJshintResults (dependsOn:tasks.jshint, type:Exec) {
     ignoreExitValue = true
 }
 
-// FTP section
-configurations {
-    ftpAntTask
-}
-
-dependencies {
-    ftpAntTask("org.apache.ant:ant-commons-net:1.9.4") {
-        module("commons-net:commons-net:1.4.1") {
-            dependencies "oro:oro:2.0.8:jar"
-        }
-    }
-}
-
 task ftp (dependsOn: ':alertWhenServerUpdates') {
     description "Uploads all files that have changed to the server"
     dependsOn minifyJs
     def identity = file("resources/ftpid.txt").readLines()
     ext.remotedir = "/k/"
     doLast {
-        println "ftping"
         ant {
             taskdef(name: 'ftp',
                     classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
@@ -109,7 +101,6 @@ task ftp (dependsOn: ':alertWhenServerUpdates') {
                 }
             }
         }
-        println "done ftping"
     }
 }
 
@@ -124,12 +115,6 @@ task alertWhenServerUpdates (type:Exec){
     workingDir "resources/"
     commandLine "cmd", "/k", 
         "start /d \"resources\" checkforupdatedjs-Shortcut " + urls.join(" ")
-    doFirst {
-        println 'Launching server polling script'
-    }
-    doLast {
-        println 'Launched server polling script'
-    }
 }
 
 task release (dependsOn: ['build', 'ftp']) {
@@ -142,6 +127,6 @@ gradle.taskGraph.whenReady {
         //TODO: for some reason this line makes assemble not run even though combineJs uses the same inputs -- their bug?
         //minifyJs.source = combineJs  // don't need files and line numbers for release
     } else {
-        jshint.options << [devel: "true"] //for console.log
+        jshint.options << [debug: "true"]
     }
 }
