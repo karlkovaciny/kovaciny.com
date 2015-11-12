@@ -1,107 +1,13 @@
-var kcom = kcom || {};
-
-/**
- * @constructor
- */
-kcom.Comment = function(id) {
-    this.id = id;
-    var self = this;
-    this.displayArea = new kcom.CommentDisplayArea(self);
-    this.showHideControl = new kcom.ShowHideControl(self);
-    this.isRead = false;
-};
-
-kcom.Comment.prototype.show = function() {
-    this.showHideControl.changeState('visible');
-    this.displayArea.show();
-};
-
-kcom.Comment.prototype.hide = function() {
-    this.showHideControl.changeState('hidden');
-    this.displayArea.hide();
-};
-
-kcom.Comment.prototype.getId = function() {
-    return this.id;
-};
-
-/**
- *  A ShowHideControl provides a control that toggles the state of a Hideable, and
- *  changes its own UI in response.
- *  @constructor
-**/
-kcom.ShowHideControl = function(comment) {
-    this.parent = comment;
-};
-
-kcom.ShowHideControl.prototype.changeState = function(state) {
-    if (state == 'hidden') {
-        showonly('c_h_' + this.parent.getId()); // show for hidden posts
-        hideonly('c_s_' + this.parent.getId()); // show for shown posts, hide hidden
-    } else if (state == 'visible') {
-        showonly('c_s_' + this.parent.getId());
-        hideonly('c_h_' + this.parent.getId());
-    } else console.log (this, 'Invalid parameter: ' + state);
-};
-
-/**
-    CommentDisplayArea provides a place to show the user picture and comment text.
-    It can be collapsed.
-    @constructor
-    @param {Object} comment - The comment that owns this display area.
-**/
-kcom.CommentDisplayArea = function (comment) {
-    this.parent = comment;
-    this.isHidden = false;
-};
-
-kcom.CommentDisplayArea.prototype.show = function() {
-    showonly(this.getElementId());
-    this.isHidden = true;
-};
-
-kcom.CommentDisplayArea.prototype.hide = function() {
-    hideonly(this.getElementId());
-    this.isHidden = false;
-};
-
-kcom.CommentDisplayArea.prototype.getElementId = function() {
-    return 'c_' + this.parent.getId();
-};
-
-/**
- * @constructor
- */
-kcom.conversation = function() {
-    "use strict";
-    var comments = [];
-    function getComments() {
-        if (!comments.length) {
-            var allCommentIds = [];
-            allCommentIds = document.forms.commentform.ac.value.toString().split(':');
-            var markedAsReadIds = document.forms.commentform.ntc.value.toString().split(':');
-            for (var i = 0; i < allCommentIds.length; i++) {
-                var id = allCommentIds[i];
-                var com = new kcom.Comment(id);
-                if (markedAsReadIds.indexOf(id) > -1) {
-                    com.isRead = true;
-                }
-                comments.push(com);
-            }
-        }
-        return comments;
-    }
-    
-    return {
-        getComments: getComments
-    };
-};
-
-kcom.conv = new kcom.conversation();
+/** @suppress {duplicate} */ var kcom = kcom || {};
 
 $( document ).ready( function() {
-	
-	$(".deleteCommentLink").click(function(){
+    kcom.conv = new kcom.Conversation('show');
+    
+    $("#newCommentsToggle").click(function() {
+        
+    });
+    
+    $(".deleteCommentLink").click(function(){
 		var comment = $( this ).parents().closest('.commentContainer');
         var convid = $( this ).attr("data-convid");
 		var commentid = $( this ).attr("data-commentid");
@@ -135,10 +41,54 @@ function autoHideOldComments(callback){
     console.time('time to hide old comments');
     $('#ncb1').hide();//the "show new comments only" button
     $('#ncb2').show();//the "show all comments" button
-    habtop();
-    console.timeEnd('time to hide old comments');
-    if (callback){ callback(); } 
+    if (callback) {
+        jQuery.when( habtop() ). then( 
+            function() {
+                console.log('defered succeded');
+                console.log('called autoHOC callback');
+                callback();                 
+            }, 
+            function() {console.log('defered faild');}
+        );
+        console.log('there was a autoHOC callback');
+    } 
     else { console.log('autoHideOldComments got no callback'); }    
+    console.timeEnd('time to hide old comments');
+}
+
+/**
+ * returns Promise
+ */
+function habtop() {
+    var comments = kcom.conv.getComments();
+    var len = comments.length;
+    var promises = [];
+    for (var i = 0; i < len; i++) {
+        if (comments[i].isRead) {
+            comments[i].hide();
+        } else {
+            var promise = comments[i].show();
+            promises.push(promise);
+        }
+    }
+    var dfd = jQuery.Deferred();
+    //when I stop here, it works.
+    var allPromises = $.when.apply($, promises);
+    console.time("waiting for promises");
+    return jQuery.when(allPromises).then(
+        function() {
+            console.log("all promises success!");
+            dfd.resolve( "hurray" );
+            console.timeEnd("waiting for promises"); //2.42 ms
+            console.log('promise in whenthen in habtop', dfd.promise());
+            return dfd.promise();
+        }, 
+        function() {
+            console.log("some promise failed");
+            dfd.reject( "boo" );
+            return dfd.promise(); //TODO needs handler
+        }
+    );
 }
 
 /**
@@ -158,40 +108,8 @@ function commentToggle(expandcollapse) {
     }    
 }
 
-function habtop() {
-    var comments = kcom.conv.getComments();
-    var len = comments.length;
-    for (var i = 0; i < len; i++) {
-        if (comments[i].isRead) {
-            comments[i].hide();
-        }
-    }
-}
-
 $(window).on( "load", function(){	//wait till all images are loaded
-	
-	//shrink large images and embedded videos inside commentContainers
-	$(".commentContents").find("img, iframe, embed").each( function() {
-		var parent = $( this ).closest( ".commentContainer" );
-		var availableWidth = 
-			window.innerWidth - $( this ).offset().left - 
-			parseInt(parent.css("padding-right"), 10) - 24 - 6; 
-				// 24 = 2 * sidepad. 6 = fudge.
-				
-		if ( $( this ).is("img") ) {	//add click-to-expand
-			if ( $( this )[0].naturalWidth > availableWidth ) {
-				$( this ).addClass("squashed");
-				$( this ).click( function() {
-					$( this ).toggleClass("squashed");
-					$( this )[0].scrollIntoView();
-				});
-			} 
-		} else { 
-			if ( $( this ).width() > availableWidth ) {
-				$( this ).width(availableWidth);
-			}
-		}
-	});
+
 });
 
 window.onbeforeunload=function() {

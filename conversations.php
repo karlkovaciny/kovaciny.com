@@ -45,7 +45,7 @@ if ($username) {
 					if ($userid == $authorid && $comcount == 1) {
 						echo "<td class=\"sidepad\"><form class=\"markread\"><input type=\"button\" onclick=\"if(confirm('Are you sure you want to delete this conversation?')) {document.location.href='newconv.php?deleteconversation=$conv_id';}\" value=\"Delete conversation\" style=\"color: red\"></form></td>";
 					} else {
-						echo "<td><div id=\"ncb1\"><input type=\"button\" onclick=\"hide('ncb1');show('ncb2');habtop();\" value=\"Show new comments only\"></div><div id=\"ncb2\" class=\"hide\"><input type=\"button\" onclick=\"hide('ncb2');show('ncb1');commentToggle(1);\" value=\"Show all comments\"></div></td>";
+						echo "<td><div id=\"ncb1\"><input type=\"button\" id='newCommentsToggle'  onclick=\"hide('ncb1');show('ncb2');habtop();\" value=\"Show new comments only\"></div><div id=\"ncb2\" class=\"hide\"><input type=\"button\" onclick=\"hide('ncb2');show('ncb1');commentToggle(1);\" value=\"Show all comments\"></div></td>";
 					}
 					echo "</tr>";
 					if ($comcount == 1) {
@@ -103,8 +103,8 @@ if ($username) {
 						$hilite = "";
 						if ($hideallexcept == 0) {	//not edit or reply mode
 							//Add show comment/hide comment links, with only the relevant one being visible
-							$ccc .= "<td><div id=\"c_h_$commentid\" class=\"hide\"><a href=\"javascript:hide('c_h_$commentid');show('c_s_$commentid');show('c_$commentid');\">Show comment</a></div>";
-							$ccc .= "<div id=\"c_s_$commentid\"><a href=\"javascript:show('c_h_$commentid');hide('c_s_$commentid');hide('c_$commentid');\">Hide comment</a>";
+							$ccc .= "<td><div id=\"showHideTarget_$commentid\">" 
+                            . "<a id=\"showHideControl_$commentid\" href=\"#\" class=\"showHideToggleText\">&nbsp;</a>";
 							if ($userid == 1 || $userid == $authorid) {
 								$ccc .= " &nbsp; &nbsp;<a href=\"conversations.php?id=$conv_id&comid=$commentid&action=edit\">Edit</a>";
 								$ccc .= " &nbsp; &nbsp;<a href=\"#\" class=\"deleteCommentLink\" data-convid=\"$conv_id\" data-commentid=\"$commentid\">Delete</a>";
@@ -143,7 +143,9 @@ if ($username) {
 						$htmlcomment = turnRelativeLinksAbsolute($htmlcomment);
 						
 						//add a span to allow us to access the comment text
-						$htmlcomment = "\n\n<span id=\"$comment_text_id\" class=\"commentContents\">" . $htmlcomment . "</span>\n";
+						$htmlcomment = "\n\n<span id=\"$comment_text_id\" class=\"commentContents\" data-comment-html=\"" 
+                        . htmlentities($htmlcomment, ENT_QUOTES, "ISO-8859-1") 
+                        . "\"></span>\n";
 						
 						//add in the user's graphic
 						if ($authorname == "Jon" || $authorname == "Rae" || $authorname == "Karl" || $authorname == "Monica" || $authorname == "Rachel" || $authorname == "Larry") {
@@ -251,11 +253,13 @@ if ($username) {
 	if ( DEBUG ) {
 		$rand = floor(rand() * 100);
 		$jquery_source = "scripts/conv_jquery.js?dev=$rand";
+        $classes = "scripts/classes.js?dev=$rand";
 	} else {
 		$jquery_source = "scripts/conv_jquery.js?" . RELEASE_VERSION;
+        $classes = "scripts/classes.js?" . RELEASE_VERSION;
 	}
 	echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
-	
+	echo "<script src=\"$classes\" type=\"text/javascript\"></script>";
 	if ( wantNewPosts($topnewid) ) {	
 		$jumpto = getCommentAnchor($topnewid);
 		echo "<script type=\"text/javascript\">
@@ -271,7 +275,16 @@ if ($username) {
 		} );
 		}";
 		echo "</script>";
-	} 
+	} else {
+        echo "<script type=\"text/javascript\">
+			window.onload=function(){ 
+                var comments = kcom.conv.getComments();
+                console.log('comments length', comments.length);
+                for (var i = 0; i < comments.length; i++) {
+                    comments[i].show();
+                }
+            }</script>";
+    }
 }
 ?>
 </body>

@@ -35,7 +35,7 @@ function submitMarkAsRead(formdata) {
 
 /** @suppress {missingProperties} To access forms with dot notation. */ 
 function bindSubmits() {
-    $(".markAsReadSubmit").prop("disabled", false);
+    $(".markAsReadSubmit").prop("disabled", false); //TODO put this in complete()
     //picking conversations to mark as read in index.php
     $("form[name=markasread]").submit(function(e) {
         e.preventDefault();
@@ -233,8 +233,6 @@ function wrapMatchesInTag(textNode, pattern, wrapperNode)  {
     }
     parent.normalize();
 }
-
-
 
 /** 
  * @constructor
