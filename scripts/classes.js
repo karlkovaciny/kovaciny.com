@@ -43,28 +43,30 @@ kcom.Comment.prototype.getId = function() {
 **/
 kcom.ShowHideControl = function(comment) {
     this.parent = comment;
-    var _this = this;
     var control = this.getControl();
-    $(control).one('click', clik);
+    this.changeState('visible');
+};
+
+kcom.ShowHideControl.prototype.changeState = function(state) {
+    "use strict";
+    var _this = this;
+    var $control = $(this.getControl());
     function clik() {
         _this.parent.show(); 
-        $(control).one('click', unclik);
         return false;
     }
     function unclik() {
        _this.parent.hide(); 
-       $(control).one('click', clik);
        return false;
-   }
-};
-
-kcom.ShowHideControl.prototype.changeState = function(state) {
+    }
     if (state == 'hidden') {
         $(this.getTarget()).children().hide(); //FIXME should this move to the comment? if so how will it not hide the control too?
-        $(this.getControl()).text("Show comment").show();
+        $control.one('click', clik);
+        $control.text("Show comment").show();
     } else if (state == 'visible') {
         $(this.getTarget()).children().show();
-        $(this.getControl()).text("Hide comment").show();
+        $control.one('click', unclik);
+        $control.text("Hide comment").show();
     } else console.log (this, 'Invalid parameter: ' + state);
 };
 
@@ -135,7 +137,7 @@ kcom.CommentDisplayArea.prototype.show = function() {
         if (!$contents[0].innerHTML) {
             $contents.html($contents[0].getAttribute("data-comment-html"));
         }
-        $.when(this.shrinkEmbeds($contents)).then(function() {
+        jQuery.when(this.shrinkEmbeds($contents)).then(function() {
             console.log('resolving deferd because shrink done running');
             deferd.resolve('ok');
         });

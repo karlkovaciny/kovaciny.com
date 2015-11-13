@@ -72,7 +72,6 @@ function habtop() {
         }
     }
     var dfd = jQuery.Deferred();
-    //when I stop here, it works.
     var allPromises = $.when.apply($, promises);
     console.time("waiting for promises");
     return jQuery.when(allPromises).then(
