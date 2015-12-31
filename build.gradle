@@ -1,6 +1,23 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.autoscout24.gradle:gradle-todo-plugin:1.0'
+        classpath 'commons-io:commons-io:2.0.1'
+    }
+}
+
 plugins {
   id "base"
   id "com.eriwen.gradle.js" version "1.12.1"
+}
+
+apply plugin: 'com.autoscout24.gradle.todo'
+
+todo {
+    sourceFolder = "."
+    fileExtensions = ["php", "js", "txt"]
 }
 
 configurations {
@@ -61,11 +78,11 @@ jshint {
     tasks.jshint.source = javascript.source.dev.js.files
     tasks.jshint.dest = file("${buildDir}/jshint.out.xml")
     tasks.jshint.reporter = 'checkstyle'
-    jshint.options = [browser: "true", jquery: "true"] //environments
-    jshint.options << [expr: "true"] //don't suppress warning
-    jshint.options << [wsh: "true"] //for ActiveXObjects
+    jshint.options = [browser: "true", jquery: "true"] // environments
+    jshint.options << [expr: "true"] // don't suppress warning
+    jshint.options << [wsh: "true"] // for ActiveXObjects
     jshint.options << [globals: {"kcom"}]
-    jshint.options << [devel: "true"] //console.log is off already
+    jshint.options << [devel: "true"] // console.log is off already
 }
 
 task viewJshintResults (dependsOn:tasks.jshint, type:Exec) {
@@ -117,15 +134,14 @@ task alertWhenServerUpdates (type:Exec){
         "start /d \"resources\" checkforupdatedjs-Shortcut " + urls.join(" ")
 }
 
-task release (dependsOn: ['build', 'ftp']) {
-    //changes behavior when present in task graph
+task release (dependsOn: ['build']) {
+    // changes behavior when present in task graph
     description "Produces build version"
 }
 
 gradle.taskGraph.whenReady {
     if (gradle.taskGraph.hasTask(release)) {
-        //TODO: for some reason this line makes assemble not run even though combineJs uses the same inputs -- their bug?
-        //minifyJs.source = combineJs  // don't need files and line numbers for release
+        minifyJs.source = combineJs  // compile passed, don't need files and line numbers
     } else {
         jshint.options << [debug: "true"]
     }
