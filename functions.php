@@ -6,8 +6,8 @@ function format_plural($count, $singular, $plural) {
 
 /**
   * Provides a string representation of how far apart two times are.
-  * @param <int> $timeInterval [in positive seconds]
-  * @param <int> $granularity [number of units to show before truncating]
+  * @param {int} $timeInterval [in positive seconds]
+  * @param {int} $granularity [number of units to show before truncating]
   */
 function format_interval($timeInterval, $granularity = 2) {
 	if ($timeInterval < 0) {
@@ -41,7 +41,7 @@ Handles URLs after href= and src=.
 */
 function turnRelativeLinksAbsolute($htmlcomment) {
 	$matches = array();
-	$pattern = '/(href|src)="([^"]*)"/i';
+	$pattern = '/(href|src)="([^" ]*)"/i';
 	if ($num_matches = preg_match_all($pattern, $htmlcomment, $matches)) {
 		for ($i = 0; $i < $num_matches; $i++) {
 			if (stripos($matches[2][$i], "http") === FALSE) { //won't mess with https
