@@ -3,6 +3,10 @@
 $( document ).ready( function() {
     kcom.conv = new kcom.Conversation('show');
     
+    $(window).on('hashchange', function() {
+    });
+    
+    // TODO eh?
     $("#newCommentsToggle").click(function() {
         
     });
@@ -37,23 +41,16 @@ $( document ).ready( function() {
     
 });
 
-function autoHideOldComments(callback){
+/**
+  * @return {Promise} promise -- all comments loaded
+  */
+function autoHideOldComments() {
     console.time('time to hide old comments');
     $('#ncb1').hide();//the "show new comments only" button
     $('#ncb2').show();//the "show all comments" button
-    if (callback) {
-        jQuery.when( habtop() ). then( 
-            function() {
-                console.log('defered succeded');
-                console.log('called autoHOC callback');
-                callback();                 
-            }, 
-            function() {console.log('defered faild');}
-        );
-        console.log('there was a autoHOC callback');
-    } 
-    else { console.log('autoHideOldComments got no callback'); }    
+    var promise = habtop();
     console.timeEnd('time to hide old comments');
+    return promise;
 }
 
 /**
@@ -72,14 +69,13 @@ function habtop() {
         }
     }
     var dfd = jQuery.Deferred();
-    var allPromises = $.when.apply($, promises);
+    var allPromises = jQuery.when.apply($, promises);
+    // TODO no sissies
     console.time("waiting for promises");
     return jQuery.when(allPromises).then(
         function() {
-            console.log("all promises success!");
-            dfd.resolve( "hurray" );
-            console.timeEnd("waiting for promises"); //2.42 ms
-            console.log('promise in whenthen in habtop', dfd.promise());
+            dfd.resolve( "all habtop promises succeeded" );
+            console.timeEnd("waiting for promises");
             return dfd.promise();
         }, 
         function() {
@@ -108,7 +104,7 @@ function commentToggle(expandcollapse) {
 }
 
 $(window).on( "load", function(){	//wait till all images are loaded
-
+    //TODO dead code?
 });
 
 window.onbeforeunload=function() {

@@ -265,14 +265,18 @@ if ($username) {
 		echo "<script type=\"text/javascript\">
 			window.onload=function(){ 
 			console.log('We want to only show new posts, starting with $topnewid');
-			autoHideOldComments( function(){";
-		if (!empty($topnewparentid)) {
-			echo "var com = new kcom.Comment($topnewparentid);
-			console.log('we are trying to display parent post ' + com.getId());
-			com.show();";
-		}
-		echo "jumpToAnchor('$jumpto');
-		} );
+			var promise = autoHideOldComments();
+            console.time(\"time from hiding to promise resolving\");
+            ";
+            if (!empty($topnewparentid)) {
+                echo "var com = new kcom.Comment($topnewparentid);
+                console.log('we are trying to display parent post ' + com.getId());
+                com.show();";
+            }
+            echo "$.when(promise).then(function() { 
+                jumpToAnchor('$jumpto');
+                console.timeEnd(\"time from hiding to promise resolving\");
+            } );
 		}";
 		echo "</script>";
 	} else {

@@ -8,6 +8,19 @@ $( document ).ready(
 /** @suppress {deprecated} the Ajax version of .load is not deprecated */ 
 function submitMarkAsRead(formdata) {
     var $oldBody = $("#bodyContent").clone();
+    var toastMessage = formdata.convIds.length > 1 ? "Conversations marked as read" : "Conversation marked as read";
+    var toast = new kcom.ToastWithOption(toastMessage, "Undo", 
+        function() {
+            var tempFormdata = formdata;
+            tempFormdata.readDates = formdata.oldReadDates;
+            var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", tempFormdata);
+            jqxhr.done(function() {
+                $("#bodyContent").html(String($oldBody.html()));
+                bindSubmits();
+            });
+        }, 
+        kcom.ToastWithOption.LENGTH_LONG);
+
     var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", formdata);
     jqxhr.fail(function( request, status, error) {
         console.log(request.status, ': ', request.responseText);
@@ -17,18 +30,6 @@ function submitMarkAsRead(formdata) {
             window.scrollTo(0,0);
             window.history.pushState("", "", kcom.HOST_NAME + "/index.php");
             bindSubmits();
-            var toastMessage = formdata.convIds.length > 1 ? "Conversations marked as read" : "Conversation marked as read";
-            var toast = new kcom.ToastWithOption(toastMessage, "Undo", 
-                function() {
-                    var tempFormdata = formdata;
-                    tempFormdata.readDates = formdata.oldReadDates;
-                    var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", tempFormdata);
-                    jqxhr.done(function() {
-                        $("#bodyContent").html(String($oldBody.html()));
-                        bindSubmits();
-                    });
-                }, 
-                kcom.ToastWithOption.LENGTH_LONG);
         });
     });
 }
@@ -39,12 +40,12 @@ function bindSubmits() {
     //picking conversations to mark as read in index.php
     $("form[name=markasread]").submit(function(e) {
         e.preventDefault();
-        var form = $( this )[0];
+        var form = $( this.closest("form") )[0];
         var formdata = {username: form.username.value};
         var convIds = [];
         var readDates = [];
         var oldReadDates = [];
-        
+
         $("input:checkbox[name='convIds[]']:checked").each( function() {
             convIds.push($( this ).val());
             readDates.push(form.readdate.value);
@@ -160,6 +161,14 @@ function alertContents() {
     }
 }
 
+/**
+ * @param {string} anchorname -- href value of target location
+ * @param {Promise} promise -- promise that needs to be resolved before jumping
+*/
+function jumpToAnchorWhen(anchorname, promise) {
+    jQuery.when(promise).then(function() {jumpToAnchor(anchorname);}); //TODO make this a .call 
+}
+
 function jumpToAnchor(anchorname) {
     var baseUrl = window.location.href.split('#')[0];
     var newUrl = baseUrl + '#' + anchorname;
@@ -171,7 +180,6 @@ function jumpToAnchor(anchorname) {
  * Highlights tokens inside the node _this_ and all of its children
 */
 function highlightInnerHTML(tokens) {
-    console.count('highlightinner called');
     var element = this;
     if (!element) {
         return "";
@@ -274,14 +282,18 @@ kcom.ToastWithOption = function(text, optionText, optionCallback, duration) {
             window.removeEventListener('unload', self.doAfter, false);
             if (self.doAfter) { self.doAfter();} 
         }, duration - 400);
+    } else {
+        console.log('no duration set, toast will stay open forever');
     }
     
     var $optionButton = $(".toastOptionButton");
     if ($optionButton.length) {
         $(document).one("click", ".toastOptionButton", function(){
+            console.log("setting up to tear down toast");
             optionCallback();
             window.removeEventListener('unload', self.doAfter, false);
             setTimeout( function(){ 
+                    console.log("finished timeout; hiding toast");
                     $( toast ).hide(); 
                 },200 );				
         });

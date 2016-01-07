@@ -270,15 +270,6 @@ if (isset($_REQUEST['q_searchConversations']) &&
 			echo "</table>\n<br>$pagenav<br>\n";
 		}		
 
-//scripts to run after page loads		
-if ( DEBUG ) {	
-	$rand = floor(rand() * 100);
-	$jquery_source = "scripts/conv_jquery.js?dev=$rand";
-} else {
-	$jquery_source = "scripts/conv_jquery.js?1";
-}
-echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
-
 ?>
 
 <script>

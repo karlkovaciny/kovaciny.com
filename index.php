@@ -10,7 +10,11 @@ if ($username) {
 			$trspacer = "<tr height=6><td colspan=3><img src=\"gfx/-.gif\" border=0 width=1 height=1></td></tr>";
 			echo "<p id=\"newConversationLink\"><a class=\"content\" href=\"newconv.php\">Add new conversation</a>&nbsp;</p>";
 			$getlastread = "MIN(com.changedate) - INTERVAL 1 SECOND AS lastread";   //easier since we only have access to unread comments
+            $start = microtime(true);
             $res = mysql_query("SELECT con.*, $getlastread FROM conversations AS con, comments AS com WHERE con.visible = 'Y' AND com.visible = 'Y' AND con.conid = com.conid AND com.readby_$username = 0 GROUP BY con.conid ORDER BY changedate DESC", $db) or die (mysql_error());
+            if (DEBUG) {				
+				echo "Second query took " . number_format( ( microtime(true) - $start), 3 ) . " seconds.<BR>";
+			}
             $num_rows = mysql_num_rows($res);
             if ($num_rows == 0) {
 				echo "<p class=\"indent\"><i>No new conversations</i></p>";			

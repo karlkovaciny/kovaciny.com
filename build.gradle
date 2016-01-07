@@ -134,7 +134,7 @@ task alertWhenServerUpdates (type:Exec){
         "start /d \"resources\" checkforupdatedjs-Shortcut " + urls.join(" ")
 }
 
-task release (dependsOn: ['build']) {
+task release (dependsOn: ['build', 'ftp']) {
     // changes behavior when present in task graph
     description "Produces build version"
 }

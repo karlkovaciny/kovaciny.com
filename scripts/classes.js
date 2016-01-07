@@ -60,7 +60,7 @@ kcom.ShowHideControl.prototype.changeState = function(state) {
        return false;
     }
     if (state == 'hidden') {
-        $(this.getTarget()).children().hide(); //FIXME should this move to the comment? if so how will it not hide the control too?
+        $(this.getTarget()).children().hide(); 
         $control.one('click', clik);
         $control.text("Show comment").show();
     } else if (state == 'visible') {
@@ -88,6 +88,7 @@ kcom.CommentDisplayArea = function (comment) {
     this.parent = comment;
     this.isHidden = true;
 };
+
 /* returns a promise? */
 kcom.CommentDisplayArea.prototype.shrinkEmbeds = function($commentContainer) {
     //shrink large images and embedded videos inside commentContainers
@@ -122,7 +123,9 @@ kcom.CommentDisplayArea.prototype.shrinkEmbeds = function($commentContainer) {
                 dafferd.resolve('finally');
             }
         });
-    } else { console.log('no embeds, no promise'); dafferd.resolve(); }
+    } else { 
+        dafferd.resolve(); // no embeds, no promise
+    }
     
     return dafferd.promise();
     
@@ -132,6 +135,7 @@ kcom.CommentDisplayArea.prototype.shrinkEmbeds = function($commentContainer) {
 kcom.CommentDisplayArea.prototype.show = function() {
     var deferd = jQuery.Deferred();
     var el = this.getElement();
+    console.time("how long it takes for comment.show deferd to return");
     if (el) { //TODO: stop calling on comments whose parents were deleted
         var $contents = $(el).find(".commentContents");
         if (!$contents[0].innerHTML) {
@@ -146,10 +150,8 @@ kcom.CommentDisplayArea.prototype.show = function() {
         deferd.reject("false");
     }
     this.isHidden = true;
-    console.time("how long it takes for comment.show deferd to return");
-    console.timeEnd("how long it takes for comment.show deferd to return");
-    console.log("returning promise", deferd.promise());
-    debugger;
+    var c = console.timeEnd("how long it takes for comment.show deferd to return");
+    console.log("returning promise for element", el, "seconds: ", c);
     return deferd.promise();
 };
 
@@ -178,16 +180,19 @@ kcom.Conversation = function(show) {
     var _this = this;
     this.comments = [];
     getComments();
-    if (show === 'new') { showAll(); } //TODO this.showAll
-    else if (show === 'all') {hideNew();}
+    if (show === 'all') { showAll(); } //TODO this.showAll
+    else if (show === 'new') {hideOld();}
+    else { console.log("kcom.Conversation constructor received invalid parameter: ", show); }
     
     function showAll() {
+        console.log('Conversation.showAll()');
         for (var i = 0; i < _this.comments.length; i++) {
 //            if (this.comments[i].
         }
     }
-    function hideNew() {
-    
+    function hideOld() {
+        console.log('Conversation.hideOld()');
+        //TODO ???
     }
     function getComments() {
         if (!_this.comments.length) {
