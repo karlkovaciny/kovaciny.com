@@ -29,7 +29,10 @@ function submitMarkAsRead(formdata) {
 
     var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", formdata);
     jqxhr.fail(function( request, status, error) {
-        console.log(request.status, ': ', request.responseText);
+        console.log('request failed: ', request.status);
+        toast.cancel();
+        $(".markAsReadSubmit").prop("disabled", false);
+        $(".markAsReadSubmit").val("Request failed (" + request.status + ") Try again?");
     });
     jqxhr.done(function() {
         $("#bodyContent").load("index.php #bodyContent > *", function() {
@@ -266,24 +269,24 @@ kcom.ToastWithOption = function(text, optionText, optionCallback, duration) {
         return this;
     };
     
-    var toast = document.createElement("div");
-    $( toast ).addClass("toast");
-    $( toast ).css({display: "inline-block"});
-    $( toast ).append('<div class="popupMessage">' + text + '</div>');
-    $( toast ).append('<div class="toastOptionButton popupMessage"><img src="gfx/Arrows-Undo-icon.png" id="undoArrow">' + optionText + '</div>');
-    $( 'body' ).append( toast );
+    this.$toast = $( "<div></div>" )
+        .addClass("toast")
+        .css({display: "inline-block"})
+        .append('<div class="popupMessage">' + text + '</div>')
+        .append('<div class="toastOptionButton popupMessage"><img src="gfx/Arrows-Undo-icon.png" id="undoArrow">' + optionText + '</div>')
+        .appendTo('body');
     
-    var popupMarginLeft = -1 * ($( toast ).outerWidth() / 2);
-    var popupMarginTop = -1 * ($( toast ).outerHeight() / 2) + "px";
-    var $toast = $( toast ).css({
+    var popupMarginLeft = -1 * (this.$toast.outerWidth() / 2);
+    var popupMarginTop = -1 * (this.$toast.outerHeight() / 2);
+    this.$toast.css({
         position: "fixed",
         top: "80%",
         left: "50%",
-        "margin-top": popupMarginTop,
+        "margin-top": popupMarginTop + "px",
         "margin-left": popupMarginLeft + "px"
     }).fadeIn(400);
     if (duration) {
-        $toast.delay(duration - 800).fadeOut(400);
+        this.$toast.delay(duration - 800).fadeOut(400);
         setTimeout(function() {
             window.removeEventListener('unload', self.doAfter, false);
             if (self.doAfter) { self.doAfter();} 
@@ -296,14 +299,19 @@ kcom.ToastWithOption = function(text, optionText, optionCallback, duration) {
     if ($optionButton.length) {
         $(document).one("click", ".toastOptionButton", function(){
             console.log("setting up to tear down toast");
-            optionCallback();
+            if (typeof optionCallback === "function") optionCallback();
             window.removeEventListener('unload', self.doAfter, false);
             setTimeout( function(){ 
                     console.log("finished timeout; hiding toast");
-                    $( toast ).hide(); 
+                    this.$toast.hide(); 
                 },200 );				
         });
     } else console.log('option button did not exist');
 };
 kcom.ToastWithOption.LENGTH_LONG = 3500;
 kcom.ToastWithOption.LENGTH_SHORT = 2000;
+
+/** Destroys the toast without calling any callbacks. */
+kcom.ToastWithOption.prototype.cancel = function() {
+    $(this.$toast).hide();
+};
