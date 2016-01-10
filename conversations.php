@@ -283,7 +283,6 @@ if ($username) {
         echo "<script type=\"text/javascript\">
 			window.onload=function(){ 
                 var comments = kcom.conv.getComments();
-                console.log('comments length', comments.length);
                 for (var i = 0; i < comments.length; i++) {
                     comments[i].show();
                 }

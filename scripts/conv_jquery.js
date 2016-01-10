@@ -1,7 +1,7 @@
 /** @suppress {duplicate} */ var kcom = kcom || {};
 
 $( document ).ready( function() {
-    kcom.conv = new kcom.Conversation('show');
+    kcom.conv = new kcom.Conversation('all');
     
     $(window).on('hashchange', function() {
     });
@@ -40,6 +40,16 @@ $( document ).ready( function() {
 	});
     
 });
+
+window.onbeforeunload=function() {
+	var form = document.forms.commentform;
+	if (form) {
+		if (form.modified && form.comment.value.trim()) {
+			return 'This page is asking you to confirm that you want to leave - data you have entered may not be saved.';
+		}
+	}
+};
+
 
 /**
   * @return {Promise} promise -- all comments loaded
@@ -102,19 +112,6 @@ function commentToggle(expandcollapse) {
         }
     }    
 }
-
-$(window).on( "load", function(){	//wait till all images are loaded
-    //TODO dead code?
-});
-
-window.onbeforeunload=function() {
-	var form = document.forms.commentform;
-	if (form) {
-		if (form.modified && form.comment.value.trim()) {
-			return 'This page is asking you to confirm that you want to leave - data you have entered may not be saved.';
-		}
-	}
-};
 
 function showonly(e){
     var element = document.getElementById(e);

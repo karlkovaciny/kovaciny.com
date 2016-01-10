@@ -1,7 +1,9 @@
 <?php
-require_once('access_token.php'); //in lieu of a real one
+require_once('access_token.php'); // in lieu of a real one
 require_once('dbconnect.php');
-if (empty($_POST['username'])) {
+
+// data validation
+if (empty($_POST['username'])) { 
     http_error_response(401, "no username supplied (type: string)");
 }
 

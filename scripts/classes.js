@@ -151,7 +151,6 @@ kcom.CommentDisplayArea.prototype.show = function() {
     }
     this.isHidden = true;
     var c = console.timeEnd("how long it takes for comment.show deferd to return");
-    console.log("returning promise for element", el, "seconds: ", c);
     return deferd.promise();
 };
 

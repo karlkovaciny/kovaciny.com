@@ -5,6 +5,12 @@ $( document ).ready(
     bindSubmits
 );
 
+$(window).on("load", function() {
+    if ($('body.has-conversation').length > 0) {
+        console.log('kovacinyjs says body has conversation');
+    } else console.log('kovacinyjs says body doesn\'t have conversation');
+});
+
 /** @suppress {deprecated} the Ajax version of .load is not deprecated */ 
 function submitMarkAsRead(formdata) {
     var $oldBody = $("#bodyContent").clone();

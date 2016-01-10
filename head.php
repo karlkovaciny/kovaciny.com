@@ -88,12 +88,14 @@ require_once('functions.php');
         echo "<link href=\"$css_source\" rel=\"stylesheet\" type=\"text/css\">\n\t\t";
 		echo "<script src=\"$hosted_jquery\" type=\"text/javascript\"></script>\n\t\t";
 		echo "<script src=\"$js_source\"></script>\n\t\t";
+		echo "</head>";        
+		
+		if (stripos($_SERVER['REQUEST_URI'], "/conversations.php") !== FALSE) {
+            $bodyClass = "has-conversation";
+        } 
         
-		?>
-		
-		</head>
-		
-		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
+		echo "<body class=$bodyClass marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>";
+        ?>
 		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white">
 			<tr>
 				<td width=219><a href="index.php"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td>
