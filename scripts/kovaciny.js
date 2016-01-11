@@ -262,13 +262,6 @@ kcom.ToastWithOption = function(text, optionText, optionCallback, duration) {
     "use strict";
     var self = this;
     
-    // function to call if the toast expires or is destroyed (but not when the option is clicked). Will run if they click a link but not if they close the window.
-    this.done = function (callback)   {
-        self.doAfter = callback;
-        window.addEventListener('unload', self.doAfter, false);
-        return this;
-    };
-    
     this.$toast = $( "<div></div>" )
         .addClass("toast")
         .css({display: "inline-block"})
@@ -289,7 +282,7 @@ kcom.ToastWithOption = function(text, optionText, optionCallback, duration) {
         this.$toast.delay(duration - 800).fadeOut(400);
         setTimeout(function() {
             window.removeEventListener('unload', self.doAfter, false);
-            if (self.doAfter) { self.doAfter();} 
+            if (typeof self.doAfter === "function") { self.doAfter.call(this);} 
         }, duration - 400);
     } else {
         console.log('no duration set, toast will stay open forever');
@@ -299,11 +292,11 @@ kcom.ToastWithOption = function(text, optionText, optionCallback, duration) {
     if ($optionButton.length) {
         $(document).one("click", ".toastOptionButton", function(){
             console.log("setting up to tear down toast");
-            if (typeof optionCallback === "function") optionCallback();
+            if (typeof optionCallback === "function") optionCallback.call(self);
             window.removeEventListener('unload', self.doAfter, false);
             setTimeout( function(){ 
                     console.log("finished timeout; hiding toast");
-                    this.$toast.hide(); 
+                    self.$toast.hide(); 
                 },200 );				
         });
     } else console.log('option button did not exist');
@@ -311,7 +304,17 @@ kcom.ToastWithOption = function(text, optionText, optionCallback, duration) {
 kcom.ToastWithOption.LENGTH_LONG = 3500;
 kcom.ToastWithOption.LENGTH_SHORT = 2000;
 
+/** Register a callback to call if the toast expires or is destroyed without clicking the option.  
+  * @param {function()} callback
+  */
+kcom.ToastWithOption.prototype.done = function (callback)   {
+    this.doAfter = callback;
+    window.addEventListener('unload', this.doAfter, false);
+    return this;
+};
+    
 /** Destroys the toast without calling any callbacks. */
 kcom.ToastWithOption.prototype.cancel = function() {
-    $(this.$toast).hide();
+    this.done(jQuery.noop);
+    this.$toast.hide();
 };

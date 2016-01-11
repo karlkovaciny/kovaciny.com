@@ -20,7 +20,7 @@ $( document ).ready( function() {
 		comment.slideUp();
         var toast = new kcom.ToastWithOption("Deleting post...", 
             "Undo", 
-            function() { comment.slideDown(); toast.done(null);}, 
+            function() { comment.slideDown(); this.cancel();} ,
             kcom.ToastWithOption.LENGTH_LONG);
         toast.done(function() {
             var request = 'conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';

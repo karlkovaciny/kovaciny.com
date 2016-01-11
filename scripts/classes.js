@@ -135,14 +135,14 @@ kcom.CommentDisplayArea.prototype.shrinkEmbeds = function($commentContainer) {
 kcom.CommentDisplayArea.prototype.show = function() {
     var deferd = jQuery.Deferred();
     var el = this.getElement();
-    console.time("how long it takes for comment.show deferd to return");
+    var start = new Date().getTime();
     if (el) { //TODO: stop calling on comments whose parents were deleted
         var $contents = $(el).find(".commentContents");
         if (!$contents[0].innerHTML) {
             $contents.html($contents[0].getAttribute("data-comment-html"));
         }
         jQuery.when(this.shrinkEmbeds($contents)).then(function() {
-            console.log('resolving deferd because shrink done running');
+            //console.log('resolving deferd because shrink done running');
             deferd.resolve('ok');
         });
         el.style.display='block';         
@@ -150,7 +150,10 @@ kcom.CommentDisplayArea.prototype.show = function() {
         deferd.reject("false");
     }
     this.isHidden = true;
-    var c = console.timeEnd("how long it takes for comment.show deferd to return");
+    var elapsed = new Date().getTime() - start;
+    if (elapsed > 50) {
+        console.log("It took " + elapsed.toFixed(1) + " ms for deferd to return ", this);
+    }
     return deferd.promise();
 };
 
@@ -172,7 +175,7 @@ kcom.CommentDisplayArea.prototype.getElementId = function() {
 
 /**
  * @constructor
- * @param {string} show - 'all' to show all comments, 'new' to show *   only new comments
+ * @param {string} show - either 'all' comments or 'new' comments
  */
 kcom.Conversation = function(show) {
     "use strict";
