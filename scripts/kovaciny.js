@@ -29,10 +29,14 @@ function submitMarkAsRead(formdata) {
 
     var jqxhr = jQuery.post(kcom.HOST_NAME + "/api/conversations.php", formdata);
     jqxhr.fail(function( request, status, error) {
-        console.log('request failed: ', request.status);
-        toast.cancel();
+        var msg;
+        if (request.status) {
+             msg = 'Request failed: (' + request.status + ') ';
+         } else msg = "No connection. "
+        msg += "Try again?"
+        toast.cancel(); 
         $(".markAsReadSubmit").prop("disabled", false);
-        $(".markAsReadSubmit").val("Request failed (" + request.status + ") Try again?");
+        $(".markAsReadSubmit").val(msg);
     });
     jqxhr.done(function() {
         $("#bodyContent").load("index.php #bodyContent > *", function() {
@@ -291,11 +295,9 @@ kcom.ToastWithOption = function(text, optionText, optionCallback, duration) {
     var $optionButton = $(".toastOptionButton");
     if ($optionButton.length) {
         $(document).one("click", ".toastOptionButton", function(){
-            console.log("setting up to tear down toast");
             if (typeof optionCallback === "function") optionCallback.call(self);
             window.removeEventListener('unload', self.doAfter, false);
             setTimeout( function(){ 
-                    console.log("finished timeout; hiding toast");
                     self.$toast.hide(); 
                 },200 );				
         });
