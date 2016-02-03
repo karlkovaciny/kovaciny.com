@@ -250,16 +250,11 @@ if ($username) {
 </td></tr></table>
 
 <?php	//scripts to run after page loads
-	if ( DEBUG ) {
-		$rand = floor(rand() * 100);
-		$jquery_source = "scripts/conv_jquery.js?dev=$rand";
+	if ( FALSE && DEBUG ) {  // change if I need nonminified code
+        $rand = floor(rand() * 100);
+        $jquery_source = "scripts/conv_jquery.js?dev=$rand";
         $classes = "scripts/classes.js?dev=$rand";
-	} else {
-		$jquery_source = "scripts/conv_jquery.js?" . RELEASE_VERSION;
-        $classes = "scripts/classes.js?" . RELEASE_VERSION;
 	}
-	echo "<script src=\"$jquery_source\" type=\"text/javascript\"></script>";
-	echo "<script src=\"$classes\" type=\"text/javascript\"></script>";
 	if ( wantNewPosts($topnewid) ) {	
 		$jumpto = getCommentAnchor($topnewid);
 		echo "<script type=\"text/javascript\">

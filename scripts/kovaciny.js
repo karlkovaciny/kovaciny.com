@@ -1,14 +1,14 @@
 /** @suppress {duplicate} */ var kcom = kcom || {};
 kcom.HOST_NAME = kcom.HOST_NAME || "";
 
-$( document ).ready( 
-    bindSubmits
-);
-
 $(window).on("load", function() {
-    if ($('body.has-conversation').length > 0) {
-        console.log('kovacinyjs says body has conversation');
-    } else console.log('kovacinyjs says body doesn\'t have conversation');
+    console.log('kjs load running');
+    if ($('body.has-markread').length > 0) {
+        console.log('kovacinyjs says body has markread');
+        $( document ).ready( 
+            bindSubmits
+        );
+    } else console.log('kovacinyjs says body doesn\'t have markread');
 });
 
 /** @suppress {deprecated} the Ajax version of .load is not deprecated */ 
@@ -32,8 +32,8 @@ function submitMarkAsRead(formdata) {
         var msg;
         if (request.status) {
              msg = 'Request failed: (' + request.status + ') ';
-         } else msg = "No connection. "
-        msg += "Try again?"
+         } else msg = "No connection. ";
+        msg += "Try again?";
         toast.cancel(); 
         $(".markAsReadSubmit").prop("disabled", false);
         $(".markAsReadSubmit").val(msg);
@@ -47,7 +47,11 @@ function submitMarkAsRead(formdata) {
     });
 }
 
-/** @suppress {missingProperties} To access forms with dot notation. */ 
+/**  @suppress {missingProperties} Allows accessing forms with dot
+ *   notation. 
+ *
+ *   bindSubmits: Provides handlers for Mark as Read buttons
+ */ 
 function bindSubmits() {
     $(".markAsReadSubmit").prop("disabled", false); //TODO put this in complete()
     //picking conversations to mark as read in index.php

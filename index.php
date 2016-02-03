@@ -47,7 +47,7 @@ if ($username) {
 		while($convs = mysql_fetch_array($res)) {
 			$tabindex += 10;
 			$convdate = $convs["changedate"];
-            $convlastread = $convs["lastread"];
+            if ($unread == 1) {$convlastread = $convs["lastread"];}
 			$convid = $convs["conid"];
 			$contitle = $convs["contitle"];
 			$conauth = $convs["authorid"];
@@ -63,7 +63,10 @@ if ($username) {
 				echo "<tr$rowcolor><td><img src=\"gfx/new.gif\" border=0 width=31 height=12 hspace=8></td>" 
                     . "<td class=\"rowpad\"><a href=\"conversations.php?id=$convid\" tabindex=\"$tabindex\">$contitle</a> ($numcomm)</td>"
                     . "<td nowrap class=\"small rowpad sidepad\">$convdate ago by <a href=\"?user=$lastpostuserid\">$lastpostusername</a></td>"
-                    . "<td align=\"center\"><input type=\"checkbox\" name=\"convIds[]\" value=\"$convid\">" 
+                    
+                    . "<td align=\"center\">
+                    <input type=\"checkbox\" name=\"convIds[]\" value=\"$convid\">" 
+                    
                     . "<input type='hidden' name='dateRead[]' value='$convlastread'></td></tr>";
 			} else {
 				echo "<tr$rowcolor><td class=\"rowpad sidepad\" ><a href=\"conversations.php?id=$convid\" tabindex=\"1000 + $tabindex\">$contitle</a> ($numcomm)</td>"

@@ -1,55 +1,65 @@
 /** @suppress {duplicate} */ var kcom = kcom || {};
 
-$( document ).ready( function() {
-    kcom.conv = new kcom.Conversation('all');
-    
-    $(window).on('hashchange', function() {
-    });
-    
-    // TODO eh?
-    $("#newCommentsToggle").click(function() {
-        
-    });
-    
-    $(".deleteCommentLink").click(function(){
-		var comment = $( this ).parents().closest('.commentContainer');
-        var convid = $( this ).attr("data-convid");
-		var commentid = $( this ).attr("data-commentid");
-		
-		//delete post 
-		comment.slideUp();
-        var toast = new kcom.ToastWithOption("Deleting post...", 
-            "Undo", 
-            function() { comment.slideDown(); this.cancel();} ,
-            kcom.ToastWithOption.LENGTH_LONG);
-        toast.done(function() {
-            var request = 'conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
-            jQuery.ajax(request);
+$(window).on("load", function() {
+    console.log('cjq load running');
+    if ($('body.has-conversation').length > 0) {
+        $( document ).ready( function() {
+            kcom.conv = new kcom.Conversation('all');
+            
+            $(window).on('hashchange', function() {
+            });
+            
+            // TODO eh?
+            $("#newCommentsToggle").click(function() {
+                
+            });
+            
+            $(".deleteCommentLink").click(function(){
+                console.log("deleteComment clicked.");
+                var comment = $( this ).parents().closest('.commentContainer');
+                var convid = $( this ).attr("data-convid");
+                var commentid = $( this ).attr("data-commentid");
+                
+                //delete post 
+                comment.slideUp();
+                var toast = new kcom.ToastWithOption("Deleting post...", 
+                    "Undo", 
+                    function() { comment.slideDown(); this.cancel();} ,
+                    kcom.ToastWithOption.LENGTH_LONG);
+                toast.done(function() {
+                    console.log("this is running again?");
+                    var request = 'conversations.php?id=' + convid + '&comid=' + commentid + '&action=delete';
+                    jQuery.ajax(request);
+                });
+                return false;
+            });
+
+            
+            //Don't warn user when submitting a new post 
+            $("#commentform").submit(function () {
+                window.onbeforeunload = null;
+            });
+            
+            $("#commentform").one('input propertychange', function() {
+                document.forms.commentform.modified = true;
+            });
+            
         });
-		return false;
-	});
 
-    
-	//Don't warn user when submitting a new post 
-	$("#commentform").submit(function () {
-		window.onbeforeunload = null;
-	});
-	
-	$("#commentform").one('input propertychange', function() {
-		document.forms.commentform.modified = true;
-	});
-    
+        window.onbeforeunload=function() {
+            var form = document.forms.commentform;
+            if (form) {
+                if (form.modified && form.comment.value.trim()) {
+                    return 'This page is asking you to confirm that you want to leave - data you have entered may not be saved.';
+                }
+            }
+        };
+
+
+
+
+    } else console.log('conv_jq says body doesn\'t have conversation');
 });
-
-window.onbeforeunload=function() {
-	var form = document.forms.commentform;
-	if (form) {
-		if (form.modified && form.comment.value.trim()) {
-			return 'This page is asking you to confirm that you want to leave - data you have entered may not be saved.';
-		}
-	}
-};
-
 
 /**
   * @return {Promise} promise -- all comments loaded

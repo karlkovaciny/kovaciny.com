@@ -42,7 +42,7 @@ javascript.source { // source sets
         js {
             srcDir "/scripts"
             include "*.js"
-            exclude "*.min.js"
+            exclude "*all-min.js"
         }
     }
     prod {
@@ -65,7 +65,7 @@ combineJs {
 
 minifyJs {
     source = javascript.source.dev.js.files
-    dest = file("${buildDir}/all-min.js")
+    dest = file("./scripts/all-min.js")
     sourceMap = file("${buildDir}/all.sourcemap.json")
     closure {
         warningLevel 'VERBOSE'
@@ -75,6 +75,7 @@ minifyJs {
 }
 
 jshint {
+    sleep(500) // gives time to create buildDir
     tasks.jshint.source = javascript.source.dev.js.files
     tasks.jshint.dest = file("${buildDir}/jshint.out.xml")
     tasks.jshint.reporter = 'checkstyle'
@@ -142,6 +143,7 @@ task release (dependsOn: ['build', 'ftp']) {
 gradle.taskGraph.whenReady {
     if (gradle.taskGraph.hasTask(release)) {
         minifyJs.source = combineJs  // compile passed, don't need files and line numbers
+        
     } else {
         jshint.options << [debug: "true"]
     }

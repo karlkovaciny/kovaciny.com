@@ -78,23 +78,29 @@ require_once('functions.php');
 			$rand = floor(rand() * 100);
 			$css_source = "kovaciny.css?dev=$rand";	//always refresh
 			$hosted_jquery = "http://code.jquery.com/jquery-2.1.4.js";
-			$js_source = "scripts/kovaciny.js?dev=$rand";
+			//$js_source = "scripts/kovaciny.js?dev=$rand";
+            $js_source = "scripts/all-min.js?dev=$rand";
 		} else {
 			$css_source = "kovaciny.css?" . RELEASE_VERSION;	//version number forces refresh
 			$hosted_jquery = "http://code.jquery.com/jquery-2.1.4.min.js";
 			$js_source = "scripts/kovaciny.js?" . RELEASE_VERSION;
 		}
-		echo "<script>var kcom = kcom || {}; kcom.HOST_NAME = \"" . HOST_NAME ."\"</script>";
+		echo "<script>var kcom = kcom || {}; kcom.HOST_NAME = \"" . HOST_NAME ."\"</script>\n\t\t";
         echo "<link href=\"$css_source\" rel=\"stylesheet\" type=\"text/css\">\n\t\t";
 		echo "<script src=\"$hosted_jquery\" type=\"text/javascript\"></script>\n\t\t";
 		echo "<script src=\"$js_source\"></script>\n\t\t";
 		echo "</head>";        
 		
 		if (stripos($_SERVER['REQUEST_URI'], "/conversations.php") !== FALSE) {
-            $bodyClass = "has-conversation";
-        } 
+            $bodyClass = "has-conversation has-markread";
+        } else if (stripos($_SERVER['REQUEST_URI'], "/index.php") !== FALSE) {
+            $bodyClass = "has-markread";
+        } elseif (stripos($_SERVER['REQUEST_URI'], ".php") == FALSE) {
+            // hack to check for index.php
+            $bodyClass = "has-markread";
+        }
         
-		echo "<body class=$bodyClass marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>";
+		echo "<body class=\"$bodyClass\" marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>";
         ?>
 		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white">
 			<tr>

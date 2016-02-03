@@ -4,7 +4,7 @@ var kcom = kcom || {};
  * @constructor
  * @param {Object} opts:
  *      id (int, required)
- *      TODO: data (can be omitted and loaded later)
+ *      data [not implemented yet] (can be omitted and loaded later)
  */
 kcom.Comment = function(opts) {
     this.id = opts.id;
@@ -29,7 +29,8 @@ kcom.Comment.prototype.hide = function() {
 };
 
 kcom.Comment.prototype.load = function() {
-    //TODO this.data = $.get('phpscript that returns this comment\'s data')
+    // not implemented
+    //this.data = $.get('phpscript that returns this comment\'s data');
 };
 
 kcom.Comment.prototype.getId = function() {
