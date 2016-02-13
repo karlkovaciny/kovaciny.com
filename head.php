@@ -6,8 +6,50 @@
 	mysql_select_db ("db286662785");
 	$tz = -12;
 
-require_once('functions.php');
+// Functions
+	function format_interval($timestamp, $granularity = 2) {
+		$units = array('1 year|years' => 31536000, '1 week|weeks' => 604800, '1 day|days' => 86400, '1 hr|hrs' => 3600, '1 min|min' => 60, '1 sec|sec' => 1);
+		$output = '';
+		foreach ($units as $key => $value) {
+			$key = explode('|', $key);
+			if ($timestamp >= $value) {
+				$output .= ($output ? ' ' : '') . format_plural(floor($timestamp / $value), $key[0], $key[1]);
+				$timestamp %= $value;
+				$granularity--;
+			}
+			if ($granularity == 0) {break;}
+		}
+		return $output ? $output : "0 sec";
+	}
+	
+	function format_plural($count, $singular, $plural) {
+		if ($count == 1) {return $singular;} else {return $count . " " . $plural;}
+	}
 
+	function pluralize($count, $singular, $plural = false) {if (!$plural) {$plural = $singular . 's';} return ($count == 1 ? $singular : $plural);}
+
+/*====================
+ExplodePhrases
+
+  Works like explode() with a " " delimiter, but phrases in (unescaped) quotation marks count as one word. 
+  Doesn't return empty strings.
+  Up to one character from the $operators string is allowed to precede each word. (must be regex-friendly)
+======================*/
+function ExplodePhrases ( $string, $operators=NULL ) {
+	$regex = "/[\s]*([$operators]?\"[^\"]*\")[\s]*/";
+	$quotesplit = preg_split($regex, $string, NULL, PREG_SPLIT_NO_EMPTY |  PREG_SPLIT_DELIM_CAPTURE);
+	$phraselist = array();
+	foreach ($quotesplit as $value) {
+		if ( preg_match($regex, $value) ) {
+			$phraselist[] = $value;
+		} else {
+			$phraselist = array_merge($phraselist, preg_split("/\s+/",$value, NULL, PREG_SPLIT_NO_EMPTY));
+		}
+	}
+	return $phraselist;
+}
+
+  
 // Log in
 	if (isset($_GET['user'])) {
 		$login = strtolower($_GET['user']);
@@ -79,17 +121,12 @@ require_once('functions.php');
 		<script language="JavaScript" src="kovaciny.js" name="jsinc"></script>
 		</head>
 		
-		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0">
+		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
 		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white"><tr><td width=219><a href="/"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td><td align="center">
 		<?php
 			echo "Welcome <b>$me</b>!";
 		?>
-		</td><td width=10>&nbsp;</td><td>
-		<form id="headerSearchForm" name="headerSearchForm" method="GET" action="conversationsearch.php">
-			<input name="q" class="copy SearchBox" type="text" title="Search" placeholder="Search"><input id="headerSearchButton" type="submit" class="copy searchbutton" title="Click to search" value="">
-		</form></td>
-		<td width=10>&nbsp;</td>
-		</tr></table>
+		</td><td width=10>&nbsp;</td></tr></table>
 		<table width="100%" border=0 cellpadding=0 cellspacing=0><tr valign="top" height=800><td bgcolor="#DDDDDD" style="padding:5px" width=130>
 		<p class="b" style="padding-top: 10px">Conversations</p>
 		<ul style="padding-left: 10px">
