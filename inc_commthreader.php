@@ -9,7 +9,8 @@
 			$parentIndex = array_search($cb_inReplyTo[$i], $cb_id);
             if ($parentIndex === FALSE) {    
                 //should only happen when parent was deleted but not children
-                if (DEBUG) error_log("Comment #$cb_id[$i] had depth $cb_commentDepth[$i] but it still found no parent. It had irt $cb_inReplyTo[$i] and text " . substr($cb_commentHTML[$i], strpos($cb_commentHTML[$i], "commentContents") + 17, 20) . "<br>Somehow cbid didn't have it: " . implode(", ", $cb_id));
+                //TODO delete child comments when delete parent
+                if (DEBUG) error_log("Comment #$cb_id[$i] had depth $cb_commentDepth[$i] but it still found no parent (because that was deleted). It had irt $cb_inReplyTo[$i] and text " . substr($cb_commentHTML[$i], strpos($cb_commentHTML[$i], "commentContents") + 17, 20) . "<br>Somehow cbid didn't have it: " . implode(", ", $cb_id));
             }
 			$cb_commentDepth[$i] = $cb_commentDepth[$parentIndex] + 1; 
 			$threaddepth = max($threaddepth, $cb_commentDepth[$i]);

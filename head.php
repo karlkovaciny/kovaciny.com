@@ -90,7 +90,8 @@ require_once('functions.php');
 		echo "<script src=\"$hosted_jquery\" type=\"text/javascript\"></script>\n\t\t";
 		echo "<script src=\"$js_source\"></script>\n\t\t";
 		echo "</head>";        
-		
+
+        $bodyClass = '';
 		if (stripos($_SERVER['REQUEST_URI'], "/conversations.php") !== FALSE) {
             $bodyClass = "has-conversation has-markread";
         } else if (stripos($_SERVER['REQUEST_URI'], "/index.php") !== FALSE) {
