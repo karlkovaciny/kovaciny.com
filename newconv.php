@@ -1,5 +1,6 @@
 <?php
 require_once ('head.php');
+if ($username) {
 	if (isset($_GET["deleteconversation"])) {
 		$deleteme = $_GET['deleteconversation'];
 		if ($userid != 1) $deleteauth = "AND `authorid` = '$userid'";
@@ -8,7 +9,7 @@ require_once ('head.php');
 		echo "<br><p>The conversation has been deleted.</p><form name=\"conadded\" action=\"index.php\" method=\"POST\"><input class=\"sidepad\" type=\"submit\" value=\"Return to the main page\"></form>";
 	} else {
 		if (isset($_GET["action"])) {
-			$newconv = trim($_POST['convtitle']);
+			$newconv = trim(addslashes($_POST['convtitle']));
 			$newcomm = trim($_POST['comment']);
 			if ($newconv == "") echo "<p>You need to enter a title.</p>";
 			if ($newcomm == "") echo "<p>You need to enter the first comment.</p>";
@@ -18,6 +19,7 @@ require_once ('head.php');
 				$replacefrom = array("\\'","\\'",'\\"','\\"');
 				$replaceto = array("\'","\'",'\"','\"');
 				$newcomm = str_replace($replacefrom, $replaceto, $newcomm);
+				$newcomm = addslashes($newcomm);
 				if ($userid == 1) {
 					$newcomm_author= explode (":", $_POST['postingas']);
 					$newcomm_authorid = $newcomm_author[0];
@@ -47,7 +49,7 @@ require_once ('head.php');
 				if (mysql_num_rows($res)==1) {
 					$conv_obj= mysql_fetch_object($res);
 					$conv_id= $conv_obj->conid;
-					$res= mysql_query("INSERT INTO `comments` (`comid`, `conid`, `authorid`, `comment`, `createdate`, `changedate`) VALUES ('', '$conv_id', '$newcomm_authorid', '$newcomm', $newcomm_posttime , $newcomm_posttime);") or die("Could not add first comment.");
+					$res= mysql_query("INSERT INTO `comments` (`comid`, `conid`, `authorid`, `comment`, `createdate`, `changedate`) VALUES ('', '$conv_id', '$newcomm_authorid', '$newcomm', $newcomm_posttime , $newcomm_posttime);") or die("Could not add first comment: " . mysql_error());
 					$postsuccessful = true;
 				} else {
 					echo "<p>Could not add new conversation</p>";
@@ -62,7 +64,7 @@ require_once ('head.php');
 				if ($privatewith == 0) {
 					echo "<br>Your conversation has been added!</p><form name=\"conadded\" action=\"conversations.php?id=$conv_id\" method=\"POST\"><table border=0 cellpadding=0 cellspacing=0><tr><td><input type=\"submit\" value=\"View conversation\"></td><td class=\"sidepad\"><input type=\"button\" onclick=\"document.location.href='index.php';\" value=\"Return to main page\"></td></tr></table></form>";
 				} else {
-					header("Location: http://www.kovaciny.com/index.php?private=true");
+					header("Location: http://kcom.kovaciny.com/index.php?private=true");
 				}
 				exit;
 			}
@@ -119,5 +121,10 @@ require_once ('head.php');
 			if (isset($conv_id)) echo "<p><br>&nbsp;<br>&nbsp;<br><a href=\"javascript://\" onclick=\"if (confirm('Delete this conversation and its initial comment permanently?')) document.location.href='newconv.php?deleteconversation=$conv_id';\" class=\"small\">Delete this conversation</a></p>";
 		}
 	}
-	include("footer.php");
+?>
+</td></tr></table>
+</body>
+</html>
+<?php
+}
 ?>

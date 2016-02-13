@@ -1,5 +1,6 @@
 <?php
 require_once ('head.php');
+if ($username) {
 	$tdspacer = "<td width=12>&nbsp;</td>";
 	$hideallexcept = 0;
 	if (isset($_GET['id'])) {
@@ -111,7 +112,7 @@ require_once ('head.php');
 						}
 						$ccc .= "</tr></table></td></tr>"; //end of the action bar
 						$q1 = "<table border=0 cellpadding=4 cellspacing=0 class=\"border\"><tr valign=\"top\"><td class=\"green small\" bgcolor=\"#F6F6F6\">";
-						$q2 = "</td><td class=\"gray sidepad medium\" bgcolor=\"#FFFFFF\">";
+						$q2 = "</td><td class=\"quote\" bgcolor=\"#FFFFFF\">";
 						$c13 = chr(13);
 						$c10 = chr(10);
 						$replacefrom = array(chr(10),"[quote]","[/quote]","</table>$c13<br>", "<a href=", "</a>");
@@ -197,18 +198,31 @@ require_once ('head.php');
 				}
 				$allcomments = rtrim($allcomments, ":");
 				$unreadcomments = rtrim($unreadcomments, ":");
-				echo "<tr><td colspan=2><input type=\"hidden\" name=\"ac\" value=\"$allcomments\"><input type=\"hidden\" name=\"ntc\" value=\"$unreadcomments\"><textarea name=\"comment\" cols=65 rows=9 class=\"medium\">$editcomment</textarea></td></tr>";
-				echo "<tr><td class=\"small blue\">$hiddenitems<input type=\"submit\" value=\"$postbutt\"></td><td align=\"right\">$canceledit</td></tr>";
+				echo "<tr><td colspan=2><input type=\"hidden\" name=\"ac\" value=\"$allcomments\"><input type=\"hidden\" name=\"ntc\" value=\"$unreadcomments\"><textarea name=\"comment\" cols=65 rows=9 class=\"medium\" tabindex=\"14\">$editcomment</textarea></td></tr>";
+				echo "<tr><td class=\"small blue\">$hiddenitems<input type=\"submit\" value=\"$postbutt\" tabindex=\"17\"></td><td align=\"right\">$canceledit</td></tr>";
 				echo "</table></form>";
 			}
 		}
 	}
-	
-	echo "<script type=\"text/javascript\">\n";
-	if ( wantNewPosts($topnew) ) {	
-		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",125)}\n"; 
-			//timeout 100 was not enough time to finish hiding posts in long threads, so the jump was off
+?>
+</td></tr></table>
+
+<script type="text/javascript">
+	<?php
+	/**** see if we have a new post, check if we are searching for old ones instead ****/
+	function wantNewPosts($postname) {
+		return strlen($postname) && !stripos($_SERVER['HTTP_REFERER'], "search.php");
 	}
-	echo "</script>\n";
-	include("footer.php");
+	
+	if ( wantNewPosts($topnew) ) {	
+		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",170)}"; 
+			//timeout 125 was not enough time to finish hiding posts in long threads, so the jump was off
+	}
+
 	?>
+</script>
+</body>
+</html>
+<?php
+}
+?>

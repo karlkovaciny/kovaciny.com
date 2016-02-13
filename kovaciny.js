@@ -143,10 +143,11 @@ function autoHideOldComments(){
 	
 function jumpToAnchor(anchor) {
 	var baseUrl = window.location.href.split('#')[0];
-	window.location.replace( baseUrl + '#' + anchor );
+	var newUrl = baseUrl + '#' + anchor;
+	window.location.replace( newUrl );
 }
 
-function HighlightInnerHTML(element_id, targetString){
+function highlightInnerHTML(element_id, targetString){
 	if ( e_id = document.getElementById(element_id) ) {
 		var newHTML = e_id.innerHTML;
 		var pattern = new RegExp(targetString, "gi");

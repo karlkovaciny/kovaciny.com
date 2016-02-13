@@ -10,6 +10,7 @@ if (isset($_GET['action'])) {
 		$replacefrom = array("\\'","\\'",'\\"','\\"');
 		$replaceto = array("\'","\'",'\"','\"');
 		$newcomm = str_replace($replacefrom, $replaceto, $newcomm);
+		$newcomm = addslashes($newcomm);
 		if ($userid == 1) {
 			$newcomm_author= explode (":", $_POST['postingas']);
 			$newcomm_authorid = $newcomm_author[0];
@@ -36,7 +37,9 @@ if (isset($_GET['action'])) {
 		}
 	}
 	if ($_GET['action'] == "new") {
-		$res= mysql_query("DELETE FROM `comments` WHERE `authorid` = '$newcomm_authorid' AND `conid` = '$conv_id' AND `comment` = '$newcomm'") or die("Could not update database.");
+		//delete duplicate posts, apparently
+		$res= mysql_query("DELETE FROM `comments` WHERE `authorid` = '$newcomm_authorid' AND `conid` = '$conv_id' AND `comment` = '$newcomm'") or die("Could not update database: " . mysql_error()); 
+		
 		$res= mysql_query("INSERT INTO `comments` (`comid`, `inreplyto`, `conid`, `authorid`, `comment`, `createdate`, `changedate`) VALUES ('', '$newinreplyto', '$conv_id', '$newcomm_authorid', '$newcomm', $newcomm_posttime , $newcomm_posttime);") or die("Could not update comment database.");
 		if ($newcomm_posttime == "NOW()") {$res= mysql_query("UPDATE `conversations` SET `changedate` = NOW( ), `lastpostuserid` = '$newcomm_authorid', `lastpostusername` = '$newcomm_authorname' WHERE `authorid` = '$userid' AND `conid` = '$conv_id' LIMIT 1") or die("Could not update conversation database.");}
 		$updatecommentcount = true;
