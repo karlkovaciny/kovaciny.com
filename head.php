@@ -49,15 +49,6 @@ function explodePhrases ( $string, $operators=NULL ) {
 	return $phraselist;
 }
 
-/*====================
-wantNewPosts
-
-  See if we have a new post, check if we are searching for old ones instead
-======================*/
-function wantNewPosts() {
-	return $_GET['new'] && !stripos($_SERVER['HTTP_REFERER'], "search.php");
-}
-	
   
 // Log in
 	if (isset($_GET['user'])) {
@@ -121,21 +112,28 @@ function wantNewPosts() {
 		elseif ($username == "john") {$userid = 11;}
 		$me = ucfirst($username);
 		?>
-		<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-		<html>
+		<!doctype html> <!-- the next four lines force IE not to use quirks mode -->
+		<html> <!-- NO lang, NO xmlns="http://www.w3.org/1999/xhtml" and so on -->
 		<head>
-		<title>Kovaciny.com</title>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-		<link href="kovaciny.css" rel="stylesheet" type="text/css">
-		<script language="JavaScript" src="kovaciny.js" name="jsinc"></script>
+			<meta http-equiv="x-ua-compatible" content="IE=Edge"/> <!-- as the very first line after head-->
+			<title>Kovaciny.com</title>
+			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+			<link href="kovaciny.css" rel="stylesheet" type="text/css">
+			<script language="JavaScript" src="kovaciny.js" name="jsinc"></script>
 		</head>
 		
 		<body marginheight=0 marginwidth=0 leftmargin=0 topmargin=0>
-		<table width="100%" border=0 cellpadding=0 cellspacing=0 bgcolor="#6699CC" class="medium white"><tr><td width=219><a href="/"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a></td><td align="center">
-		<?php
-			echo "Welcome <b>$me</b>!";
-		?>
-		</td><td width=10>&nbsp;</td></tr></table>
+		<div id="headerr">
+			<div style="float: right; margin-left: auto; margin-right: auto; width: inherit; height:100%" class="medium white" >
+				<div style="float: left; width: 219px">
+					<a href="/"><img src="gfx/kovaciny.gif" border=0 width=199 height=60 hspace=10></a>
+				</div>
+				<?php
+					echo "<p class=\"c medium white\" style=\"margin-top:15px; margin-bottom:0px\">Welcome <b>$me</b>!</p>";
+				?>
+			</div>
+		</div>
+		<div id="bodycontainer" style="float:left; width:100%; margin:0">
 		<table width="100%" border=0 cellpadding=0 cellspacing=0><tr valign="top" height=800><td bgcolor="#DDDDDD" style="padding:5px" width=130>
 		<p class="b" style="padding-top: 10px">Conversations</p>
 		<ul style="padding-left: 10px">
