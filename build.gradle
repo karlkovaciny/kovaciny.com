@@ -107,7 +107,7 @@ task ftp (dependsOn: ':alertWhenServerUpdates') {
             taskdef(name: 'ftp',
                     classname: 'org.apache.tools.ant.taskdefs.optional.net.FTP',
                     classpath: configurations.ftpAntTask.asPath)
-            ftp(server: "***REMOVED***", userid: "${identity[0]}", password: "${identity[1]}", remotedir: "${remotedir}", verbose: "yes", depends: "yes", passive: "yes", serverTimeZoneConfig: "America/Los_Angeles", newer: "yes") {
+            ftp(server: "ftp.mankatopedia.com", userid: "${identity[0]}", password: "${identity[1]}", remotedir: "${remotedir}", verbose: "yes", depends: "yes", passive: "yes", serverTimeZoneConfig: "America/Los_Angeles", newer: "yes") {
                 fileset(dir: ".") {
                     exclude(name: ".gradle/")
                     exclude(name: "build.gradle")
