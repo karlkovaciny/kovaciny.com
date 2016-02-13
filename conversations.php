@@ -1,6 +1,5 @@
 <?php
 require_once ('head.php');
-if ($username) {
 	$tdspacer = "<td width=12>&nbsp;</td>";
 	$hideallexcept = 0;
 	if (isset($_GET['id'])) {
@@ -204,24 +203,12 @@ if ($username) {
 			}
 		}
 	}
-?>
-</td></tr></table>
-</div>
-<script type="text/javascript">
-	<?php
-	/**** see if we have a new post, check if we are searching for old ones instead ****/
-	function wantNewPosts($postname) {
-		return strlen($postname) && !stripos($_SERVER['HTTP_REFERER'], "search.php");
-	}
 	
+	echo "<script type=\"text/javascript\">\n";
 	if ( wantNewPosts($topnew) ) {	
-		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",125)}"; 
+		echo "window.onload=function(){autoHideOldComments(); setTimeout(\"jumpToAnchor('$topnew')\",125)}\n"; 
 			//timeout 100 was not enough time to finish hiding posts in long threads, so the jump was off
 	}
+	echo "</script>\n";
+	include("footer.php");
 	?>
-</script>
-</body>
-</html>
-<?php
-}
-?>

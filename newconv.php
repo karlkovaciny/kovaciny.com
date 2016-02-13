@@ -1,6 +1,5 @@
 <?php
 require_once ('head.php');
-if ($username) {
 	if (isset($_GET["deleteconversation"])) {
 		$deleteme = $_GET['deleteconversation'];
 		if ($userid != 1) $deleteauth = "AND `authorid` = '$userid'";
@@ -120,10 +119,5 @@ if ($username) {
 			if (isset($conv_id)) echo "<p><br>&nbsp;<br>&nbsp;<br><a href=\"javascript://\" onclick=\"if (confirm('Delete this conversation and its initial comment permanently?')) document.location.href='newconv.php?deleteconversation=$conv_id';\" class=\"small\">Delete this conversation</a></p>";
 		}
 	}
-?>
-</td></tr></table>
-</body>
-</html>
-<?php
-}
+	include("footer.php");
 ?>
